@@ -73,7 +73,7 @@ export default function SiteHeader() {
             </Link>
           ))}
           <Link
-            to="/#start"
+            to="/start"
             className="whitespace-nowrap rounded-md bg-primary-500 px-4 py-2 text-sm font-semibold text-background-50 transition-colors hover:bg-primary-600"
           >
             Start Here →
@@ -106,7 +106,7 @@ export default function SiteHeader() {
               </Link>
             ))}
             <Link
-              to="/#start"
+              to="/start"
               onClick={() => setMenuOpen(false)}
               className="mt-4 rounded-md bg-primary-500 px-4 py-3 text-center text-sm font-semibold text-background-50"
             >
