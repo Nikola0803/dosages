@@ -1,4 +1,5 @@
 import { useParams, Link, Navigate } from "react-router-dom";
+import { useState, useEffect } from "react";
 import { peptides } from "@/mocks/peptides";
 import { peptideCategories } from "@/mocks/categories";
 import { getPeptideDetail } from "@/mocks/peptideDetails";
@@ -20,9 +21,19 @@ const EVIDENCE_COLORS: Record<string, string> = {
   limited:    "bg-background-100 text-foreground-600 border-background-200",
 };
 
+type ExpandedDose = { label: string; dose: number; color: string } | null;
+
 export default function PeptidePage() {
   useReveal();
   const { slug } = useParams<{ slug: string }>();
+  const [expanded, setExpanded] = useState<ExpandedDose>(null);
+
+  useEffect(() => {
+    if (!expanded) return;
+    const onKey = (e: KeyboardEvent) => { if (e.key === "Escape") setExpanded(null); };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [expanded]);
 
   const peptide = peptides.find(p => p.slug === slug);
   if (!peptide) return <Navigate to="/" replace />;
@@ -111,15 +122,30 @@ export default function PeptidePage() {
                 { label: "Typical", dose: peptide.typicalMcg, color: "text-primary-700" },
                 { label: "High",    dose: doseHigh,           color: "text-foreground-900" },
               ].map(row => (
-                <div key={row.label} className="rounded-lg border border-background-200 bg-background-50 p-5">
-                  <span className="block text-[10px] uppercase tracking-widest text-foreground-400">{row.label}</span>
+                <button
+                  key={row.label}
+                  type="button"
+                  onClick={() => setExpanded(row)}
+                  className="group rounded-lg border border-background-200 bg-background-50 p-5 text-left transition-colors hover:border-primary-300 hover:bg-primary-50"
+                  title="Click to enlarge"
+                >
+                  <div className="flex items-start justify-between">
+                    <span className="block text-[10px] uppercase tracking-widest text-foreground-400">{row.label}</span>
+                    <span className="text-[10px] text-foreground-300 opacity-0 transition-opacity group-hover:opacity-100">
+                      <i className="ri-zoom-in-line" /> enlarge
+                    </span>
+                  </div>
                   <span className={`mt-1 block font-heading text-2xl font-semibold ${row.color}`}>
                     {fmt(row.dose)}
                   </span>
                   <div className="mt-4">
-                    <SyringeGauge units={row.dose} max={maxGauge} compact />
+                    <SyringeGauge
+                      units={row.dose}
+                      max={maxGauge}
+                      infoLabel={`dose range · 0 – ${fmt(maxGauge)}`}
+                    />
                   </div>
-                </div>
+                </button>
               ))}
             </div>
           </div>
@@ -209,6 +235,41 @@ export default function PeptidePage() {
           </section>
         )}
       </main>
+
+      {/* ── Syringe expand modal ── */}
+      {expanded && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-foreground-950/70 px-4 backdrop-blur-sm"
+          onClick={() => setExpanded(null)}
+        >
+          <div
+            className="w-full max-w-2xl rounded-xl border border-background-200 bg-background-50 p-6 shadow-2xl"
+            onClick={e => e.stopPropagation()}
+          >
+            <div className="mb-4 flex items-center justify-between">
+              <div>
+                <span className="font-label text-[10px] uppercase tracking-widest text-foreground-400">{expanded.label} dose</span>
+                <p className={`font-heading text-3xl font-semibold ${expanded.color}`}>{fmt(expanded.dose)}</p>
+              </div>
+              <button
+                type="button"
+                onClick={() => setExpanded(null)}
+                className="flex h-8 w-8 items-center justify-center rounded-full text-foreground-500 hover:bg-background-200"
+              >
+                <i className="ri-close-line text-lg" />
+              </button>
+            </div>
+            <SyringeGauge
+              units={expanded.dose}
+              max={maxGauge}
+              infoLabel={`${peptide.name} · dose range 0 – ${fmt(maxGauge)}`}
+            />
+            <p className="mt-4 text-center text-xs text-foreground-400">
+              Scale: 0 – {fmt(maxGauge)} · Press Esc or click outside to close
+            </p>
+          </div>
+        </div>
+      )}
 
       <SiteFooter />
     </div>

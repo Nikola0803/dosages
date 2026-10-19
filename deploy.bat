@@ -2,7 +2,7 @@
 cd /d "%~dp0"
 
 echo Pulling latest from origin...
-git pull origin main
+git pull origin master
 
 echo.
 echo Staging all changes...
@@ -14,7 +14,7 @@ git commit -m "%MSG%"
 
 echo.
 echo Pushing to GitHub...
-git push origin main
+git push origin master
 
 echo.
 echo Done.

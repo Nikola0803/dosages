@@ -4,6 +4,7 @@ type SyringeGaugeProps = {
   units: number;
   max?: number;
   compact?: boolean;
+  infoLabel?: string;
 };
 
 function fmt(v: number) {
@@ -74,7 +75,7 @@ function useAnimatedValue(target: number, skip: boolean) {
 }
 
 // ─── Component ────────────────────────────────────────────────────────────────
-export default function SyringeGauge({ units, max = 100, compact = false }: SyringeGaugeProps) {
+export default function SyringeGauge({ units, max = 100, compact = false, infoLabel }: SyringeGaugeProps) {
   const safeMax = max > 0 ? max : 100;
   const clamped = Math.max(0, Math.min(safeMax, units));
   const target = clamped / safeMax; // 0–1
@@ -82,20 +83,32 @@ export default function SyringeGauge({ units, max = 100, compact = false }: Syri
   const fillRatio = useAnimatedValue(target, compact);
 
   if (compact) return <CompactSyringe fillRatio={fillRatio} units={clamped} max={safeMax} />;
-  return <FullSyringe fillRatio={fillRatio} units={clamped} max={safeMax} />;
+  return <FullSyringe fillRatio={fillRatio} units={clamped} max={safeMax} infoLabel={infoLabel} />;
+}
+
+// smart tick spacing so the barrel never gets overcrowded
+function tickStep(max: number): { minor: number; major: number } {
+  if (max <= 100)   return { minor: 5,    major: 10 };
+  if (max <= 200)   return { minor: 10,   major: 20 };
+  if (max <= 500)   return { minor: 25,   major: 50 };
+  if (max <= 1000)  return { minor: 50,   major: 100 };
+  if (max <= 2000)  return { minor: 100,  major: 200 };
+  if (max <= 5000)  return { minor: 250,  major: 500 };
+  if (max <= 10000) return { minor: 500,  major: 1000 };
+  const base = Math.pow(10, Math.floor(Math.log10(max / 10)));
+  return { minor: base, major: base * 5 };
 }
 
 // ─── Full syringe ─────────────────────────────────────────────────────────────
-function FullSyringe({ fillRatio, units, max }: { fillRatio: number; units: number; max: number }) {
+function FullSyringe({ fillRatio, units, max, infoLabel }: { fillRatio: number; units: number; max: number; infoLabel?: string }) {
   const liquidW  = fillRatio * F_BW;
   const plungerX = F_BX + liquidW;
-  // keep dot label within barrel bounds
   const dotX = Math.min(F_BX2 - 8, Math.max(F_BX + 8, plungerX));
 
-  // ticks: every 5 units, label every 10
+  const { minor, major } = tickStep(max);
   const ticks: Array<{ v: number; x: number; major: boolean }> = [];
-  for (let v = 0; v <= max; v += 5) {
-    ticks.push({ v, x: F_BX + (v / max) * F_BW, major: v % 10 === 0 });
+  for (let v = 0; v <= max; v += minor) {
+    ticks.push({ v, x: F_BX + (v / max) * F_BW, major: v % major === 0 });
   }
 
   return (
@@ -194,7 +207,7 @@ function FullSyringe({ fillRatio, units, max }: { fillRatio: number; units: numb
 
         {/* ── top-left info ── */}
         <text x={F_BX} y="13" fontSize="9.5" style={{ fill: CLR.label }}>
-          U-100 syringe · 1 mL · 100 units
+          {infoLabel ?? "U-100 syringe · 1 mL · 100 units"}
         </text>
 
         {/* ── top-right "draw to X" ── */}
