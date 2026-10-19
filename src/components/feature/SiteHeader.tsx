@@ -59,7 +59,7 @@ export default function SiteHeader() {
             scrolled ? "text-foreground-950" : "text-background-50"
           }`}
         >
-          Optimal<em className="text-primary-400 not-italic">Dosages</em>
+          Vial<em className="text-primary-400 not-italic">Calc</em>
         </Link>
 
         <nav className="hidden items-center gap-6 lg:flex">

@@ -1,4 +1,5 @@
 import { useMemo, useState } from "react";
+import { Link } from "react-router-dom";
 import { peptideCategories } from "@/mocks/categories";
 import {
   peptides,
@@ -148,10 +149,10 @@ export default function PeptideIndex() {
         {results.length > 0 ? (
           <div className="mt-6 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
             {results.map((p) => (
-              <a
+              <Link
                 key={p.slug}
-                href="#start"
-                title={`Open the reconstitution calculator for ${p.name}`}
+                to={`/peptide/${p.slug}`}
+                title={`${p.name} — dosing reference and reconstitution guide`}
                 className="group flex flex-col rounded-lg border border-background-200 bg-background-50 p-4 transition-all duration-200 hover:-translate-y-0.5 hover:border-primary-300"
               >
                 <div className="flex items-start justify-between gap-3">
@@ -180,7 +181,7 @@ export default function PeptideIndex() {
                     <i className="ri-arrow-right-line"></i>
                   </span>
                 </div>
-              </a>
+              </Link>
             ))}
           </div>
         ) : (

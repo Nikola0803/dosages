@@ -38,7 +38,7 @@ export default function SiteFooter() {
         <div className="grid grid-cols-1 gap-10 sm:grid-cols-2 lg:grid-cols-4">
           <div>
             <div className="font-heading text-xl font-semibold text-background-50">
-              Optimal<span className="text-primary-400">Dosages</span>
+              Vial<span className="text-primary-400">Calc</span>
             </div>
             <p className="mt-4 max-w-xs text-sm leading-relaxed text-primary-200">
               A reference library for peptide reconstitution maths and dose ranges taken from
@@ -86,7 +86,7 @@ export default function SiteFooter() {
         </div>
 
         <div className="mt-8 flex flex-col gap-2 border-t border-primary-800 pt-6 text-xs text-primary-300 sm:flex-row sm:items-center sm:justify-between">
-          <span>Â© {year} OptimalDosages.com</span>
+          <span>© {year} VialCalc · peptidedosingcalculator.co</span>
           <span>Dose ranges compiled from peer-reviewed and preclinical literature</span>
         </div>
       </div>

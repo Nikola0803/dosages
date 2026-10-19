@@ -1,4 +1,5 @@
-import { useMemo, useState } from "react";
+import { useMemo, useState, useEffect } from "react";
+import { useSearchParams } from "react-router-dom";
 import { peptides } from "@/mocks/peptides";
 import { peptideCategories } from "@/mocks/categories";
 import SyringeGauge from "@/components/feature/SyringeGauge";
@@ -27,10 +28,18 @@ const INPUT_CLASS =
   "w-full rounded-md border border-background-300 bg-background-50 px-3 py-2.5 text-sm text-foreground-900 focus:border-primary-400 focus:outline-none focus:ring-2 focus:ring-primary-200";
 
 export default function StartHereWizard() {
+  const [searchParams] = useSearchParams();
   const [step, setStep] = useState<number>(1);
-  const [peptideSlug, setPeptideSlug] = useState("");
-  const [vialMg, setVialMg] = useState<number>(0);
+  const [peptideSlug, setPeptideSlug] = useState(() => searchParams.get("peptide") ?? "");
+  const [vialMg, setVialMg] = useState<number>(() => Number(searchParams.get("vial") ?? 0));
   const [waterMl, setWaterMl] = useState<number | null>(null);
+
+  useEffect(() => {
+    const slug = searchParams.get("peptide");
+    const vial = Number(searchParams.get("vial") ?? 0);
+    if (slug) { setPeptideSlug(slug); if (vial) { setVialMg(vial); setStep(3); } else { setStep(2); } }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const selected = useMemo(
     () => peptides.find((p) => p.slug === peptideSlug),

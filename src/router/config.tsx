@@ -3,6 +3,7 @@ import NotFound from "../pages/NotFound";
 import Home from "../pages/home/page";
 import VprSpotlight from "../pages/vpr-spotlight/page";
 import StartPage from "../pages/start/page";
+import PeptidePage from "../pages/peptide/page";
 
 const routes: RouteObject[] = [
   {
@@ -12,6 +13,10 @@ const routes: RouteObject[] = [
   {
     path: "/start",
     element: <StartPage />,
+  },
+  {
+    path: "/peptide/:slug",
+    element: <PeptidePage />,
   },
   {
     path: "/vpr-spotlight",
