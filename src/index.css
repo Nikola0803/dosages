@@ -127,3 +127,88 @@ h1, h2, h3, h4, h5 {
   background: oklch(var(--background-300));
   border-radius: 9999px;
 }
+
+/* ── Premium card elevation ──────────────────────────────────────────── */
+.card-lift {
+  box-shadow:
+    0 1px 3px oklch(var(--foreground-950) / 0.04),
+    0 2px 8px oklch(var(--foreground-950) / 0.04);
+  transition: box-shadow 0.25s ease, transform 0.25s ease, border-color 0.25s ease;
+}
+.card-lift:hover {
+  box-shadow:
+    0 4px 8px oklch(var(--foreground-950) / 0.07),
+    0 12px 28px oklch(var(--foreground-950) / 0.10),
+    0 0 0 1px oklch(var(--primary-300) / 0.45);
+  transform: translateY(-2px);
+  border-color: oklch(var(--primary-200));
+}
+
+/* ── Glass panel (for header / modals) ───────────────────────────────── */
+.glass {
+  background: oklch(var(--background-50) / 0.88);
+  backdrop-filter: blur(18px) saturate(1.6);
+  -webkit-backdrop-filter: blur(18px) saturate(1.6);
+}
+
+/* ── Gradient text ───────────────────────────────────────────────────── */
+.text-gradient-primary {
+  background: linear-gradient(
+    120deg,
+    oklch(var(--primary-400)) 0%,
+    oklch(var(--primary-300)) 100%
+  );
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ── Glow button hover ───────────────────────────────────────────────── */
+.btn-glow:hover {
+  box-shadow:
+    0 4px 18px oklch(var(--primary-500) / 0.38),
+    0 8px 36px oklch(var(--primary-500) / 0.18);
+}
+
+/* ── Animated pulse dot (badge indicator) ───────────────────────────── */
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50%       { opacity: 0.55; transform: scale(0.75); }
+}
+.pulse-dot {
+  animation: pulse-dot 2.2s ease-in-out infinite;
+}
+
+/* ── Subtle mesh grid (hero background layer) ───────────────────────── */
+.bg-mesh {
+  background-image:
+    linear-gradient(rgba(255,255,255,0.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.035) 1px, transparent 1px);
+  background-size: 36px 36px;
+}
+
+/* ── Section accent badge ────────────────────────────────────────────── */
+.badge-primary {
+  display: inline-flex;
+  align-items: center;
+  border-radius: 9999px;
+  background: oklch(var(--primary-100));
+  padding: 0.2rem 0.75rem;
+  font-family: var(--font-label);
+  font-size: 0.625rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: oklch(var(--primary-800));
+}
+
+/* ── Animate fade-up for hero ────────────────────────────────────────── */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(24px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.animate-fadeUp {
+  animation: fadeUp 0.7s ease-out both;
+}
+.animate-fadeUp[style*="delay"] {
+  animation-fill-mode: both;
+}

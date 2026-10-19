@@ -33,7 +33,8 @@ export default function SiteFooter() {
   const year = new Date().getFullYear();
 
   return (
-    <footer className="bg-primary-950 text-primary-100">
+    <footer className="relative bg-primary-950 text-primary-100">
+      <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-primary-600/60 to-transparent" />
       <div className="mx-auto w-full max-w-[1440px] px-4 py-14 md:px-8">
         <div className="grid grid-cols-1 gap-10 sm:grid-cols-2 lg:grid-cols-4">
           <div>
@@ -91,5 +92,6 @@ export default function SiteFooter() {
         </div>
       </div>
     </footer>
+
   );
 }

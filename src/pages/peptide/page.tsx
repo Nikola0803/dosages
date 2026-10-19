@@ -1,5 +1,7 @@
 import { useParams, Link, Navigate } from "react-router-dom";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
+import { usePageMeta } from "@/hooks/usePageMeta";
+import { useJsonLd } from "@/hooks/useJsonLd";
 import { peptides } from "@/mocks/peptides";
 import { peptideCategories } from "@/mocks/categories";
 import { getPeptideDetail } from "@/mocks/peptideDetails";
@@ -36,12 +38,50 @@ export default function PeptidePage() {
   }, [expanded]);
 
   const peptide = peptides.find(p => p.slug === slug);
+
+  const detail = getPeptideDetail(slug ?? "");
+  const category = peptideCategories.find(c => c.slug === peptide?.categorySlug);
+
+  const pageTitle = peptide
+    ? `${peptide.name} Dosing Reference — Reconstitution Guide | VialCalc`
+    : "Peptide | VialCalc";
+  const pageDesc = peptide
+    ? (detail?.tagline ?? `Dose range, reconstitution guide and syringe draw line for ${peptide?.name}. Free calculator.`)
+    : "";
+
+  usePageMeta({
+    title: pageTitle,
+    description: pageDesc,
+    canonical: `https://peptidedosingcalculator.co/peptide/${slug}`,
+  });
+
+  const peptideSchema = useMemo(() => (!peptide ? {} : {
+    "@context": "https://schema.org",
+    "@type": "MedicalWebPage",
+    name: pageTitle,
+    url: `https://peptidedosingcalculator.co/peptide/${slug}`,
+    description: pageDesc,
+    about: {
+      "@type": "Drug",
+      name: peptide.name,
+      description: detail?.mechanism ?? `${peptide.name} research peptide`,
+      administrationRoute: detail?.route?.join(", ") ?? "subcutaneous",
+    },
+    breadcrumb: {
+      "@type": "BreadcrumbList",
+      itemListElement: [
+        { "@type": "ListItem", position: 1, name: "Home",                    item: "https://peptidedosingcalculator.co" },
+        { "@type": "ListItem", position: 2, name: category?.name ?? "Peptides", item: "https://peptidedosingcalculator.co/#peptides" },
+        { "@type": "ListItem", position: 3, name: peptide.name,               item: `https://peptidedosingcalculator.co/peptide/${slug}` },
+      ],
+    },
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }), [slug]);
+
+  useJsonLd(peptideSchema as Record<string, unknown>, "jsonld-peptide");
+
   if (!peptide) return <Navigate to="/" replace />;
-
-  const detail = getPeptideDetail(slug!);
-  const category = peptideCategories.find(c => c.slug === peptide.categorySlug);
   const evidence = evidenceTierMeta[peptide.evidence];
-
   const doseLow  = detail?.doseLow  ?? Math.round(peptide.typicalMcg * 0.5);
   const doseHigh = detail?.doseHigh ?? Math.round(peptide.typicalMcg * 2);
   const maxGauge = Math.ceil(doseHigh * 1.2 / 100) * 100;

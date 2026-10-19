@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+
+  <!-- Core pages -->
+  <url>
+    <loc>https://peptidedosingcalculator.co/</loc>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+    <lastmod>2026-10-19</lastmod>
+  </url>
+  <url>
+    <loc>https://peptidedosingcalculator.co/start</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+    <lastmod>2026-10-19</lastmod>
+  </url>
+  <url>
+    <loc>https://peptidedosingcalculator.co/vpr-spotlight</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+    <lastmod>2026-10-19</lastmod>
+  </url>
+
+  <!-- Tissue Repair & Recovery -->
+  <url><loc>https://peptidedosingcalculator.co/peptide/bpc-157</loc><changefreq>monthly</changefreq><priority>0.85</priority><lastmod>2026-10-19</lastmod></url>
+  <url><loc>https://peptidedosingcalculator.co/peptide/kpv</loc><changefreq>monthly</changefreq><priority>0.75</priority><lastmod>2026-10-19</lastmod></url>
+  <url><loc>https://peptidedosingcalculator.co/peptide/tb-500</loc><changefreq>monthly</changefreq><priority>0.85</priority><lastmod>2026-10-19</lastmod></url>
+
+  <!-- Metabolic -->
+  <url><loc>https://peptidedosingcalculator.co/peptide/5-amino-1mq</loc><changefreq>monthly</changefreq><priority>0.75</priority><lastmod>2026-10-19</lastmod></url>
+  <url><loc>https://peptidedosingcalculator.co/peptide/adipotide</loc><changefreq>monthly</changefreq><priority>0.75</priority><lastmod>2026-10-19</lastmod></url>
+  <url><loc>https://peptidedosingcalculator.co/peptide/aod-9604</loc><changefreq>monthly</changefreq><priority>0.80</priority><lastmod>2026-10-19</lastmod></url>
+  <url><loc>https://peptidedosingcalculator.co/peptide/cagrilintide</loc><changefreq>monthly</changefreq><priority>0.80</priority><lastmod>2026-10-19</lastmod></url>
+  <url><loc>https://peptidedosingcalculator.co/peptide/mazdutide</loc><changefreq>monthly</changefreq><priority>0.75</priority><lastmod>2026-10-19</lastmod></url>
+  <url><loc>https://peptidedosingcalculator.co/peptide/retatrutide</loc><changefreq>monthly</changefreq><priority>0.85</priority><lastmod>2026-10-19</lastmod></url>
+  <url><loc>https://peptidedosingcalculator.co/peptide/semaglutide</loc><changefreq>monthly</changefreq><priority>0.90</priority><lastmod>2026-10-19</lastmod></url>
+  <url><loc>https://peptidedosingcalculator.co/peptide/slu-pp-332</loc><changefreq>monthly</changefreq><priority>0.70</priority><lastmod>2026-10-19</lastmod></url>
+  <url><loc>https://peptidedosingcalculator.co/peptide/survodutide</loc><changefreq>monthly</changefreq><priority>0.75</priority><lastmod>2026-10-19</lastmod></url>
+  <url><loc>https://peptidedosingcalculator.co/peptide/tirzepatide</loc><changefreq>monthly</changefreq><priority>0.90</priority><lastmod>2026-10-19</lastmod></url>
+
+  <!-- GH Secretagogue -->
+  <url><loc>https://peptidedosingcalculator.co/peptide/cjc-1295-no-dac</loc><changefreq>monthly</changefreq><priority>0.80</priority><lastmod>2026-10-19</lastmod></url>
+  <url><loc>https://peptidedosingcalculator.co/peptide/cjc-1295-dac</loc><changefreq>monthly</changefreq><priority>0.80</priority><lastmod>2026-10-19</lastmod></url>
+  <url><loc>https://peptidedosingcalculator.co/peptide/ghrp-2</loc><changefreq>monthly</changefreq><priority>0.75</priority><lastmod>2026-10-19</lastmod></url>
+  <url><loc>https://peptidedosingcalculator.co/peptide/ghrp-6</loc><changefreq>monthly</changefreq><priority>0.75</priority><lastmod>2026-10-19</lastmod></url>
+  <url><loc>https://peptidedosingcalculator.co/peptide/hexarelin</loc><changefreq>monthly</changefreq><priority>0.75</priority><lastmod>2026-10-19</lastmod></url>
+  <url><loc>https://peptidedosingcalculator.co/peptide/ipamorelin</loc><changefreq>monthly</changefreq><priority>0.85</priority><lastmod>2026-10-19</lastmod></url>
+  <url><loc>https://peptidedosingcalculator.co/peptide/sermorelin</loc><changefreq>monthly</changefreq><priority>0.80</priority><lastmod>2026-10-19</lastmod></url>
+  <url><loc>https://peptidedosingcalculator.co/peptide/tesamorelin</loc><changefreq>monthly</changefreq><priority>0.80</priority><lastmod>2026-10-19</lastmod></url>
+
+  <!-- Growth Factor -->
+  <url><loc>https://peptidedosingcalculator.co/peptide/igf-1-des</loc><changefreq>monthly</changefreq><priority>0.75</priority><lastmod>2026-10-19</lastmod></url>
+  <url><loc>https://peptidedosingcalculator.co/peptide/igf-1-lr3</loc><changefreq>monthly</changefreq><priority>0.75</priority><lastmod>2026-10-19</lastmod></url>
+  <url><loc>https://peptidedosingcalculator.co/peptide/mgf</loc><changefreq>monthly</changefreq><priority>0.70</priority><lastmod>2026-10-19</lastmod></url>
+  <url><loc>https://peptidedosingcalculator.co/peptide/peg-mgf</loc><changefreq>monthly</changefreq><priority>0.70</priority><lastmod>2026-10-19</lastmod></url>
+
+  <!-- Longevity & Bioregulator -->
+  <url><loc>https://peptidedosingcalculator.co/peptide/cartalax</loc><changefreq>monthly</changefreq><priority>0.70</priority><lastmod>2026-10-19</lastmod></url>
+  <url><loc>https://peptidedosingcalculator.co/peptide/chonluten</loc><changefreq>monthly</changefreq><priority>0.70</priority><lastmod>2026-10-19</lastmod></url>
+  <url><loc>https://peptidedosingcalculator.co/peptide/cortagen</loc><changefreq>monthly</changefreq><priority>0.70</priority><lastmod>2026-10-19</lastmod></url>
+  <url><loc>https://peptidedosingcalculator.co/peptide/epitalon</loc><changefreq>monthly</changefreq><priority>0.80</priority><lastmod>2026-10-19</lastmod></url>
+  <url><loc>https://peptidedosingcalculator.co/peptide/foxo4-dri</loc><changefreq>monthly</changefreq><priority>0.75</priority><lastmod>2026-10-19</lastmod></url>
+  <url><loc>https://peptidedosingcalculator.co/peptide/livagen</loc><changefreq>monthly</changefreq><priority>0.70</priority><lastmod>2026-10-19</lastmod></url>
+  <url><loc>https://peptidedosingcalculator.co/peptide/ovagen</loc><changefreq>monthly</changefreq><priority>0.70</priority><lastmod>2026-10-19</lastmod></url>
+  <url><loc>https://peptidedosingcalculator.co/peptide/pinealon</loc><changefreq>monthly</changefreq><priority>0.70</priority><lastmod>2026-10-19</lastmod></url>
+  <url><loc>https://peptidedosingcalculator.co/peptide/prostamax</loc><changefreq>monthly</changefreq><priority>0.70</priority><lastmod>2026-10-19</lastmod></url>
+  <url><loc>https://peptidedosingcalculator.co/peptide/testagen</loc><changefreq>monthly</changefreq><priority>0.70</priority><lastmod>2026-10-19</lastmod></url>
+  <url><loc>https://peptidedosingcalculator.co/peptide/vesugen</loc><changefreq>monthly</changefreq><priority>0.70</priority><lastmod>2026-10-19</lastmod></url>
+  <url><loc>https://peptidedosingcalculator.co/peptide/vilon</loc><changefreq>monthly</changefreq><priority>0.70</priority><lastmod>2026-10-19</lastmod></url>
+
+  <!-- Mitochondrial -->
+  <url><loc>https://peptidedosingcalculator.co/peptide/glutathione</loc><changefreq>monthly</changefreq><priority>0.75</priority><lastmod>2026-10-19</lastmod></url>
+  <url><loc>https://peptidedosingcalculator.co/peptide/humanin</loc><changefreq>monthly</changefreq><priority>0.70</priority><lastmod>2026-10-19</lastmod></url>
+  <url><loc>https://peptidedosingcalculator.co/peptide/mots-c</loc><changefreq>monthly</changefreq><priority>0.75</priority><lastmod>2026-10-19</lastmod></url>
+  <url><loc>https://peptidedosingcalculator.co/peptide/nad-plus</loc><changefreq>monthly</changefreq><priority>0.80</priority><lastmod>2026-10-19</lastmod></url>
+  <url><loc>https://peptidedosingcalculator.co/peptide/ss-31</loc><changefreq>monthly</changefreq><priority>0.70</priority><lastmod>2026-10-19</lastmod></url>
+
+  <!-- Cognitive & Neuro -->
+  <url><loc>https://peptidedosingcalculator.co/peptide/ara-290</loc><changefreq>monthly</changefreq><priority>0.75</priority><lastmod>2026-10-19</lastmod></url>
+  <url><loc>https://peptidedosingcalculator.co/peptide/cerebrolysin</loc><changefreq>monthly</changefreq><priority>0.75</priority><lastmod>2026-10-19</lastmod></url>
+  <url><loc>https://peptidedosingcalculator.co/peptide/dsip</loc><changefreq>monthly</changefreq><priority>0.70</priority><lastmod>2026-10-19</lastmod></url>
+  <url><loc>https://peptidedosingcalculator.co/peptide/pe-22-28</loc><changefreq>monthly</changefreq><priority>0.70</priority><lastmod>2026-10-19</lastmod></url>
+  <url><loc>https://peptidedosingcalculator.co/peptide/selank</loc><changefreq>monthly</changefreq><priority>0.75</priority><lastmod>2026-10-19</lastmod></url>
+  <url><loc>https://peptidedosingcalculator.co/peptide/semax</loc><changefreq>monthly</changefreq><priority>0.75</priority><lastmod>2026-10-19</lastmod></url>
+
+  <!-- Immune & Anti-microbial -->
+  <url><loc>https://peptidedosingcalculator.co/peptide/ll-37</loc><changefreq>monthly</changefreq><priority>0.75</priority><lastmod>2026-10-19</lastmod></url>
+  <url><loc>https://peptidedosingcalculator.co/peptide/pnc-27</loc><changefreq>monthly</changefreq><priority>0.70</priority><lastmod>2026-10-19</lastmod></url>
+  <url><loc>https://peptidedosingcalculator.co/peptide/thymosin-alpha-1</loc><changefreq>monthly</changefreq><priority>0.80</priority><lastmod>2026-10-19</lastmod></url>
+  <url><loc>https://peptidedosingcalculator.co/peptide/vip</loc><changefreq>monthly</changefreq><priority>0.70</priority><lastmod>2026-10-19</lastmod></url>
+
+  <!-- Cosmetic & Dermal -->
+  <url><loc>https://peptidedosingcalculator.co/peptide/ahk-cu</loc><changefreq>monthly</changefreq><priority>0.70</priority><lastmod>2026-10-19</lastmod></url>
+  <url><loc>https://peptidedosingcalculator.co/peptide/ghk-cu</loc><changefreq>monthly</changefreq><priority>0.75</priority><lastmod>2026-10-19</lastmod></url>
+  <url><loc>https://peptidedosingcalculator.co/peptide/melanotan-ii</loc><changefreq>monthly</changefreq><priority>0.80</priority><lastmod>2026-10-19</lastmod></url>
+  <url><loc>https://peptidedosingcalculator.co/peptide/melanotan-1</loc><changefreq>monthly</changefreq><priority>0.75</priority><lastmod>2026-10-19</lastmod></url>
+  <url><loc>https://peptidedosingcalculator.co/peptide/snap-8</loc><changefreq>monthly</changefreq><priority>0.70</priority><lastmod>2026-10-19</lastmod></url>
+
+  <!-- Endocrine & Sexual Health -->
+  <url><loc>https://peptidedosingcalculator.co/peptide/gonadorelin</loc><changefreq>monthly</changefreq><priority>0.80</priority><lastmod>2026-10-19</lastmod></url>
+  <url><loc>https://peptidedosingcalculator.co/peptide/kisspeptin-10</loc><changefreq>monthly</changefreq><priority>0.75</priority><lastmod>2026-10-19</lastmod></url>
+  <url><loc>https://peptidedosingcalculator.co/peptide/oxytocin</loc><changefreq>monthly</changefreq><priority>0.70</priority><lastmod>2026-10-19</lastmod></url>
+  <url><loc>https://peptidedosingcalculator.co/peptide/pt-141</loc><changefreq>monthly</changefreq><priority>0.85</priority><lastmod>2026-10-19</lastmod></url>
+  <url><loc>https://peptidedosingcalculator.co/peptide/teriparatide</loc><changefreq>monthly</changefreq><priority>0.75</priority><lastmod>2026-10-19</lastmod></url>
+
+  <!-- Blends -->
+  <url><loc>https://peptidedosingcalculator.co/peptide/bpc-157-kpv-blend</loc><changefreq>monthly</changefreq><priority>0.70</priority><lastmod>2026-10-19</lastmod></url>
+  <url><loc>https://peptidedosingcalculator.co/peptide/cjc-1295-ipamorelin-blend</loc><changefreq>monthly</changefreq><priority>0.70</priority><lastmod>2026-10-19</lastmod></url>
+  <url><loc>https://peptidedosingcalculator.co/peptide/glow-blend</loc><changefreq>monthly</changefreq><priority>0.65</priority><lastmod>2026-10-19</lastmod></url>
+  <url><loc>https://peptidedosingcalculator.co/peptide/klow-blend</loc><changefreq>monthly</changefreq><priority>0.65</priority><lastmod>2026-10-19</lastmod></url>
+  <url><loc>https://peptidedosingcalculator.co/peptide/mito-blend</loc><changefreq>monthly</changefreq><priority>0.65</priority><lastmod>2026-10-19</lastmod></url>
+  <url><loc>https://peptidedosingcalculator.co/peptide/retatrutide-cagrilintide-blend</loc><changefreq>monthly</changefreq><priority>0.70</priority><lastmod>2026-10-19</lastmod></url>
+  <url><loc>https://peptidedosingcalculator.co/peptide/semax-selank-blend</loc><changefreq>monthly</changefreq><priority>0.65</priority><lastmod>2026-10-19</lastmod></url>
+  <url><loc>https://peptidedosingcalculator.co/peptide/tb-500-bpc-157-kpv-blend</loc><changefreq>monthly</changefreq><priority>0.70</priority><lastmod>2026-10-19</lastmod></url>
+  <url><loc>https://peptidedosingcalculator.co/peptide/tesamorelin-ipamorelin-blend</loc><changefreq>monthly</changefreq><priority>0.65</priority><lastmod>2026-10-19</lastmod></url>
+  <url><loc>https://peptidedosingcalculator.co/peptide/wolverine-blend</loc><changefreq>monthly</changefreq><priority>0.65</priority><lastmod>2026-10-19</lastmod></url>
+
+</urlset>

@@ -30,7 +30,7 @@ export default function SiteHeader() {
     <header
       className={`fixed inset-x-0 top-0 z-50 transition-all duration-300 ${
         scrolled
-          ? "border-b border-background-200 bg-background-50/95 backdrop-blur"
+          ? "glass border-b border-background-200/70 shadow-sm"
           : "bg-transparent"
       }`}
     >

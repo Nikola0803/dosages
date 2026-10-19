@@ -3,9 +3,42 @@ import SiteHeader from "@/components/feature/SiteHeader";
 import SiteFooter from "@/components/feature/SiteFooter";
 import StartHereWizard from "@/pages/home/components/StartHereWizard";
 import { useReveal } from "@/hooks/useReveal";
+import { usePageMeta } from "@/hooks/usePageMeta";
+import { useJsonLd } from "@/hooks/useJsonLd";
+
+const SITE = "https://peptidedosingcalculator.co";
+
+const howToSchema = {
+  "@context": "https://schema.org",
+  "@type": "HowTo",
+  name: "How to Reconstitute a Peptide Vial",
+  description:
+    "Step-by-step guide to reconstituting a research peptide vial with bacteriostatic water and calculating the exact draw line on your syringe.",
+  totalTime: "PT5M",
+  step: [
+    { "@type": "HowToStep", position: 1, name: "Choose your compound", text: "Select the peptide name printed on your vial label." },
+    { "@type": "HowToStep", position: 2, name: "Enter your vial size", text: "Enter the milligram weight on the label (e.g. 5 mg)." },
+    { "@type": "HowToStep", position: 3, name: "Add bacteriostatic water", text: "Inject the recommended water volume slowly down the inside wall of the vial." },
+    { "@type": "HowToStep", position: 4, name: "Read your draw line", text: "Draw the displayed number of syringe units for your target dose." },
+  ],
+  tool: [
+    { "@type": "HowToTool", name: "U-100 insulin syringe (1 mL)" },
+    { "@type": "HowToTool", name: "Bacteriostatic water vial" },
+    { "@type": "HowToTool", name: "Alcohol swab" },
+  ],
+} as Record<string, unknown>;
 
 export default function StartPage() {
   useReveal();
+
+  usePageMeta({
+    title: "Peptide Reconstitution Calculator — Step-by-Step Wizard | VialCalc",
+    description:
+      "Three questions. We calculate the exact water volume and syringe draw line for any peptide vial. Free, instant, no sign-up required.",
+    canonical: `${SITE}/start`,
+  });
+
+  useJsonLd(howToSchema, "jsonld-howto");
 
   return (
     <div className="min-h-screen bg-background-50">

@@ -55,9 +55,7 @@ export default function PeptideIndex() {
       <div className="mx-auto w-full max-w-[1440px] px-4 md:px-8">
         <div className="reveal flex flex-col gap-5 md:flex-row md:items-end md:justify-between">
           <div className="max-w-2xl">
-            <span className="inline-flex items-center rounded-full bg-primary-100 px-2.5 py-1 font-label text-[10px] uppercase tracking-wide text-primary-800">
-              The index
-            </span>
+            <span className="badge-primary">The index</span>
             <h2 className="mt-4 font-heading text-2xl font-semibold tracking-tight text-foreground-950 md:text-4xl">
               Look up a compound
             </h2>
@@ -153,7 +151,7 @@ export default function PeptideIndex() {
                 key={p.slug}
                 to={`/peptide/${p.slug}`}
                 title={`${p.name} — dosing reference and reconstitution guide`}
-                className="group flex flex-col rounded-lg border border-background-200 bg-background-50 p-4 transition-all duration-200 hover:-translate-y-0.5 hover:border-primary-300"
+                className="card-lift group flex flex-col rounded-xl border border-background-200 bg-background-50 p-4"
               >
                 <div className="flex items-start justify-between gap-3">
                   <h3 className="font-heading text-sm font-semibold leading-snug text-foreground-950">
