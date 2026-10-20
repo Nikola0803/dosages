@@ -326,8 +326,8 @@ export default function StartHereWizard() {
                         peptideSlug === p.slug
                           ? "border-primary-500 bg-primary-50 shadow-sm ring-1 ring-primary-200"
                           : decideForMe
-                          ? "border-primary-200 bg-primary-50/30 hover:border-primary-400 hover:bg-primary-50"
-                          : "border-background-200 bg-background-50 hover:border-primary-200 hover:bg-primary-50/30"
+                          ? "border-primary-200 bg-primary-50 hover:border-primary-400"
+                          : "border-background-200 bg-background-50 hover:border-primary-200 hover:bg-primary-50"
                       }`}
                     >
                       {decideForMe && (
@@ -563,7 +563,7 @@ export default function StartHereWizard() {
                 </thead>
                 <tbody>
                   {results.levels.map((l) => (
-                    <tr key={l.level} className={`border-b border-background-100 ${l.level === "Typical" ? "bg-primary-50/60" : ""}`}>
+                    <tr key={l.level} className={`border-b border-background-100 ${l.level === "Typical" ? "bg-primary-50" : ""}`}>
                       <td className="py-2 pr-2 font-medium text-foreground-900">{l.level}</td>
                       <td className="py-2 pr-2 whitespace-nowrap text-foreground-700">{formatDose(l.mcg)}</td>
                       <td className="py-2 pr-2">

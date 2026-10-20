@@ -43,12 +43,12 @@ export default function VprSpotlight() {
               className="h-full w-full object-cover object-top"
             />
             <div className="bg-dots-dark absolute inset-0 opacity-60"></div>
-            <div className="absolute inset-0 bg-gradient-to-b from-foreground-950/80 via-foreground-950/70 to-foreground-950/90"></div>
+            <div className="absolute inset-0 bg-gradient-to-b from-black/80 via-black/70 to-black/90"></div>
           </div>
 
           <div className="relative mx-auto w-full max-w-[1440px] px-4 pb-14 pt-32 md:px-8 md:pb-20 md:pt-44">
             <div className="max-w-3xl animate-fadeUp">
-              <span className="inline-flex items-center gap-2 rounded-full border border-accent-400/50 bg-accent-500/15 px-3 py-1 font-label text-[11px] uppercase tracking-wider text-accent-200">
+              <span className="inline-flex items-center gap-2 rounded-full border border-accent-400 bg-accent-900 px-3 py-1 font-label text-[11px] uppercase tracking-wider text-accent-200">
                 <i className="ri-shield-star-line text-sm"></i>
                 Spotlight — {vprName}
               </span>
@@ -57,7 +57,7 @@ export default function VprSpotlight() {
                 Vet the vendor before you send a cent.
               </h1>
 
-              <p className="mt-5 max-w-2xl text-base leading-relaxed text-background-50/85 md:text-lg">
+              <p className="mt-5 max-w-2xl text-base leading-relaxed text-white/85 md:text-lg">
                 {vprDescription}
               </p>
 
@@ -72,19 +72,19 @@ export default function VprSpotlight() {
                 </a>
                 <Link
                   to="/vpr-spotlight#spotlight-resources"
-                  className="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md border border-background-50/30 px-6 py-3.5 text-sm font-semibold text-background-50 transition-colors hover:bg-background-50/10"
+                  className="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md border border-white/30 px-6 py-3.5 text-sm font-semibold text-white transition-colors hover:bg-white/10"
                 >
                   See what's inside <i className="ri-arrow-down-line"></i>
                 </Link>
               </div>
 
-              <div className="mt-12 grid max-w-xl grid-cols-1 gap-6 border-t border-background-50/15 pt-8 sm:grid-cols-3">
+              <div className="mt-12 grid max-w-xl grid-cols-1 gap-6 border-t border-white/15 pt-8 sm:grid-cols-3">
                 {vprStats.map((stat) => (
                   <div key={stat.label}>
                     <b className="block font-heading text-2xl font-semibold text-accent-400 md:text-3xl">
                       {stat.value}
                     </b>
-                    <span className="mt-1 block text-[11px] uppercase tracking-wide text-background-50/65">
+                    <span className="mt-1 block text-[11px] uppercase tracking-wide text-white/65">
                       {stat.label}
                     </span>
                   </div>
@@ -269,7 +269,7 @@ export default function VprSpotlight() {
                 </a>
                 <Link
                   to="/#sources"
-                  className="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md border border-secondary-900/40 px-6 py-3.5 text-sm font-semibold text-secondary-950 transition-colors hover:bg-secondary-400/40"
+                  className="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md border border-secondary-900 px-6 py-3.5 text-sm font-semibold text-secondary-950 transition-colors hover:bg-secondary-300"
                 >
                   Back to home
                 </Link>

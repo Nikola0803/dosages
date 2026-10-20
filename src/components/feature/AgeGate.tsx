@@ -34,7 +34,7 @@ export default function AgeGate() {
   if (!open) return null;
 
   return (
-    <div className="fixed inset-0 z-[100] flex items-center justify-center bg-foreground-950/70 px-4 backdrop-blur-sm">
+    <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/70 px-4 backdrop-blur-sm">
       <div className="w-full max-w-lg animate-scaleIn rounded-lg border border-background-200 bg-background-50 p-6 md:p-8">
         <h2 className="font-heading text-xl font-semibold text-foreground-950 md:text-2xl">
           Research Use Only — Confirm to Continue

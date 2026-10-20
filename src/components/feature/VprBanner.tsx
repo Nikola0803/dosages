@@ -17,7 +17,7 @@ export default function VprBanner() {
               <h2 className="mt-1 font-heading text-lg font-semibold text-background-50 md:text-xl">
                 Check suppliers on VPR
               </h2>
-              <p className="mt-1 text-sm text-background-50/70">
+              <p className="mt-1 text-sm text-white/70">
                 Directory, third-party lab reports and community feedback — all in one independent
                 place.
               </p>
@@ -35,7 +35,7 @@ export default function VprBanner() {
             </a>
             <Link
               to="/vpr-spotlight"
-              className="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md border border-background-50/25 px-5 py-3 text-sm font-semibold text-background-50 transition-colors hover:bg-background-50/10"
+              className="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md border border-white/25 px-5 py-3 text-sm font-semibold text-white transition-colors hover:bg-white/10"
             >
               Why VPR? <i className="ri-arrow-right-line"></i>
             </Link>

@@ -62,7 +62,7 @@ export default function InstallPrompt() {
       aria-label="Install VialCalc"
       className="fixed bottom-0 left-0 right-0 z-50 p-3 sm:bottom-4 sm:left-auto sm:right-4 sm:max-w-sm"
     >
-      <div className="flex items-center gap-3 rounded-2xl border border-primary-700/40 bg-primary-950/95 px-4 py-3.5 shadow-2xl backdrop-blur-md">
+      <div className="flex items-center gap-3 rounded-2xl border border-primary-700 bg-primary-950 px-4 py-3.5 shadow-2xl backdrop-blur-md">
         {/* Icon */}
         <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-primary-500 text-lg font-bold text-white shadow-inner">
           VC

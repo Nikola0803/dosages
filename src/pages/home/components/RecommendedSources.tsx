@@ -24,17 +24,17 @@ export default function RecommendedSources() {
           className="reveal group mt-10 flex flex-col items-start gap-5 rounded-lg border border-accent-300 bg-accent-500 p-6 transition-colors hover:bg-accent-600 md:flex-row md:items-center md:justify-between md:p-8"
         >
           <div className="flex items-start gap-4">
-            <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-lg bg-accent-950/10 text-accent-950">
+            <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-lg bg-white/20 text-accent-950">
               <i className="ri-shield-star-line text-2xl"></i>
             </span>
             <div className="min-w-0">
-              <span className="font-label text-[10px] uppercase tracking-wide text-accent-950/70">
+              <span className="font-label text-[10px] uppercase tracking-wide text-accent-900">
                 Independent review site
               </span>
               <h3 className="mt-1 font-heading text-lg font-semibold text-accent-950 md:text-xl">
                 {vprName}
               </h3>
-              <p className="mt-2 max-w-2xl text-sm leading-relaxed text-accent-950/80">
+              <p className="mt-2 max-w-2xl text-sm leading-relaxed text-accent-950">
                 {vprDescription}
               </p>
             </div>

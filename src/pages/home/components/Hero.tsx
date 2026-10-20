@@ -21,7 +21,7 @@ export default function Hero() {
           className="h-full w-full object-cover object-top opacity-60"
         />
         {/* Multi-layer gradient for depth */}
-        <div className="absolute inset-0 bg-gradient-to-br from-primary-950/85 via-foreground-950/65 to-foreground-950/95" />
+        <div className="absolute inset-0 bg-gradient-to-br from-black/85 via-black/65 to-black/95" />
         {/* Radial vignette */}
         <div
           className="absolute inset-0"
@@ -30,7 +30,7 @@ export default function Hero() {
         {/* Subtle mesh */}
         <div className="bg-mesh absolute inset-0 opacity-100" />
         {/* Bottom fade */}
-        <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-foreground-950/60 to-transparent" />
+        <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-black/60 to-transparent" />
       </div>
 
       <div className="relative mx-auto w-full max-w-[1440px] px-4 pb-16 pt-32 md:px-8 md:pb-24 md:pt-44">
@@ -103,17 +103,17 @@ export default function Hero() {
               href="https://verifiedpeptidereviews.com"
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center justify-between gap-4 rounded-xl border border-accent-400/55 bg-accent-500/92 px-5 py-4 transition-colors hover:bg-accent-500 hover:border-accent-400"
+              className="flex items-center justify-between gap-4 rounded-xl border border-accent-400 bg-accent-500 px-5 py-4 transition-colors hover:bg-accent-600 hover:border-accent-500"
             >
               <span className="min-w-0">
                 <span className="block font-heading text-sm font-semibold text-accent-950">
                   Verified Peptide Reviews
                 </span>
-                <span className="block text-xs text-accent-950/75">
+                <span className="block text-xs text-accent-800">
                   Vet a vendor before you order
                 </span>
               </span>
-              <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-accent-950/10 text-accent-950 transition-all group-hover:translate-x-0.5">
+              <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-accent-200 text-accent-900 transition-all group-hover:translate-x-0.5">
                 <i className="ri-arrow-right-up-line text-lg"></i>
               </span>
             </a>
