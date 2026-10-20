@@ -4,9 +4,10 @@ import { getActiveProtocol, isExpiringSoon, getPendingReview } from "@/lib/proto
 import { isStandalone } from "@/lib/standalone";
 
 const TABS = [
-  { path: "/",        icon: "ri-home-5",       iconFill: "ri-home-5-fill",  label: "Home"       },
+  { path: "/",        icon: "ri-home-5",       iconFill: "ri-home-5-fill",       label: "Home"       },
   { path: "/start",   icon: "ri-calculator-2", iconFill: "ri-calculator-2-fill", label: "Calculator" },
-  { path: "/tracker", icon: "ri-flask-2",      iconFill: "ri-flask-2-fill", label: "My Cycle"   },
+  { path: "/tracker", icon: "ri-flask-2",      iconFill: "ri-flask-2-fill",      label: "My Cycle"   },
+  { path: "/shop",    icon: "ri-store-2-line", iconFill: "ri-store-2-fill",      label: "Shop"       },
 ] as const;
 
 function useBadge() {

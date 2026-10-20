@@ -6,6 +6,7 @@ import StartPage from "../pages/start/page";
 import PeptidePage from "../pages/peptide/page";
 import WelcomePage from "../pages/welcome/page";
 import TrackerPage from "../pages/tracker/page";
+import ShopPage from "../pages/shop/page";
 
 const routes: RouteObject[] = [
   {
@@ -15,6 +16,10 @@ const routes: RouteObject[] = [
   {
     path: "/tracker",
     element: <TrackerPage />,
+  },
+  {
+    path: "/shop",
+    element: <ShopPage />,
   },
   {
     path: "/",

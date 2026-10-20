@@ -5,6 +5,7 @@ import {
   isExpiringSoon, getPendingReview, getTodaysSlots, getTodaysLogForProtocol,
   logDose, removeDoseLog, isRestDay, type Protocol, type DoseLog,
 } from "@/lib/protocol";
+import { fetchProducts, type ShopProduct } from "@/lib/products";
 import VialIcon from "@/components/feature/VialIcon";
 import CycleReview from "@/components/feature/CycleReview";
 import ScheduleSheet from "@/components/feature/ScheduleSheet";
@@ -169,6 +170,66 @@ function ProtocolDoseCard({ protocol: p, onRefresh }: { protocol: Protocol; onRe
   );
 }
 
+// ── Contextual reorder card ───────────────────────────────────────────────
+
+function ReorderCard({ peptideSlug }: { peptideSlug: string }) {
+  const [product, setProduct] = useState<ShopProduct | null>(null);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    fetchProducts(peptideSlug)
+      .then((items) => setProduct(items[0] ?? null))
+      .catch(() => {});
+  }, [peptideSlug]);
+
+  if (!product) return null;
+
+  return (
+    <div className="mt-3 flex items-center gap-3 rounded-2xl border border-accent-200 bg-accent-50 p-3">
+      <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-xl bg-white shadow-sm">
+        <i className="ri-store-2-line text-xl text-accent-500" />
+      </div>
+      <div className="flex-1 min-w-0">
+        <p className="text-xs font-semibold text-accent-900 truncate">
+          {product.name} {product.variantLabel}
+        </p>
+        <p className="text-[11px] text-accent-700">
+          ${(product.priceCents / 100).toFixed(2)}
+          {product.purity && ` · ${product.purity}`}
+        </p>
+      </div>
+      {product.coas.length > 0 && (
+        <a
+          href={product.coas[0].url}
+          target="_blank"
+          rel="noopener noreferrer"
+          onClick={(e) => e.stopPropagation()}
+          className="flex h-8 items-center justify-center rounded-full border border-accent-200 bg-white px-2.5 text-[11px] font-semibold text-accent-700 active:scale-[0.97]"
+        >
+          COA
+        </a>
+      )}
+      <a
+        href={product.storeUrl}
+        target="_blank"
+        rel="noopener noreferrer"
+        onClick={(e) => e.stopPropagation()}
+        className="flex h-8 items-center justify-center rounded-full bg-accent-500 px-3 text-[11px] font-semibold text-white active:scale-[0.97]"
+      >
+        Buy
+      </a>
+      <button
+        type="button"
+        onClick={() => navigate(`/shop?peptide=${encodeURIComponent(peptideSlug)}`)}
+        className="text-[11px] font-semibold text-accent-600 active:opacity-70"
+        title="View all sizes"
+      >
+        <i className="ri-arrow-right-s-line text-base" />
+      </button>
+    </div>
+  );
+}
+
 // ── Progress ring ─────────────────────────────────────────────────────────
 
 function ProgressRing({ pct }: { pct: number }) {
@@ -246,6 +307,9 @@ function ActiveCard({
           </p>
         </div>
       </div>
+
+      {/* Contextual reorder card when running low */}
+      {soon && !done && <ReorderCard peptideSlug={p.peptideSlug} />}
 
       {/* Schedule indicator */}
       <button
