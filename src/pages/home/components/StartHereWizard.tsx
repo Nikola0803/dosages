@@ -65,7 +65,7 @@ const INPUT_CLASS = "w-full rounded-md border border-background-300 bg-backgroun
 
 export default function StartHereWizard() {
   const [searchParams] = useSearchParams();
-  const [step, setStep]               = useState<number>(0);
+  const [step, setStep]               = useState<number>(1);
   const [catSlug, setCatSlug]         = useState<string | null>(null);
   const [goal, setGoal]               = useState<string | null>(null);
   const [decideForMe, setDecideForMe] = useState(false);
@@ -125,7 +125,7 @@ export default function StartHereWizard() {
   }, [selected, vialMg, effectiveWater]);
 
   const reset = () => {
-    setStep(0);
+    setStep(1);
     setCatSlug(null);
     setGoal(null);
     setDecideForMe(false);
@@ -218,62 +218,7 @@ export default function StartHereWizard() {
       <div className="px-5 pb-5 pt-4">
 
         {/* ════════════════════════════════════
-            STEP 0 — Category picker (primary) + goal shortcut (secondary)
-        ════════════════════════════════════ */}
-        {step === 0 && (
-          <div className="animate-fadeIn">
-            <p className="font-heading text-sm font-semibold text-foreground-950">Pick a compound type</p>
-            <p className="mt-0.5 text-xs text-foreground-600">Or filter by goal below — either way we'll narrow it down.</p>
-
-            {/* Category grid — primary path */}
-            <div className="mt-3 grid grid-cols-3 gap-1.5 sm:grid-cols-4">
-              {peptideCategories.map((cat) => (
-                <button
-                  key={cat.slug}
-                  type="button"
-                  onClick={() => pickCat(cat.slug)}
-                  className="group flex flex-col items-center gap-1.5 rounded-xl border border-background-200 bg-background-50 px-1 py-3 text-center transition-all hover:border-primary-300 hover:bg-primary-50"
-                >
-                  <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-primary-100 to-primary-50 text-primary-700 transition-all duration-200 group-hover:from-primary-500 group-hover:to-primary-600 group-hover:text-white">
-                    <i className={`${CAT_ICONS[cat.slug] ?? "ri-test-tube-line"} text-base`} />
-                  </span>
-                  <span className="line-clamp-2 text-[10px] font-medium leading-tight text-foreground-800">{cat.name}</span>
-                </button>
-              ))}
-            </div>
-
-            {/* Goal shortcut — secondary path */}
-            <div className="mt-4 border-t border-background-200 pt-3">
-              <p className="mb-2 text-[10px] font-semibold uppercase tracking-wider text-foreground-400">Or filter by goal</p>
-              <div className="flex flex-wrap gap-1.5">
-                {GOALS.map((g) => (
-                  <button
-                    key={g.key}
-                    type="button"
-                    onClick={() => pickGoal(g.key)}
-                    className="flex items-center gap-1.5 rounded-full border border-background-200 bg-background-50 px-3 py-1.5 text-[11px] font-medium text-foreground-700 transition-all hover:border-primary-300 hover:bg-primary-50 hover:text-primary-700"
-                  >
-                    <i className={`${g.icon} text-xs`} />
-                    {g.label}
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            <div className="mt-3 text-center">
-              <button
-                type="button"
-                onClick={() => { setCatSlug(null); setGoal(null); setStep(1); }}
-                className="text-xs font-medium text-primary-600 hover:text-primary-700 hover:underline"
-              >
-                I know what I want — show everything →
-              </button>
-            </div>
-          </div>
-        )}
-
-        {/* ════════════════════════════════════
-            STEP 1 — Compound picker (vial grid)
+            STEP 1 — Compound picker (starts here)
         ════════════════════════════════════ */}
         {step === 1 && (
           <div className="animate-fadeIn">
@@ -282,7 +227,7 @@ export default function StartHereWizard() {
                 <p className="font-heading text-sm font-semibold text-foreground-950">Which peptide is it?</p>
                 <p className="mt-0.5 text-xs text-foreground-600">The name is printed on your vial label.</p>
               </div>
-              {(goal || catSlug) && !decideForMe && goal && (
+              {goal && !decideForMe && (
                 <button
                   type="button"
                   onClick={() => { setDecideForMe(true); setPeptideSlug(""); }}
@@ -302,8 +247,40 @@ export default function StartHereWizard() {
               )}
             </div>
 
+            {/* Goal filter chips */}
             {!decideForMe && (
-              <div className="relative mt-3">
+              <div className="mt-2.5 flex flex-wrap gap-1.5">
+                <button
+                  type="button"
+                  onClick={() => { setGoal(null); setCatSlug(null); }}
+                  className={`flex items-center gap-1 rounded-full border px-2.5 py-1 text-[10px] font-medium transition-colors ${
+                    !goal && !catSlug
+                      ? "border-primary-500 bg-primary-500 text-white"
+                      : "border-background-200 bg-background-50 text-foreground-600 hover:border-primary-300 hover:bg-primary-50"
+                  }`}
+                >
+                  All
+                </button>
+                {GOALS.map((g) => (
+                  <button
+                    key={g.key}
+                    type="button"
+                    onClick={() => { setGoal(goal === g.key ? null : g.key); setCatSlug(null); setDecideForMe(false); setPeptideSlug(""); }}
+                    className={`flex items-center gap-1 rounded-full border px-2.5 py-1 text-[10px] font-medium transition-colors ${
+                      goal === g.key
+                        ? "border-primary-500 bg-primary-500 text-white"
+                        : "border-background-200 bg-background-50 text-foreground-600 hover:border-primary-300 hover:bg-primary-50"
+                    }`}
+                  >
+                    <i className={`${g.icon} text-[9px]`} />
+                    {g.label}
+                  </button>
+                ))}
+              </div>
+            )}
+
+            {!decideForMe && (
+              <div className="relative mt-2.5">
                 <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-foreground-400">
                   <i className="ri-search-line text-sm" />
                 </span>
@@ -311,13 +288,7 @@ export default function StartHereWizard() {
                   type="text"
                   value={query}
                   onChange={(e) => setQuery(e.target.value)}
-                  placeholder={
-                    catSlug
-                      ? `Search ${peptideCategories.find(c => c.slug === catSlug)?.name ?? ""} peptides…`
-                      : goal
-                      ? `Search ${GOALS.find(g => g.key === goal)?.label.toLowerCase()} peptides…`
-                      : "Search all peptides…"
-                  }
+                  placeholder={goal ? `Search ${GOALS.find(g => g.key === goal)?.label.toLowerCase()} peptides...` : "Search all peptides..."}
                   aria-label="Search peptides"
                   className="w-full rounded-md border border-background-300 bg-background-50 py-2 pl-8 pr-3 text-xs text-foreground-900 placeholder:text-foreground-400 focus:border-primary-400 focus:outline-none focus:ring-2 focus:ring-primary-200"
                 />
@@ -326,7 +297,7 @@ export default function StartHereWizard() {
 
             {decideForMe && (
               <p className="mt-2 rounded-md bg-primary-50 px-3 py-2 text-xs text-primary-700">
-                ✦ Top picks for your goal — tap one to select it.
+                ✦ Top picks for your goal. Tap one to select it.
               </p>
             )}
 
@@ -381,7 +352,7 @@ export default function StartHereWizard() {
                   aria-label="Choose a peptide"
                   className={`mt-2 cursor-pointer ${INPUT_CLASS}`}
                 >
-                  <option value="">— choose your peptide —</option>
+                  <option value="">Choose your peptide</option>
                   {peptideCategories.map((cat) => (
                     <optgroup key={cat.slug} label={cat.name}>
                       {peptides.filter((p) => p.categorySlug === cat.slug).map((p) => (
@@ -393,8 +364,7 @@ export default function StartHereWizard() {
               </details>
             )}
 
-            <div className="mt-4 flex items-center justify-between">
-              <button type="button" onClick={() => setStep(0)} className={BACK_BTN}>← Back</button>
+            <div className="mt-4 flex items-center justify-end">
               <button type="button" disabled={!peptideSlug} onClick={() => setStep(2)} className={NEXT_BTN}>
                 Next →
               </button>
@@ -483,7 +453,7 @@ export default function StartHereWizard() {
               {[
                 "Swab the rubber top of both vials with an alcohol pad.",
                 "Draw the water, then inject it slowly into the peptide vial.",
-                "Let it run down the inside wall — never straight onto the powder.",
+                "Let it run down the inside wall, never straight onto the powder.",
                 "Don't shake it. Roll it gently, or just leave it to dissolve.",
                 "Once the solution is clear, keep it in the fridge.",
               ].map((text, i) => (
@@ -519,7 +489,7 @@ export default function StartHereWizard() {
             <div className="mt-4 flex items-center justify-between">
               <button type="button" onClick={() => setStep(2)} className={BACK_BTN}>← Back</button>
               <button type="button" disabled={!effectiveWater} onClick={() => setStep(4)} className={NEXT_BTN}>
-                It's mixed — show my doses →
+                It's mixed. Show my doses →
               </button>
             </div>
           </div>
@@ -537,7 +507,7 @@ export default function StartHereWizard() {
               </div>
               <div>
                 <p className="font-heading text-sm font-semibold text-foreground-950">
-                  Your vial is ready — {selected.name}
+                  Your vial is ready: {selected.name}
                 </p>
                 <p className="font-label text-[10px] text-foreground-500">
                   {vialMg} mg · {effectiveWater} mL · {Math.round(results.concentrationPerMl).toLocaleString()} mcg/mL · {selected.frequency}
@@ -555,7 +525,7 @@ export default function StartHereWizard() {
 
             <div className="rounded-xl border border-background-200 bg-background-100 px-4 pb-5 pt-5">
               <p className="text-center font-label text-[11px] uppercase tracking-wide text-foreground-500">
-                Your first dose — draw to this line
+                Your first dose. Draw to this line
               </p>
               <div className="mt-9">
                 <SyringeGauge units={results.typicalUnits} />
@@ -610,7 +580,7 @@ export default function StartHereWizard() {
                   className="flex w-full items-center justify-center gap-2 rounded-xl border border-primary-200 bg-primary-50 px-3 py-2.5 text-sm font-semibold text-primary-700 transition-colors hover:bg-primary-100"
                 >
                   <i className="ri-calendar-check-line" />
-                  Track this cycle — get a renewal reminder
+                  Track this cycle. Get a renewal reminder
                 </button>
               )}
             </div>

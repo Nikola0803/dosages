@@ -57,7 +57,7 @@ export default function StartPage() {
             </h1>
             <p className="mt-3 text-base leading-relaxed text-foreground-600">
               Three questions. We'll tell you exactly how much water to add to your vial and
-              which line to draw to on the syringe — no arithmetic on your side.
+              which line to draw to on the syringe. No arithmetic on your side.
             </p>
           </div>
         </section>

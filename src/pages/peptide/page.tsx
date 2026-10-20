@@ -157,7 +157,7 @@ export default function PeptidePage() {
           <div className="mx-auto max-w-[1440px]">
             <h2 className="font-heading text-xl font-semibold text-foreground-950">Dose Range</h2>
             <p className="mt-1 text-sm text-foreground-500">
-              Drawn from published research — not a recommendation for human use.
+              Drawn from published research. Not a recommendation for human use.
             </p>
 
             <div className="mt-6 grid gap-6 sm:grid-cols-3">
@@ -243,7 +243,7 @@ export default function PeptidePage() {
                   Work out your exact draw line
                 </h2>
                 <p className="mt-1 text-sm text-primary-200">
-                  Tell us your vial size, water volume, and target dose — we'll show you the syringe line.
+                  Tell us your vial size, water volume, and target dose. We'll show you the syringe line.
                 </p>
               </div>
               <Link

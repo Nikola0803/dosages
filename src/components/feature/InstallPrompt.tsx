@@ -93,7 +93,7 @@ export default function InstallPrompt() {
             </p>
           ) : (
             <p className="mt-0.5 text-xs text-primary-300">
-              Open VialCalc instantly — no app store needed.
+              Open VialCalc instantly. No app store needed.
             </p>
           )}
         </div>

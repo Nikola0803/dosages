@@ -18,7 +18,7 @@ export default function VprBanner() {
                 Check suppliers on VPR
               </h2>
               <p className="mt-1 text-sm text-white/70">
-                Directory, third-party lab reports and community feedback — all in one independent
+                Directory, third-party lab reports and community feedback. All in one independent
                 place.
               </p>
             </div>

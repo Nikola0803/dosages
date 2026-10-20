@@ -65,13 +65,13 @@ export default function Hero() {
                 href="/start"
                 className="btn-glow whitespace-nowrap rounded-lg bg-primary-500 px-6 py-3.5 text-center text-sm font-semibold text-white transition-all duration-200 hover:bg-primary-400"
               >
-                Start Here — Walk Me Through It →
+                Start Here. Walk Me Through It →
               </a>
               <a
                 href="#peptides"
                 className="whitespace-nowrap rounded-lg border border-white/25 bg-white/8 px-6 py-3.5 text-center text-sm font-semibold text-white transition-colors hover:bg-white/15 hover:border-white/40"
               >
-                I know my numbers — browse the index
+                I know my numbers. Browse the index
               </a>
             </div>
 

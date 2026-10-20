@@ -48,13 +48,13 @@ function ActiveCard({ p, onReview, onAbandon }: {
       {soon && !done && (
         <div className="mb-3 flex items-center gap-2 rounded-xl bg-accent-50 px-3 py-2 text-xs font-semibold text-accent-800">
           <i className="ri-alarm-warning-line text-base" />
-          Running low — time to reorder!
+          Running low. Time to reorder!
         </div>
       )}
       {done && (
         <div className="mb-3 flex items-center gap-2 rounded-xl bg-primary-50 px-3 py-2 text-xs font-semibold text-primary-700">
           <i className="ri-check-double-line text-base" />
-          Cycle complete — leave a quick review?
+          Cycle complete. Leave a quick review?
         </div>
       )}
 
@@ -99,7 +99,7 @@ function ActiveCard({ p, onReview, onAbandon }: {
             onClick={() => navigate(`/start?peptide=${p.peptideSlug}`)}
             className="flex-1 rounded-full bg-accent-500 py-2.5 text-sm font-semibold text-white active:scale-[0.97]"
           >
-            Reorder — calculate new vial
+            Reorder. Calculate new vial
           </button>
         ) : (
           <button

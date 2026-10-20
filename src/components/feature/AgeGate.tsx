@@ -37,7 +37,7 @@ export default function AgeGate() {
     <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/70 px-4 backdrop-blur-sm">
       <div className="w-full max-w-lg animate-scaleIn rounded-lg border border-background-200 bg-background-50 p-6 md:p-8">
         <h2 className="font-heading text-xl font-semibold text-foreground-950 md:text-2xl">
-          Research Use Only — Confirm to Continue
+          Research Use Only. Confirm to Continue
         </h2>
         <p className="mt-4 text-sm leading-relaxed text-foreground-700">
           VialCalc publishes reference material for laboratory and educational use.
@@ -54,7 +54,7 @@ export default function AgeGate() {
             onClick={confirm}
             className="w-full whitespace-nowrap rounded-md bg-primary-500 px-5 py-3 text-sm font-semibold text-background-50 transition-colors hover:bg-primary-600"
           >
-            I Understand — Enter
+            I Understand. Enter
           </button>
           <a
             href="https://www.google.com"
