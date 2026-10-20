@@ -13,7 +13,7 @@ export const peptides: Peptide[] = [
   // Tissue Repair & Recovery
   { name: "BPC-157", slug: "bpc-157", categorySlug: "tissue-repair", typicalMcg: 250, frequency: "1-2x daily", evidence: "clinical" },
   { name: "KPV", slug: "kpv", categorySlug: "tissue-repair", typicalMcg: 200, frequency: "1x daily", evidence: "preclinical" },
-  { name: "TB-500", slug: "tb-500", categorySlug: "tissue-repair", typicalMcg: 2000, frequency: "2x weekly", evidence: "preclinical" },
+  { name: "TB-500", slug: "tb-500", categorySlug: "tissue-repair", typicalMcg: 500, frequency: "1x daily", evidence: "preclinical" },
 
   // Metabolic / Incretin
   { name: "5-Amino-1MQ", slug: "5-amino-1mq", categorySlug: "metabolic", typicalMcg: 50000, frequency: "1x daily", evidence: "preclinical" },
@@ -21,11 +21,11 @@ export const peptides: Peptide[] = [
   { name: "AOD-9604", slug: "aod-9604", categorySlug: "metabolic", typicalMcg: 300, frequency: "1x daily", evidence: "clinical" },
   { name: "Cagrilintide", slug: "cagrilintide", categorySlug: "metabolic", typicalMcg: 2400, frequency: "1x weekly", evidence: "clinical" },
   { name: "Mazdutide", slug: "mazdutide", categorySlug: "metabolic", typicalMcg: 6000, frequency: "1x weekly", evidence: "clinical" },
-  { name: "Retatrutide", slug: "retatrutide", categorySlug: "metabolic", typicalMcg: 8000, frequency: "1x weekly", evidence: "clinical" },
-  { name: "Semaglutide", slug: "semaglutide", categorySlug: "metabolic", typicalMcg: 500, frequency: "1x weekly", evidence: "clinical" },
+  { name: "Retatrutide", slug: "retatrutide", categorySlug: "metabolic", typicalMcg: 1000, frequency: "1x weekly", evidence: "clinical" },
+  { name: "Semaglutide", slug: "semaglutide", categorySlug: "metabolic", typicalMcg: 250, frequency: "1x weekly", evidence: "clinical" },
   { name: "SLU-PP-332", slug: "slu-pp-332", categorySlug: "metabolic", typicalMcg: 500, frequency: "1x daily", evidence: "preclinical" },
   { name: "Survodutide", slug: "survodutide", categorySlug: "metabolic", typicalMcg: 6000, frequency: "1x weekly", evidence: "clinical" },
-  { name: "Tirzepatide", slug: "tirzepatide", categorySlug: "metabolic", typicalMcg: 5000, frequency: "1x weekly", evidence: "clinical" },
+  { name: "Tirzepatide", slug: "tirzepatide", categorySlug: "metabolic", typicalMcg: 2500, frequency: "1x weekly", evidence: "clinical" },
 
   // GH Secretagogue
   { name: "CJC-1295 (no DAC)", slug: "cjc-1295-no-dac", categorySlug: "gh-secretagogue", typicalMcg: 100, frequency: "2-3x daily", evidence: "preclinical" },
@@ -33,7 +33,7 @@ export const peptides: Peptide[] = [
   { name: "GHRP-2", slug: "ghrp-2", categorySlug: "gh-secretagogue", typicalMcg: 100, frequency: "2-3x daily", evidence: "preclinical" },
   { name: "GHRP-6", slug: "ghrp-6", categorySlug: "gh-secretagogue", typicalMcg: 100, frequency: "2-3x daily", evidence: "preclinical" },
   { name: "Hexarelin", slug: "hexarelin", categorySlug: "gh-secretagogue", typicalMcg: 100, frequency: "2x daily", evidence: "preclinical" },
-  { name: "Ipamorelin", slug: "ipamorelin", categorySlug: "gh-secretagogue", typicalMcg: 200, frequency: "2-3x daily", evidence: "preclinical" },
+  { name: "Ipamorelin", slug: "ipamorelin", categorySlug: "gh-secretagogue", typicalMcg: 100, frequency: "2-3x daily", evidence: "preclinical" },
   { name: "Sermorelin", slug: "sermorelin", categorySlug: "gh-secretagogue", typicalMcg: 300, frequency: "1x daily", evidence: "clinical" },
   { name: "Tesamorelin", slug: "tesamorelin", categorySlug: "gh-secretagogue", typicalMcg: 2000, frequency: "1x daily", evidence: "clinical" },
 
