@@ -1,3 +1,12 @@
+export interface DoseLog {
+  id: string;
+  protocolId: string;
+  date: string;       // YYYY-MM-DD
+  slotIndex: number;  // index into doseTimes
+  takenAt: string;    // ISO timestamp
+  notes?: string;
+}
+
 export interface Protocol {
   id: string;
   peptideSlug: string;
@@ -10,12 +19,19 @@ export interface Protocol {
   endsAt: string;      // YYYY-MM-DD
   status: 'active' | 'complete' | 'abandoned';
   reviewSubmitted: boolean;
-  reviewRating?: number;       // 1-5
+  reviewRating?: number;
   reviewWorked?: boolean;
   reviewNotes?: string;
+  // schedule
+  doseTimes?: string[];                           // ["08:00", "20:00"]
+  restPattern?: 'daily' | 'eod' | '5on2off' | 'custom';
+  restWeekdays?: number[];                        // 0=Sun … 6=Sat, rest days for 'custom'
+  // cycle notes
+  cycleNotes?: string;
 }
 
-const STORAGE_KEY = 'vc-protocols';
+const STORAGE_KEY    = 'vc-protocols';
+const DOSE_LOG_KEY   = 'vc-dose-log';
 
 function today(): string {
   return new Date().toISOString().split('T')[0];
@@ -94,4 +110,57 @@ export function getPendingReview(): Protocol | null {
   return getProtocols().find(
     (p) => p.status === 'active' && getDaysRemaining(p) === 0 && !p.reviewSubmitted
   ) ?? null;
+}
+
+// ── Schedule helpers ───────────────────────────────────────────────────────
+
+export function isRestDay(p: Protocol, dateStr: string): boolean {
+  if (!p.restPattern || p.restPattern === 'daily') return false;
+  const start = new Date(p.startedAt + 'T00:00:00').getTime();
+  const check = new Date(dateStr    + 'T00:00:00').getTime();
+  const day   = Math.round((check - start) / 86_400_000);
+  if (p.restPattern === 'eod')     return day % 2 === 1;
+  if (p.restPattern === '5on2off') return day % 7 >= 5;
+  if (p.restPattern === 'custom' && p.restWeekdays?.length) {
+    return p.restWeekdays.includes(new Date(dateStr + 'T00:00:00').getDay());
+  }
+  return false;
+}
+
+export function getTodaysSlots(p: Protocol, dateStr: string): string[] {
+  if (!p.doseTimes?.length) return [];
+  if (isRestDay(p, dateStr)) return [];
+  return p.doseTimes;
+}
+
+// ── Dose log ──────────────────────────────────────────────────────────────
+
+export function getDoseLog(): DoseLog[] {
+  try { return JSON.parse(localStorage.getItem(DOSE_LOG_KEY) ?? '[]'); }
+  catch { return []; }
+}
+
+export function logDose(protocolId: string, slotIndex: number, notes?: string): DoseLog {
+  const entry: DoseLog = {
+    id: crypto.randomUUID(),
+    protocolId,
+    date: today(),
+    slotIndex,
+    takenAt: new Date().toISOString(),
+    notes,
+  };
+  const all = getDoseLog();
+  all.unshift(entry);
+  try { localStorage.setItem(DOSE_LOG_KEY, JSON.stringify(all)); } catch { /* ignore */ }
+  return entry;
+}
+
+export function removeDoseLog(id: string): void {
+  const filtered = getDoseLog().filter((d) => d.id !== id);
+  try { localStorage.setItem(DOSE_LOG_KEY, JSON.stringify(filtered)); } catch { /* ignore */ }
+}
+
+export function getTodaysLogForProtocol(protocolId: string): DoseLog[] {
+  const t = today();
+  return getDoseLog().filter((d) => d.protocolId === protocolId && d.date === t);
 }

@@ -1,50 +1,212 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   getProtocols, saveProtocol, getDaysRemaining, getProgressPct,
-  isExpiringSoon, getPendingReview, type Protocol,
+  isExpiringSoon, getPendingReview, getTodaysSlots, getTodaysLogForProtocol,
+  logDose, removeDoseLog, isRestDay, type Protocol, type DoseLog,
 } from "@/lib/protocol";
 import VialIcon from "@/components/feature/VialIcon";
 import CycleReview from "@/components/feature/CycleReview";
+import ScheduleSheet from "@/components/feature/ScheduleSheet";
 import AppShell from "@/components/feature/AppShell";
 
+const TODAY = new Date().toISOString().split("T")[0];
+
 function formatDate(str: string) {
-  return new Date(str + 'T00:00:00').toLocaleDateString(undefined, {
-    month: 'short', day: 'numeric', year: 'numeric',
+  return new Date(str + "T00:00:00").toLocaleDateString(undefined, {
+    month: "short", day: "numeric", year: "numeric",
   });
 }
+
+function formatTime(hhmm: string) {
+  const [h, m] = hhmm.split(":").map(Number);
+  const ampm = h >= 12 ? "PM" : "AM";
+  return `${h % 12 || 12}:${String(m).padStart(2, "0")} ${ampm}`;
+}
+
+// ── Today's dose checklist ────────────────────────────────────────────────
+
+function TodaySection({
+  protocols,
+  onRefresh,
+}: {
+  protocols: Protocol[];
+  onRefresh: () => void;
+}) {
+  const scheduled = protocols.filter((p) => (p.doseTimes?.length ?? 0) > 0);
+  if (!scheduled.length) return null;
+
+  const anyActive = scheduled.some((p) => !isRestDay(p, TODAY) && (p.doseTimes?.length ?? 0) > 0);
+
+  return (
+    <div className="mb-4">
+      <p className="mb-2 text-xs font-semibold uppercase tracking-wider text-foreground-400">
+        Today's doses
+      </p>
+      <div className="space-y-2">
+        {scheduled.map((p) => (
+          <ProtocolDoseCard key={p.id} protocol={p} onRefresh={onRefresh} />
+        ))}
+      </div>
+      {!anyActive && (
+        <p className="mt-2 text-center text-xs text-foreground-400">Rest day — no doses scheduled today.</p>
+      )}
+    </div>
+  );
+}
+
+function ProtocolDoseCard({ protocol: p, onRefresh }: { protocol: Protocol; onRefresh: () => void }) {
+  const slots    = getTodaysSlots(p, TODAY);
+  const restDay  = isRestDay(p, TODAY);
+  const [logged, setLogged]   = useState(() => getTodaysLogForProtocol(p.id));
+  const [noteFor, setNoteFor] = useState<number | null>(null);
+  const [noteText, setNoteText] = useState("");
+
+  function refreshLogged() {
+    setLogged(getTodaysLogForProtocol(p.id));
+  }
+
+  if (restDay) {
+    return (
+      <div className="flex items-center gap-3 rounded-2xl border border-background-100 bg-white px-4 py-3">
+        <VialIcon categorySlug={p.categorySlug} size={24} />
+        <div className="flex-1 min-w-0">
+          <p className="text-sm font-semibold text-foreground-900 truncate">{p.peptideName}</p>
+          <p className="text-xs text-foreground-400">Rest day</p>
+        </div>
+        <span className="text-[11px] font-medium text-foreground-300 bg-background-100 rounded-full px-2 py-0.5">OFF</span>
+      </div>
+    );
+  }
+
+  if (!slots.length) return null;
+
+  function handleCheck(slotIndex: number, existingLog: DoseLog | undefined) {
+    if (existingLog) {
+      removeDoseLog(existingLog.id);
+      refreshLogged();
+      onRefresh();
+    } else {
+      if (noteFor === slotIndex) {
+        logDose(p.id, slotIndex, noteText.trim() || undefined);
+        setNoteFor(null);
+        setNoteText("");
+        refreshLogged();
+        onRefresh();
+      } else {
+        setNoteFor(slotIndex);
+        setNoteText("");
+      }
+    }
+  }
+
+  return (
+    <div className="rounded-2xl border border-background-100 bg-white overflow-hidden">
+      <div className="flex items-center gap-3 px-4 pt-3 pb-2">
+        <VialIcon categorySlug={p.categorySlug} size={24} />
+        <p className="flex-1 text-sm font-semibold text-foreground-900 truncate">{p.peptideName}</p>
+        <p className="text-xs text-foreground-400">
+          {slots.length === 1 ? "1 dose" : `${slots.length} doses`} today
+        </p>
+      </div>
+      <div className="divide-y divide-background-50 border-t border-background-100">
+        {slots.map((time, i) => {
+          const entry = logged.find((l) => l.slotIndex === i);
+          const done  = Boolean(entry);
+          return (
+            <div key={i}>
+              <button
+                type="button"
+                onClick={() => handleCheck(i, entry)}
+                className="flex w-full items-center gap-3 px-4 py-3 text-left active:bg-background-50"
+              >
+                <span className={`flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full border-2 transition-colors ${
+                  done
+                    ? "border-primary-500 bg-primary-500"
+                    : "border-background-300 bg-white"
+                }`}>
+                  {done && <i className="ri-check-line text-xs text-white" />}
+                </span>
+                <span className={`flex-1 text-sm font-medium ${done ? "text-foreground-400 line-through" : "text-foreground-900"}`}>
+                  {formatTime(time)}
+                </span>
+                {entry?.notes && (
+                  <span className="text-xs text-foreground-400 truncate max-w-[100px]">{entry.notes}</span>
+                )}
+                {!done && <i className="ri-edit-line text-foreground-300 text-sm" />}
+              </button>
+              {noteFor === i && (
+                <div className="px-4 pb-3 flex gap-2">
+                  <input
+                    type="text"
+                    value={noteText}
+                    onChange={(e) => setNoteText(e.target.value)}
+                    placeholder="Quick note (optional)..."
+                    autoFocus
+                    className="flex-1 rounded-xl border border-background-200 bg-background-50 px-3 py-2 text-sm focus:border-primary-400 focus:outline-none"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => handleCheck(i, undefined)}
+                    className="rounded-xl bg-primary-500 px-4 py-2 text-sm font-semibold text-white active:scale-[0.97]"
+                  >
+                    Done
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setNoteFor(null)}
+                    className="rounded-xl border border-background-200 px-3 py-2 text-sm text-foreground-400 active:scale-[0.97]"
+                  >
+                    <i className="ri-close-line" />
+                  </button>
+                </div>
+              )}
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
+// ── Progress ring ─────────────────────────────────────────────────────────
 
 function ProgressRing({ pct }: { pct: number }) {
   const r = 38;
   const circ = 2 * Math.PI * r;
-  const offset = circ - (pct / 100) * circ;
   return (
     <svg width="96" height="96" viewBox="0 0 96 96" className="-rotate-90">
       <circle cx="48" cy="48" r={r} fill="none" strokeWidth="8" className="stroke-background-200" />
       <circle
         cx="48" cy="48" r={r} fill="none" strokeWidth="8" strokeLinecap="round"
         strokeDasharray={circ}
-        strokeDashoffset={offset}
-        className={`transition-all duration-700 ${pct >= 80 ? 'stroke-accent-500' : 'stroke-primary-500'}`}
+        strokeDashoffset={circ - (pct / 100) * circ}
+        className={`transition-all duration-700 ${pct >= 80 ? "stroke-accent-500" : "stroke-primary-500"}`}
       />
     </svg>
   );
 }
 
-function ActiveCard({ p, onReview, onAbandon }: {
+// ── Active cycle card ─────────────────────────────────────────────────────
+
+function ActiveCard({
+  p, onReview, onAbandon, onSchedule,
+}: {
   p: Protocol;
   onReview: () => void;
   onAbandon: () => void;
+  onSchedule: () => void;
 }) {
   const pct  = getProgressPct(p);
   const days = getDaysRemaining(p);
   const soon = isExpiringSoon(p);
   const done = days === 0;
   const navigate = useNavigate();
+  const hasSchedule = (p.doseTimes?.length ?? 0) > 0;
 
   return (
     <div className={`rounded-3xl border-2 bg-white p-5 shadow-sm transition-colors ${
-      soon ? 'border-accent-300' : 'border-background-100'
+      soon ? "border-accent-300" : "border-background-100"
     }`}>
       {soon && !done && (
         <div className="mb-3 flex items-center gap-2 rounded-xl bg-accent-50 px-3 py-2 text-xs font-semibold text-accent-800">
@@ -73,9 +235,9 @@ function ActiveCard({ p, onReview, onAbandon }: {
           </p>
           <div className="mt-2 flex items-baseline gap-1">
             <span className={`font-heading text-3xl font-bold leading-none ${
-              soon ? 'text-accent-600' : 'text-primary-600'
+              soon ? "text-accent-600" : "text-primary-600"
             }`}>
-              {done ? '✓' : days}
+              {done ? "✓" : days}
             </span>
             {!done && <span className="text-sm text-foreground-500">days left</span>}
           </div>
@@ -85,7 +247,31 @@ function ActiveCard({ p, onReview, onAbandon }: {
         </div>
       </div>
 
-      <div className="mt-4 flex gap-2">
+      {/* Schedule indicator */}
+      <button
+        type="button"
+        onClick={onSchedule}
+        className="mt-4 flex w-full items-center gap-2.5 rounded-2xl border border-background-100 bg-background-50 px-4 py-2.5 text-left active:bg-background-100"
+      >
+        <i className={`text-base ${hasSchedule ? "ri-alarm-line text-primary-500" : "ri-alarm-line text-foreground-300"}`} />
+        <div className="flex-1 min-w-0">
+          {hasSchedule ? (
+            <p className="text-sm font-medium text-foreground-800">
+              {p.doseTimes!.map(formatTime).join(" · ")}
+              {p.restPattern && p.restPattern !== "daily" && (
+                <span className="ml-1.5 text-xs text-foreground-400">
+                  {p.restPattern === "eod" ? "every other day" : p.restPattern === "5on2off" ? "5-on/2-off" : "custom"}
+                </span>
+              )}
+            </p>
+          ) : (
+            <p className="text-sm text-foreground-400">Set dose reminders</p>
+          )}
+        </div>
+        <i className="ri-pencil-line text-sm text-foreground-300" />
+      </button>
+
+      <div className="mt-3 flex gap-2">
         {done ? (
           <button
             type="button"
@@ -124,6 +310,8 @@ function ActiveCard({ p, onReview, onAbandon }: {
   );
 }
 
+// ── Past cycle card ───────────────────────────────────────────────────────
+
 function PastCard({ p }: { p: Protocol }) {
   return (
     <div className="flex items-center gap-3 rounded-2xl border border-background-100 bg-white p-4">
@@ -136,11 +324,11 @@ function PastCard({ p }: { p: Protocol }) {
       </div>
       <div className="flex flex-col items-end gap-1">
         {p.reviewRating && (
-          <span className="text-sm">{'⭐'.repeat(p.reviewRating)}</span>
+          <span className="text-sm">{"⭐".repeat(p.reviewRating)}</span>
         )}
         {p.reviewWorked !== undefined && (
           <span className="text-xs text-foreground-400">
-            {p.reviewWorked ? '👍 Worked' : '👎 Didn\'t work'}
+            {p.reviewWorked ? "👍 Worked" : "👎 Didn't work"}
           </span>
         )}
         {!p.reviewSubmitted && (
@@ -153,33 +341,38 @@ function PastCard({ p }: { p: Protocol }) {
   );
 }
 
+// ── Page ──────────────────────────────────────────────────────────────────
+
 export default function TrackerPage() {
   const [protocols, setProtocols] = useState<Protocol[]>([]);
   const [reviewProtocol, setReviewProtocol] = useState<Protocol | null>(null);
+  const [scheduleProtocol, setScheduleProtocol] = useState<Protocol | null>(null);
   const navigate = useNavigate();
 
-  function reload() {
-    setProtocols(getProtocols());
-  }
+  const reload = useCallback(() => setProtocols(getProtocols()), []);
 
   useEffect(() => {
     reload();
-    // Auto-surface review for completed cycle
     const pending = getPendingReview();
     if (pending) setReviewProtocol(pending);
-  }, []);
+  }, [reload]);
 
-  const active = protocols.filter((p) => p.status === 'active');
-  const past   = protocols.filter((p) => p.status !== 'active');
+  const active = protocols.filter((p) => p.status === "active");
+  const past   = protocols.filter((p) => p.status !== "active");
 
   function handleAbandon(p: Protocol) {
-    saveProtocol({ ...p, status: 'abandoned' });
+    saveProtocol({ ...p, status: "abandoned" });
     reload();
   }
 
   return (
     <AppShell title="My Cycle">
       <div className="pt-4 space-y-4">
+
+        {/* Today's dose checklist */}
+        <TodaySection protocols={active} onRefresh={reload} />
+
+        {/* Empty state */}
         {active.length === 0 && (
           <div className="flex flex-col items-center py-12 text-center">
             <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-primary-100">
@@ -191,7 +384,7 @@ export default function TrackerPage() {
             </p>
             <button
               type="button"
-              onClick={() => navigate('/start')}
+              onClick={() => navigate("/start")}
               className="mt-6 rounded-full bg-primary-500 px-6 py-3 text-sm font-semibold text-white shadow-sm active:scale-[0.97]"
             >
               Open Calculator →
@@ -199,15 +392,18 @@ export default function TrackerPage() {
           </div>
         )}
 
+        {/* Active cycles */}
         {active.map((p) => (
           <ActiveCard
             key={p.id}
             p={p}
             onReview={() => setReviewProtocol(p)}
             onAbandon={() => handleAbandon(p)}
+            onSchedule={() => setScheduleProtocol(p)}
           />
         ))}
 
+        {/* Past cycles */}
         {past.length > 0 && (
           <div>
             <p className="mb-2 text-xs font-semibold uppercase tracking-wider text-foreground-400">Past cycles</p>
@@ -222,6 +418,16 @@ export default function TrackerPage() {
         <CycleReview
           protocol={reviewProtocol}
           onClose={() => { setReviewProtocol(null); reload(); }}
+        />
+      )}
+
+      {scheduleProtocol && (
+        <ScheduleSheet
+          protocol={scheduleProtocol}
+          onClose={() => {
+            setScheduleProtocol(null);
+            reload();
+          }}
         />
       )}
     </AppShell>
