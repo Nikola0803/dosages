@@ -39,23 +39,23 @@ export default function Hero() {
           {/* ── Left: headline + CTAs + stats ── */}
           <div className="animate-fadeUp">
             {/* Animated badge */}
-            <span className="inline-flex items-center gap-2 rounded-full border border-background-50/20 bg-background-50/8 px-3.5 py-1.5 backdrop-blur-sm">
+            <span className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/8 px-3.5 py-1.5 backdrop-blur-sm">
               <span className="pulse-dot h-2 w-2 rounded-full bg-primary-400" />
               <span className="font-label text-[11px] font-semibold uppercase tracking-wider text-primary-300">
                 {totalPeptides} Compounds
               </span>
-              <span className="text-background-50/35">·</span>
-              <span className="font-label text-[11px] uppercase tracking-wider text-background-50/75">
+              <span className="text-white/40">·</span>
+              <span className="font-label text-[11px] uppercase tracking-wider text-white/75">
                 Sourced dose ranges
               </span>
             </span>
 
-            <h1 className="mt-5 font-heading text-5xl font-semibold leading-[1.08] tracking-tight text-background-50 md:text-6xl lg:text-7xl">
+            <h1 className="mt-5 font-heading text-5xl font-semibold leading-[1.08] tracking-tight text-white md:text-6xl lg:text-7xl">
               Get the maths<br />
               <span className="text-gradient-primary">right, every time.</span>
             </h1>
 
-            <p className="mt-5 max-w-xl text-base leading-relaxed text-background-50/78 md:text-lg">
+            <p className="mt-5 max-w-xl text-base leading-relaxed text-white/80 md:text-lg">
               Answer three quick questions and we'll hand you the exact water volume for your vial
               plus the line to draw to on the syringe. No arithmetic on your side.
             </p>
@@ -63,29 +63,29 @@ export default function Hero() {
             <div className="mt-8 flex flex-col gap-3 sm:flex-row">
               <a
                 href="/start"
-                className="btn-glow whitespace-nowrap rounded-lg bg-primary-500 px-6 py-3.5 text-center text-sm font-semibold text-background-50 transition-all duration-200 hover:bg-primary-400"
+                className="btn-glow whitespace-nowrap rounded-lg bg-primary-500 px-6 py-3.5 text-center text-sm font-semibold text-white transition-all duration-200 hover:bg-primary-400"
               >
                 Start Here — Walk Me Through It →
               </a>
               <a
                 href="#peptides"
-                className="whitespace-nowrap rounded-lg border border-background-50/22 bg-background-50/6 px-6 py-3.5 text-center text-sm font-semibold text-background-50/88 backdrop-blur-sm transition-colors hover:bg-background-50/12 hover:border-background-50/35"
+                className="whitespace-nowrap rounded-lg border border-white/25 bg-white/8 px-6 py-3.5 text-center text-sm font-semibold text-white transition-colors hover:bg-white/15 hover:border-white/40"
               >
                 I know my numbers — browse the index
               </a>
             </div>
 
             {/* Stats row */}
-            <div className="mt-10 grid max-w-lg grid-cols-2 gap-y-6 border-t border-background-50/10 pt-8 sm:grid-cols-4">
+            <div className="mt-10 grid max-w-lg grid-cols-2 gap-y-6 border-t border-white/10 pt-8 sm:grid-cols-4">
               {stats.map((stat, i) => (
                 <div
                   key={stat.label}
-                  className={`${i > 0 ? "border-l border-background-50/10 pl-5" : ""}`}
+                  className={`${i > 0 ? "border-l border-white/10 pl-5" : ""}`}
                 >
-                  <b className="block font-heading text-2xl font-semibold text-background-50 md:text-3xl">
+                  <b className="block font-heading text-2xl font-semibold text-white md:text-3xl">
                     {stat.value}
                   </b>
-                  <span className="mt-1 block font-label text-[10px] uppercase tracking-widest text-background-50/50">
+                  <span className="mt-1 block font-label text-[10px] uppercase tracking-widest text-white/60">
                     {stat.label}
                   </span>
                 </div>
@@ -95,7 +95,7 @@ export default function Hero() {
 
           {/* ── Right: wizard + VPR link ── */}
           <div className="flex flex-col gap-4 animate-fadeUp" id="start" style={{ animationDelay: "0.12s" }}>
-            <div className="overflow-hidden rounded-2xl border border-background-50/12 shadow-2xl ring-1 ring-background-50/5">
+            <div className="overflow-hidden rounded-2xl border border-white/12 shadow-2xl ring-1 ring-white/5">
               <StartHereWizard />
             </div>
 

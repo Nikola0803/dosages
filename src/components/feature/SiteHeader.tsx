@@ -24,7 +24,7 @@ export default function SiteHeader() {
 
   const linkColor = scrolled
     ? "text-foreground-700 hover:text-primary-600"
-    : "text-background-50/90 hover:text-background-50";
+    : "text-white/90 hover:text-white";
 
   return (
     <header

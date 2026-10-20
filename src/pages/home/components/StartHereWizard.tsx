@@ -43,6 +43,20 @@ const GOAL_TOP_PICKS: Record<string, string[]> = {
   immune:    ["thymosin-alpha-1", "ll-37", "vip"],
 };
 
+const CAT_ICONS: Record<string, string> = {
+  "tissue-repair":   "ri-heart-pulse-line",
+  "metabolic":       "ri-fire-line",
+  "gh-secretagogue": "ri-seedling-line",
+  "growth-factor":   "ri-boxing-line",
+  "longevity":       "ri-hourglass-line",
+  "mitochondrial":   "ri-battery-charge-line",
+  "cognitive":       "ri-brain-line",
+  "immune":          "ri-shield-cross-line",
+  "cosmetic":        "ri-sparkling-line",
+  "endocrine":       "ri-dna-line",
+  "blends":          "ri-test-tube-line",
+};
+
 const CARD_CLASS = "overflow-hidden rounded-xl border border-background-200 bg-background-50";
 const NEXT_BTN   = "whitespace-nowrap rounded-md bg-primary-500 px-4 py-2 text-sm font-semibold text-background-50 transition-colors hover:bg-primary-600 disabled:cursor-not-allowed disabled:bg-background-300 disabled:text-foreground-500";
 const BACK_BTN   = "whitespace-nowrap rounded-md border border-background-300 px-3.5 py-2 text-sm font-medium text-foreground-700 transition-colors hover:bg-background-100";
@@ -50,13 +64,14 @@ const INPUT_CLASS = "w-full rounded-md border border-background-300 bg-backgroun
 
 export default function StartHereWizard() {
   const [searchParams] = useSearchParams();
-  const [step, setStep]             = useState<number>(0);
-  const [goal, setGoal]             = useState<string | null>(null);
+  const [step, setStep]               = useState<number>(0);
+  const [catSlug, setCatSlug]         = useState<string | null>(null);
+  const [goal, setGoal]               = useState<string | null>(null);
   const [decideForMe, setDecideForMe] = useState(false);
-  const [query, setQuery]           = useState("");
+  const [query, setQuery]             = useState("");
   const [peptideSlug, setPeptideSlug] = useState(() => searchParams.get("peptide") ?? "");
-  const [vialMg, setVialMg]         = useState<number>(() => Number(searchParams.get("vial") ?? 0));
-  const [waterMl, setWaterMl]       = useState<number | null>(null);
+  const [vialMg, setVialMg]           = useState<number>(() => Number(searchParams.get("vial") ?? 0));
+  const [waterMl, setWaterMl]         = useState<number | null>(null);
 
   useEffect(() => {
     const slug = searchParams.get("peptide");
@@ -79,11 +94,12 @@ export default function StartHereWizard() {
   const filteredPeptides = useMemo(() => {
     if (decideForMe && topPicks.length) return peptides.filter((p) => topPicks.includes(p.slug));
     let list = peptides;
-    if (goalCatSlugs) list = list.filter((p) => goalCatSlugs.includes(p.categorySlug));
+    if (catSlug) list = list.filter((p) => p.categorySlug === catSlug);
+    else if (goalCatSlugs) list = list.filter((p) => goalCatSlugs.includes(p.categorySlug));
     if (query) list = list.filter((p) => p.name.toLowerCase().includes(query.toLowerCase()));
     return list;
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [goalCatSlugs, query, decideForMe]);
+  }, [catSlug, goalCatSlugs, query, decideForMe]);
 
   const goToWater = () => {
     if (!selected || !vialMg) return;
@@ -108,6 +124,7 @@ export default function StartHereWizard() {
 
   const reset = () => {
     setStep(0);
+    setCatSlug(null);
     setGoal(null);
     setDecideForMe(false);
     setQuery("");
@@ -116,8 +133,18 @@ export default function StartHereWizard() {
     setWaterMl(null);
   };
 
+  const pickCat = (slug: string) => {
+    setCatSlug(slug);
+    setGoal(null);
+    setDecideForMe(false);
+    setQuery("");
+    setPeptideSlug("");
+    setStep(1);
+  };
+
   const pickGoal = (key: string) => {
     setGoal(key);
+    setCatSlug(null);
     setDecideForMe(false);
     setQuery("");
     setPeptideSlug("");
@@ -174,37 +201,55 @@ export default function StartHereWizard() {
       <div className="px-5 pb-5 pt-4">
 
         {/* ════════════════════════════════════
-            STEP 0 — Goal selector
+            STEP 0 — Category picker (primary) + goal shortcut (secondary)
         ════════════════════════════════════ */}
         {step === 0 && (
           <div className="animate-fadeIn">
-            <p className="font-heading text-sm font-semibold text-foreground-950">What are you working on?</p>
-            <p className="mt-0.5 text-xs text-foreground-600">We'll narrow down the compound list for you.</p>
+            <p className="font-heading text-sm font-semibold text-foreground-950">Pick a compound type</p>
+            <p className="mt-0.5 text-xs text-foreground-600">Or filter by goal below — either way we'll narrow it down.</p>
 
-            <div className="mt-3 grid grid-cols-2 gap-2 sm:grid-cols-3">
-              {GOALS.map((g) => (
+            {/* Category grid — primary path */}
+            <div className="mt-3 grid grid-cols-3 gap-1.5 sm:grid-cols-4">
+              {peptideCategories.map((cat) => (
                 <button
-                  key={g.key}
+                  key={cat.slug}
                   type="button"
-                  onClick={() => pickGoal(g.key)}
-                  className="group flex flex-col items-center gap-2 rounded-xl border border-background-200 bg-background-50 px-3 py-4 text-center transition-all hover:border-primary-300 hover:bg-primary-50"
+                  onClick={() => pickCat(cat.slug)}
+                  className="group flex flex-col items-center gap-1.5 rounded-xl border border-background-200 bg-background-50 px-1 py-3 text-center transition-all hover:border-primary-300 hover:bg-primary-50"
                 >
-                  <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-primary-100 to-primary-50 text-primary-700 transition-all duration-200 group-hover:from-primary-500 group-hover:to-primary-600 group-hover:text-background-50">
-                    <i className={`${g.icon} text-lg`} />
+                  <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-primary-100 to-primary-50 text-primary-700 transition-all duration-200 group-hover:from-primary-500 group-hover:to-primary-600 group-hover:text-white">
+                    <i className={`${CAT_ICONS[cat.slug] ?? "ri-test-tube-line"} text-base`} />
                   </span>
-                  <span className="font-heading text-xs font-semibold text-foreground-900">{g.label}</span>
-                  <span className="text-[10px] leading-tight text-foreground-500">{g.sub}</span>
+                  <span className="line-clamp-2 text-[10px] font-medium leading-tight text-foreground-800">{cat.name}</span>
                 </button>
               ))}
+            </div>
+
+            {/* Goal shortcut — secondary path */}
+            <div className="mt-4 border-t border-background-200 pt-3">
+              <p className="mb-2 text-[10px] font-semibold uppercase tracking-wider text-foreground-400">Or filter by goal</p>
+              <div className="flex flex-wrap gap-1.5">
+                {GOALS.map((g) => (
+                  <button
+                    key={g.key}
+                    type="button"
+                    onClick={() => pickGoal(g.key)}
+                    className="flex items-center gap-1.5 rounded-full border border-background-200 bg-background-50 px-3 py-1.5 text-[11px] font-medium text-foreground-700 transition-all hover:border-primary-300 hover:bg-primary-50 hover:text-primary-700"
+                  >
+                    <i className={`${g.icon} text-xs`} />
+                    {g.label}
+                  </button>
+                ))}
+              </div>
             </div>
 
             <div className="mt-3 text-center">
               <button
                 type="button"
-                onClick={() => { setGoal(null); setStep(1); }}
+                onClick={() => { setCatSlug(null); setGoal(null); setStep(1); }}
                 className="text-xs font-medium text-primary-600 hover:text-primary-700 hover:underline"
               >
-                I know what I want — skip this step →
+                I know what I want — show everything →
               </button>
             </div>
           </div>
@@ -220,7 +265,7 @@ export default function StartHereWizard() {
                 <p className="font-heading text-sm font-semibold text-foreground-950">Which peptide is it?</p>
                 <p className="mt-0.5 text-xs text-foreground-600">The name is printed on your vial label.</p>
               </div>
-              {goal && !decideForMe && (
+              {(goal || catSlug) && !decideForMe && goal && (
                 <button
                   type="button"
                   onClick={() => { setDecideForMe(true); setPeptideSlug(""); }}
@@ -249,7 +294,13 @@ export default function StartHereWizard() {
                   type="text"
                   value={query}
                   onChange={(e) => setQuery(e.target.value)}
-                  placeholder={goal ? `Search ${GOALS.find(g => g.key === goal)?.label.toLowerCase()} peptides…` : "Search all peptides…"}
+                  placeholder={
+                    catSlug
+                      ? `Search ${peptideCategories.find(c => c.slug === catSlug)?.name ?? ""} peptides…`
+                      : goal
+                      ? `Search ${GOALS.find(g => g.key === goal)?.label.toLowerCase()} peptides…`
+                      : "Search all peptides…"
+                  }
                   aria-label="Search peptides"
                   className="w-full rounded-md border border-background-300 bg-background-50 py-2 pl-8 pr-3 text-xs text-foreground-900 placeholder:text-foreground-400 focus:border-primary-400 focus:outline-none focus:ring-2 focus:ring-primary-200"
                 />
@@ -302,7 +353,7 @@ export default function StartHereWizard() {
             </div>
 
             {/* Fallback to dropdown for "no goal + no query" (shows all 72) */}
-            {!goal && !query && !decideForMe && filteredPeptides.length > 12 && (
+            {!catSlug && !goal && !query && !decideForMe && filteredPeptides.length > 12 && (
               <details className="mt-3">
                 <summary className="cursor-pointer text-xs font-medium text-primary-600 hover:text-primary-700">
                   Prefer a dropdown list? ↓
