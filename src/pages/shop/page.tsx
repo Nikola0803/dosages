@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useSearchParams, useNavigate } from "react-router-dom";
 import AppShell from "@/components/feature/AppShell";
 import { fetchProducts, type ShopProduct } from "@/lib/products";
+import VialIcon from "@/components/feature/VialIcon";
 
 function formatPrice(cents: number): string {
   return `$${(cents / 100).toFixed(2)}`;
@@ -10,16 +11,22 @@ function formatPrice(cents: number): string {
 function ProductCard({ p }: { p: ShopProduct }) {
   return (
     <div className="flex flex-col overflow-hidden rounded-2xl border border-background-100 bg-white shadow-sm">
-      {/* Image */}
+      {/* Image / vial */}
       {p.imageUrl ? (
         <img
           src={p.imageUrl}
           alt={`${p.name} ${p.variantLabel}`}
-          className="h-36 w-full object-cover bg-background-50"
+          className="h-40 w-full object-cover bg-background-50"
         />
       ) : (
-        <div className="flex h-36 items-center justify-center bg-gradient-to-br from-primary-50 to-background-100">
-          <i className="ri-flask-2-line text-4xl text-primary-300" />
+        <div className="flex h-40 items-center justify-center bg-gradient-to-b from-background-50 to-background-100">
+          <VialIcon
+            categorySlug={p.categorySlug}
+            size={68}
+            label={p.name}
+            sublabel={p.variantLabel}
+            coaUrl={p.coas[0]?.url}
+          />
         </div>
       )}
 

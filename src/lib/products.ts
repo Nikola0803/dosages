@@ -3,6 +3,7 @@ export interface ShopProduct {
   name: string;
   variantGroup: string;  // normalized slug, e.g. "bpc-157"
   variantLabel: string;  // size, e.g. "5mg"
+  categorySlug: string;  // for VialIcon cap colour
   priceCents: number;
   imageUrl?: string;
   shortDescription?: string;
@@ -17,6 +18,7 @@ const MOCK: ShopProduct[] = [
     name: "BPC-157",
     variantGroup: "bpc-157",
     variantLabel: "5mg",
+    categorySlug: "tissue-repair",
     priceCents: 3999,
     shortDescription: "Gut-derived healing peptide — joints, tendons, GI tract.",
     purity: "≥99%",
@@ -28,6 +30,7 @@ const MOCK: ShopProduct[] = [
     name: "BPC-157",
     variantGroup: "bpc-157",
     variantLabel: "10mg",
+    categorySlug: "tissue-repair",
     priceCents: 6499,
     shortDescription: "Gut-derived healing peptide — joints, tendons, GI tract.",
     purity: "≥99%",
@@ -39,6 +42,7 @@ const MOCK: ShopProduct[] = [
     name: "TB-500",
     variantGroup: "tb-500",
     variantLabel: "2mg",
+    categorySlug: "tissue-repair",
     priceCents: 2999,
     shortDescription: "Systemic tissue repair and inflammation modulation.",
     purity: "≥99%",
@@ -50,6 +54,7 @@ const MOCK: ShopProduct[] = [
     name: "TB-500",
     variantGroup: "tb-500",
     variantLabel: "5mg",
+    categorySlug: "tissue-repair",
     priceCents: 5499,
     shortDescription: "Systemic tissue repair and inflammation modulation.",
     purity: "≥99%",
@@ -61,6 +66,7 @@ const MOCK: ShopProduct[] = [
     name: "CJC-1295",
     variantGroup: "cjc-1295",
     variantLabel: "2mg",
+    categorySlug: "gh-secretagogue",
     priceCents: 3499,
     shortDescription: "Growth hormone releasing hormone analogue.",
     purity: "≥98%",
@@ -72,6 +78,7 @@ const MOCK: ShopProduct[] = [
     name: "Ipamorelin",
     variantGroup: "ipamorelin",
     variantLabel: "2mg",
+    categorySlug: "gh-secretagogue",
     priceCents: 2999,
     shortDescription: "Selective GH secretagogue with minimal side effects.",
     purity: "≥99%",
@@ -83,6 +90,7 @@ const MOCK: ShopProduct[] = [
     name: "Semaglutide",
     variantGroup: "semaglutide",
     variantLabel: "1mg",
+    categorySlug: "metabolic",
     priceCents: 8999,
     shortDescription: "GLP-1 receptor agonist for metabolic health.",
     purity: "≥99%",

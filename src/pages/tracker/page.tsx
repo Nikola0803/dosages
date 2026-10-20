@@ -286,7 +286,7 @@ function ActiveCard({
         <div className="relative flex-shrink-0">
           <ProgressRing pct={pct} />
           <div className="absolute inset-0 flex items-center justify-center">
-            <VialIcon categorySlug={p.categorySlug} size={32} blank />
+            <VialIcon categorySlug={p.categorySlug} size={32} label={p.peptideName} sublabel={`${p.vialMg}mg`} />
           </div>
         </div>
         <div className="flex-1 min-w-0">
