@@ -26,6 +26,8 @@ export interface Protocol {
   doseTimes?: string[];                           // ["08:00", "20:00"]
   restPattern?: 'daily' | 'eod' | '5on2off' | 'custom';
   restWeekdays?: number[];                        // 0=Sun … 6=Sat, rest days for 'custom'
+  // reconstitution
+  waterMl?: number;
   // cycle notes
   cycleNotes?: string;
 }

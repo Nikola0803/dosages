@@ -160,6 +160,7 @@ export default function ProtocolBuilder() {
     );
     saveProtocol({
       ...protocol,
+      waterMl: effectiveWater || undefined,
       doseTimes: doseTimes.slice().sort(),
       restPattern,
       restWeekdays: restPattern === "custom" ? restWeekdays : undefined,
