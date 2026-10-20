@@ -219,7 +219,7 @@ export default function WelcomePage() {
       )}
 
       {/* ── Screen content (key triggers fade animation on step change) ── */}
-      <div key={step} className="flex flex-1 flex-col animate-fadeUp px-6 pb-36 pt-16">
+      <div key={step} className="flex flex-1 flex-col animate-fadeUp px-6 pb-32 pt-14">
 
         {/* ══════════ STEP 0 — Splash ══════════ */}
         {step === 0 && (
@@ -259,10 +259,10 @@ export default function WelcomePage() {
         {/* ══════════ STEP 1 — Goal ══════════ */}
         {step === 1 && (
           <div className="flex flex-1 flex-col">
-            <h1 className="font-heading text-4xl font-bold text-foreground-950">What's your goal?</h1>
-            <p className="mt-2 text-base text-foreground-500">We'll suggest the right peptides for your use case.</p>
+            <h1 className="font-heading text-3xl font-bold text-foreground-950">What's your goal?</h1>
+            <p className="mt-1.5 text-sm text-foreground-500">We'll suggest the right peptides for your use case.</p>
 
-            <div className="mt-6 grid grid-cols-2 gap-3">
+            <div className="mt-4 grid grid-cols-2 gap-2.5">
               {GOALS.map((g) => {
                 const selected = goal === g.key;
                 return (
@@ -270,19 +270,19 @@ export default function WelcomePage() {
                     key={g.key}
                     type="button"
                     onClick={() => setGoal(g.key)}
-                    className={`flex flex-col rounded-2xl border-2 p-4 text-left transition-all active:scale-[0.97] ${
+                    className={`flex flex-col rounded-2xl border-2 p-3 text-left transition-all active:scale-[0.97] ${
                       selected
                         ? "border-primary-500 bg-primary-50 shadow-md shadow-primary-100"
                         : "border-background-200 bg-white shadow-sm hover:border-primary-200"
                     }`}
                   >
-                    <span className={`flex h-10 w-10 items-center justify-center rounded-xl text-xl ${
+                    <span className={`flex h-9 w-9 items-center justify-center rounded-xl text-lg ${
                       selected ? "bg-primary-500 text-white" : "bg-primary-100 text-primary-600"
                     }`}>
                       <i className={g.icon} />
                     </span>
-                    <span className="mt-3 font-heading text-base font-semibold text-foreground-950">{g.label}</span>
-                    <span className="mt-0.5 text-xs text-foreground-500">{g.sub}</span>
+                    <span className="mt-2 font-heading text-sm font-semibold text-foreground-950">{g.label}</span>
+                    <span className="mt-0.5 text-[11px] leading-tight text-foreground-500">{g.sub}</span>
                   </button>
                 );
               })}

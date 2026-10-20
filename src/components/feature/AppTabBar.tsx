@@ -39,6 +39,7 @@ export default function AppTabBar() {
   }, []);
 
   if (!visible) return null;
+  if (pathname === "/welcome") return null;
 
   function activeFor(tabPath: string) {
     if (tabPath === "/") return pathname === "/";
