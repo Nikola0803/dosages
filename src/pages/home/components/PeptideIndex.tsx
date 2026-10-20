@@ -7,6 +7,7 @@ import {
   evidenceTierMeta,
   type EvidenceTier,
 } from "@/mocks/peptides";
+import VialIcon from "@/components/feature/VialIcon";
 
 const tierFilters: { key: EvidenceTier | "all"; label: string }[] = [
   { key: "all", label: "All tiers" },
@@ -153,22 +154,26 @@ export default function PeptideIndex() {
                 title={`${p.name} — dosing reference and reconstitution guide`}
                 className="card-lift group flex flex-col rounded-xl border border-background-200 bg-background-50 p-4"
               >
-                <div className="flex items-start justify-between gap-3">
-                  <h3 className="font-heading text-sm font-semibold leading-snug text-foreground-950">
-                    {p.name}
-                  </h3>
-                  <span
-                    className={`shrink-0 rounded-full px-2 py-0.5 font-label text-[10px] uppercase tracking-wide ${tierChip[p.evidence]}`}
-                  >
-                    {evidenceTierMeta[p.evidence].label}
-                  </span>
+                <div className="flex items-start gap-2.5">
+                  <VialIcon categorySlug={p.categorySlug} size={28} />
+                  <div className="min-w-0 flex-1">
+                    <div className="flex items-start justify-between gap-2">
+                      <h3 className="font-heading text-sm font-semibold leading-snug text-foreground-950">
+                        {p.name}
+                      </h3>
+                      <span
+                        className={`shrink-0 rounded-full px-2 py-0.5 font-label text-[10px] uppercase tracking-wide ${tierChip[p.evidence]}`}
+                      >
+                        {evidenceTierMeta[p.evidence].label}
+                      </span>
+                    </div>
+                    <p className="mt-0.5 truncate text-xs text-foreground-500">
+                      {catName(p.categorySlug)}
+                    </p>
+                  </div>
                 </div>
-                <p className="mt-1 truncate text-xs text-foreground-500">
-                  {catName(p.categorySlug)}
-                </p>
                 <div className="mt-4 flex items-center justify-between border-t border-background-200 pt-3">
                   <span className="flex min-w-0 items-center gap-1.5 text-xs text-foreground-500">
-                    <i className="ri-test-tube-line shrink-0 text-foreground-400"></i>
                     <span className="font-medium text-foreground-800">
                       {formatDose(p.typicalMcg)}
                     </span>

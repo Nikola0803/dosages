@@ -10,6 +10,7 @@ import SiteHeader from "@/components/feature/SiteHeader";
 import SiteFooter from "@/components/feature/SiteFooter";
 import AgeGate from "@/components/feature/AgeGate";
 import SyringeGauge from "@/components/feature/SyringeGauge";
+import VialIcon from "@/components/feature/VialIcon";
 import { useReveal } from "@/hooks/useReveal";
 
 function fmt(v: number) {
@@ -111,16 +112,19 @@ export default function PeptidePage() {
         <section className="border-b border-background-200 bg-background-100 px-4 pb-10 pt-10 md:px-8 md:pb-14 md:pt-14">
           <div className="mx-auto max-w-[1440px]">
             <div className="flex flex-wrap items-start justify-between gap-4">
-              <div>
-                <span className={`inline-flex items-center rounded-full border px-2.5 py-0.5 text-[11px] font-medium ${EVIDENCE_COLORS[peptide.evidence]}`}>
-                  {evidence.label} Evidence
-                </span>
-                <h1 className="mt-3 font-heading text-3xl font-semibold tracking-tight text-foreground-950 md:text-4xl">
-                  {peptide.name}
-                </h1>
-                {detail && (
-                  <p className="mt-2 text-base text-foreground-600">{detail.tagline}</p>
-                )}
+              <div className="flex items-start gap-4">
+                <VialIcon categorySlug={peptide.categorySlug} size={52} fillRatio={0.7} />
+                <div>
+                  <span className={`inline-flex items-center rounded-full border px-2.5 py-0.5 text-[11px] font-medium ${EVIDENCE_COLORS[peptide.evidence]}`}>
+                    {evidence.label} Evidence
+                  </span>
+                  <h1 className="mt-3 font-heading text-3xl font-semibold tracking-tight text-foreground-950 md:text-4xl">
+                    {peptide.name}
+                  </h1>
+                  {detail && (
+                    <p className="mt-2 text-base text-foreground-600">{detail.tagline}</p>
+                  )}
+                </div>
               </div>
               <Link
                 to={`/start?peptide=${slug}`}
