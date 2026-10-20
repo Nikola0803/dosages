@@ -6,6 +6,7 @@ import {
 } from "@/lib/protocol";
 import VialIcon from "@/components/feature/VialIcon";
 import CycleReview from "@/components/feature/CycleReview";
+import AppShell from "@/components/feature/AppShell";
 
 function formatDate(str: string) {
   return new Date(str + 'T00:00:00').toLocaleDateString(undefined, {
@@ -177,14 +178,8 @@ export default function TrackerPage() {
   }
 
   return (
-    <div className="min-h-screen bg-background-50 pb-32">
-      {/* Header */}
-      <div className="border-b border-background-200 bg-white px-5 pt-[max(1.25rem,env(safe-area-inset-top))] pb-4">
-        <h1 className="font-heading text-2xl font-bold text-foreground-950">My Cycle</h1>
-        <p className="mt-0.5 text-sm text-foreground-500">Track how long your peptides last.</p>
-      </div>
-
-      <div className="px-5 pt-5 space-y-4">
+    <AppShell title="My Cycle">
+      <div className="pt-4 space-y-4">
         {active.length === 0 && (
           <div className="flex flex-col items-center py-12 text-center">
             <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-primary-100">
@@ -229,6 +224,6 @@ export default function TrackerPage() {
           onClose={() => { setReviewProtocol(null); reload(); }}
         />
       )}
-    </div>
+    </AppShell>
   );
 }

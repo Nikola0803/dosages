@@ -15,6 +15,8 @@ import PeptideIndex from "@/pages/home/components/PeptideIndex";
 import FaqSection from "@/pages/home/components/FaqSection";
 import GuidesSection from "@/pages/home/components/GuidesSection";
 import RecommendedSources from "@/pages/home/components/RecommendedSources";
+import AppHome from "@/pages/home/AppHome";
+import { isStandalone } from "@/lib/standalone";
 
 const SITE = "https://peptidedosingcalculator.co";
 
@@ -54,6 +56,8 @@ export default function Home() {
 
   useJsonLd(websiteSchema, "jsonld-website");
   useJsonLd(faqSchema,    "jsonld-faq");
+
+  if (isStandalone()) return <AppHome />;
 
   return (
     <div className="min-h-screen bg-background-50">

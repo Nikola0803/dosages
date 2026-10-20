@@ -1,13 +1,7 @@
 import { useLocation, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { getActiveProtocol, isExpiringSoon, getPendingReview } from "@/lib/protocol";
-
-function isStandalone() {
-  return (
-    window.matchMedia("(display-mode: standalone)").matches ||
-    Boolean((navigator as unknown as { standalone?: boolean }).standalone)
-  );
-}
+import { isStandalone } from "@/lib/standalone";
 
 const TABS = [
   { path: "/",        icon: "ri-home-5",       iconFill: "ri-home-5-fill",  label: "Home"       },

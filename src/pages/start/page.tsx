@@ -2,9 +2,11 @@ import AgeGate from "@/components/feature/AgeGate";
 import SiteHeader from "@/components/feature/SiteHeader";
 import SiteFooter from "@/components/feature/SiteFooter";
 import StartHereWizard from "@/pages/home/components/StartHereWizard";
+import AppShell from "@/components/feature/AppShell";
 import { useReveal } from "@/hooks/useReveal";
 import { usePageMeta } from "@/hooks/usePageMeta";
 import { useJsonLd } from "@/hooks/useJsonLd";
+import { isStandalone } from "@/lib/standalone";
 
 const SITE = "https://peptidedosingcalculator.co";
 
@@ -39,6 +41,16 @@ export default function StartPage() {
   });
 
   useJsonLd(howToSchema, "jsonld-howto");
+
+  if (isStandalone()) {
+    return (
+      <AppShell title="Calculator">
+        <div className="pt-4">
+          <StartHereWizard />
+        </div>
+      </AppShell>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-background-50">
