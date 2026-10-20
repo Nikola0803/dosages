@@ -2,6 +2,7 @@ import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 import { resolve } from "node:path";
 import AutoImport from "unplugin-auto-import/vite";
+import { VitePWA } from "vite-plugin-pwa";
 // import { readdyJsxRuntimeProxyPlugin } from "./vite.jsx-runtime-proxy";
 
 const base = process.env.BASE_PATH || "/";
@@ -19,6 +20,57 @@ export default defineConfig({
   plugins: [
     // ...proxyPlugins,
     react(),
+    VitePWA({
+      registerType: "autoUpdate",
+      includeAssets: ["favicon.svg", "icons/apple-touch-icon.png", "icons/icon-96.png"],
+      manifest: {
+        name: "VialCalc — Peptide Dosing Calculator",
+        short_name: "VialCalc",
+        description: "Exact reconstitution maths and syringe draw lines for 72+ research peptides.",
+        theme_color: "#0d9488",
+        background_color: "#0c1a17",
+        display: "standalone",
+        orientation: "portrait",
+        scope: "/",
+        start_url: "/start",
+        id: "/",
+        icons: [
+          { src: "/icons/icon-96.png",        sizes: "96x96",   type: "image/png" },
+          { src: "/icons/icon-192.png",        sizes: "192x192", type: "image/png" },
+          { src: "/icons/icon-512.png",        sizes: "512x512", type: "image/png" },
+          { src: "/icons/icon-512.png",        sizes: "512x512", type: "image/png", purpose: "maskable" },
+          { src: "/favicon.svg",               sizes: "any",     type: "image/svg+xml" },
+        ],
+        screenshots: [
+          {
+            src: "/icons/icon-512.png",
+            sizes: "512x512",
+            type: "image/png",
+            form_factor: "narrow",
+            label: "VialCalc reconstitution wizard",
+          },
+        ],
+        categories: ["health", "medical", "utilities"],
+        lang: "en",
+      },
+      workbox: {
+        globPatterns: ["**/*.{js,css,html,ico,png,svg,woff2}"],
+        navigateFallback: "/index.html",
+        runtimeCaching: [
+          {
+            urlPattern: /^https:\/\/fonts\.(googleapis|gstatic)\.com\/.*/i,
+            handler: "CacheFirst",
+            options: { cacheName: "google-fonts", expiration: { maxEntries: 10, maxAgeSeconds: 60 * 60 * 24 * 365 } },
+          },
+          {
+            urlPattern: /^https:\/\/cdnjs\.cloudflare\.com\/.*/i,
+            handler: "CacheFirst",
+            options: { cacheName: "cdn-assets",   expiration: { maxEntries: 30, maxAgeSeconds: 60 * 60 * 24 * 30 } },
+          },
+        ],
+      },
+      devOptions: { enabled: true },
+    }),
     AutoImport({
       imports: [
         {
