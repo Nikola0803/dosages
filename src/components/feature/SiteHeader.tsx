@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 
 const navLinks = [
   { label: "Browse by Type", to: "/#browse" },
@@ -14,6 +14,9 @@ const navLinks = [
 export default function SiteHeader() {
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+  const { pathname } = useLocation();
+
+  const isHome = pathname === "/";
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 40);
@@ -22,21 +25,24 @@ export default function SiteHeader() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  const linkColor = scrolled
-    ? "text-foreground-700 hover:text-primary-600"
-    : "text-white/90 hover:text-white";
+  // Transparent only on homepage before scroll; solid everywhere else
+  const transparent = isHome && !scrolled;
+
+  const linkColor = transparent
+    ? "text-white/90 hover:text-white"
+    : "text-foreground-700 hover:text-primary-600";
 
   return (
     <header
       className={`fixed inset-x-0 top-0 z-50 transition-all duration-300 ${
-        scrolled
-          ? "glass border-b border-background-200 shadow-sm"
-          : "bg-transparent"
+        transparent
+          ? "bg-transparent"
+          : "glass border-b border-background-200 shadow-sm"
       }`}
     >
       <div
         className={`overflow-hidden transition-all duration-300 ${
-          scrolled ? "max-h-0 opacity-0" : "max-h-12 opacity-100"
+          transparent ? "max-h-12 opacity-100" : "max-h-0 opacity-0"
         }`}
       >
         <div className="bg-primary-950">
@@ -56,7 +62,7 @@ export default function SiteHeader() {
         <Link
           to="/"
           className={`font-heading text-lg font-semibold tracking-tight md:text-xl ${
-            scrolled ? "text-foreground-950" : "text-background-50"
+            transparent ? "text-background-50" : "text-foreground-950"
           }`}
         >
           Vial<em className="text-primary-400 not-italic">Calc</em>
@@ -85,7 +91,7 @@ export default function SiteHeader() {
           aria-label="Open menu"
           onClick={() => setMenuOpen((v) => !v)}
           className={`flex h-10 w-10 items-center justify-center rounded-md lg:hidden ${
-            scrolled ? "text-foreground-950" : "text-background-50"
+            transparent ? "text-background-50" : "text-foreground-950"
           }`}
         >
           <i className={`text-xl ${menuOpen ? "ri-close-line" : "ri-menu-line"}`}></i>
