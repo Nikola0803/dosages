@@ -1,13 +1,13 @@
 /**
- * Vercel cron-compatible endpoint that sends renewal push notifications.
+ * Vercel cron endpoint — sends renewal push notifications daily at 09:00 UTC.
+ * Registered in vercel.json: { "path": "/api/send-push", "schedule": "0 9 * * *" }
  *
- * Add to vercel.json crons once Supabase is configured:
- *   { "path": "/api/send-push", "schedule": "0 9 * * *" }
- *
- * Required env vars (Vercel dashboard):
+ * Required Vercel env vars:
  *   VITE_SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY
  *   VAPID_SUBJECT, VITE_VAPID_PUBLIC_KEY, VAPID_PRIVATE_KEY
  */
+import webpush from "web-push";
+
 export default async function handler(
   req: { method?: string },
   res: { status: (n: number) => { json: (d: unknown) => void } }
@@ -22,12 +22,15 @@ export default async function handler(
     return res.status(200).json({ ok: false, reason: "missing env vars" });
   }
 
-  // Build today's date string
+  webpush.setVapidDetails(vapidSubject, vapidPub, vapidPriv);
+
   const today = new Date().toISOString().split("T")[0];
 
-  // Query Supabase for protocols where notify_at <= today and push subscription exists
+  // Fetch protocols due for notification, joined with their push subscription
   const sbRes = await fetch(
-    `${supabaseUrl}/rest/v1/protocols?select=*,push_subscriptions(endpoint,p256dh,auth)&status=eq.active&notify_at=lte.${today}&notified=eq.false`,
+    `${supabaseUrl}/rest/v1/protocols` +
+    `?select=id,peptide_name,doses_per_vial,device_id,push_subscriptions(endpoint,p256dh,auth)` +
+    `&status=eq.active&notify_at=lte.${today}&notified=eq.false`,
     {
       headers: {
         apikey: serviceKey,
@@ -42,7 +45,10 @@ export default async function handler(
   }
 
   const protocols = (await sbRes.json()) as Array<{
-    id: string; peptide_slug: string; doses_per_vial: number;
+    id: string;
+    peptide_name: string;
+    doses_per_vial: number;
+    device_id: string;
     push_subscriptions?: { endpoint: string; p256dh: string; auth: string };
   }>;
 
@@ -51,26 +57,16 @@ export default async function handler(
     const sub = p.push_subscriptions;
     if (!sub) continue;
 
-    // Use web-push style VAPID auth manually (simplified — install web-push for production)
     try {
-      const payload = JSON.stringify({
-        title: "VialCalc — Reorder reminder",
-        body: `Your peptide cycle is almost done. Time to check your next vial!`,
-        tag: `renew-${p.id}`,
-        url: "/tracker",
-      });
-
-      await fetch(sub.endpoint, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/octet-stream",
-          "Content-Encoding": "aes128gcm",
-          // In production, replace this with proper VAPID JWT + encrypted payload
-          // using the 'web-push' npm package: webpush.sendNotification(sub, payload)
-          Authorization: `vapid t=placeholder,k=${vapidPub}`,
-        },
-        body: payload,
-      });
+      await webpush.sendNotification(
+        { endpoint: sub.endpoint, keys: { p256dh: sub.p256dh, auth: sub.auth } },
+        JSON.stringify({
+          title: "VialCalc — Reorder reminder",
+          body: `Your ${p.peptide_name} cycle is almost done. Time to check your next vial!`,
+          tag: `renew-${p.id}`,
+          url: "/tracker",
+        })
+      );
       sent++;
 
       // Mark as notified
