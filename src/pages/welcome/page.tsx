@@ -155,7 +155,16 @@ export default function WelcomePage() {
     }
     try {
       const perm = await Notification.requestPermission();
-      setNotifState(perm === "granted" ? "granted" : "denied");
+      if (perm === "granted") {
+        setNotifState("granted");
+        // Subscribe to Web Push in the background
+        import("@/lib/push").then(async ({ subscribeToPush, savePushSubscription }) => {
+          const sub = await subscribeToPush();
+          if (sub) await savePushSubscription(sub, goal ?? "", peptideSlug);
+        }).catch(() => {});
+      } else {
+        setNotifState("denied");
+      }
     } catch {
       setNotifState("unavailable");
     }

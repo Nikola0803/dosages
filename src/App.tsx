@@ -3,6 +3,7 @@ import { AppRoutes } from "./router";
 import { I18nextProvider } from "react-i18next";
 import i18n from "./i18n";
 import InstallPrompt from "@/components/feature/InstallPrompt";
+import AppTabBar from "@/components/feature/AppTabBar";
 
 
 function App() {
@@ -11,6 +12,7 @@ function App() {
       <BrowserRouter basename={__BASE_PATH__}>
         <AppRoutes />
         <InstallPrompt />
+        <AppTabBar />
       </BrowserRouter>
     </I18nextProvider>
   );

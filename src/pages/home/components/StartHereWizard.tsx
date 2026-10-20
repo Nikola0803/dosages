@@ -12,6 +12,7 @@ import {
   suggestWaterMl,
   unitsForDose,
 } from "@/utils/dosage";
+import { createProtocol, saveProtocol, getProtocols } from "@/lib/protocol";
 
 const VIAL_CHIPS = [2, 5, 10, 20];
 const STEP_LABELS = ["Compound", "Vial", "Water", "Result"];
@@ -72,6 +73,7 @@ export default function StartHereWizard() {
   const [peptideSlug, setPeptideSlug] = useState(() => searchParams.get("peptide") ?? "");
   const [vialMg, setVialMg]           = useState<number>(() => Number(searchParams.get("vial") ?? 0));
   const [waterMl, setWaterMl]         = useState<number | null>(null);
+  const [tracked, setTracked]         = useState(false);
 
   useEffect(() => {
     const slug = searchParams.get("peptide");
@@ -131,6 +133,21 @@ export default function StartHereWizard() {
     setPeptideSlug("");
     setVialMg(0);
     setWaterMl(null);
+    setTracked(false);
+  };
+
+  const handleTrack = () => {
+    if (!selected || !vialMg || !results) return;
+    const already = getProtocols().some(
+      (p) => p.peptideSlug === selected.slug && p.status === "active"
+    );
+    if (already) { setTracked(true); return; }
+    const protocol = createProtocol(
+      selected.slug, selected.name, selected.categorySlug,
+      vialMg, selected.typicalMcg, results.doses,
+    );
+    saveProtocol(protocol);
+    setTracked(true);
   };
 
   const pickCat = (slug: string) => {
@@ -579,7 +596,26 @@ export default function StartHereWizard() {
               </table>
             </div>
 
-            <div className="mt-4 flex items-center justify-between">
+            {/* Track this cycle CTA */}
+            <div className="mt-4">
+              {tracked ? (
+                <div className="flex items-center gap-2 rounded-xl bg-primary-50 px-3 py-2.5 text-sm font-medium text-primary-700">
+                  <i className="ri-checkbox-circle-line text-base" />
+                  Tracking! We'll remind you before you run out.
+                </div>
+              ) : (
+                <button
+                  type="button"
+                  onClick={handleTrack}
+                  className="flex w-full items-center justify-center gap-2 rounded-xl border border-primary-200 bg-primary-50 px-3 py-2.5 text-sm font-semibold text-primary-700 transition-colors hover:bg-primary-100"
+                >
+                  <i className="ri-calendar-check-line" />
+                  Track this cycle — get a renewal reminder
+                </button>
+              )}
+            </div>
+
+            <div className="mt-3 flex items-center justify-between">
               <button type="button" onClick={() => setStep(3)} className={BACK_BTN}>← Back</button>
               <button
                 type="button"
