@@ -15,17 +15,17 @@ export const peptides: Peptide[] = [
   { name: "KPV", slug: "kpv", categorySlug: "tissue-repair", typicalMcg: 200, frequency: "1x daily", evidence: "preclinical" },
   { name: "TB-500", slug: "tb-500", categorySlug: "tissue-repair", typicalMcg: 500, frequency: "1x daily", evidence: "preclinical" },
 
-  // Metabolic / Incretin
-  { name: "5-Amino-1MQ", slug: "5-amino-1mq", categorySlug: "metabolic", typicalMcg: 2500, frequency: "1x daily", evidence: "preclinical" },
-  { name: "Adipotide", slug: "adipotide", categorySlug: "metabolic", typicalMcg: 5000, frequency: "1x daily", evidence: "limited" },
-  { name: "AOD-9604", slug: "aod-9604", categorySlug: "metabolic", typicalMcg: 300, frequency: "1x daily", evidence: "clinical" },
-  { name: "Cagrilintide", slug: "cagrilintide", categorySlug: "metabolic", typicalMcg: 300, frequency: "1x weekly", evidence: "clinical" },
-  { name: "Mazdutide", slug: "mazdutide", categorySlug: "metabolic", typicalMcg: 3000, frequency: "1x weekly", evidence: "clinical" },
+  // Metabolic / Incretin — ordered by popularity
   { name: "Retatrutide", slug: "retatrutide", categorySlug: "metabolic", typicalMcg: 1000, frequency: "1x weekly", evidence: "clinical" },
   { name: "Semaglutide", slug: "semaglutide", categorySlug: "metabolic", typicalMcg: 250, frequency: "1x weekly", evidence: "clinical" },
-  { name: "SLU-PP-332", slug: "slu-pp-332", categorySlug: "metabolic", typicalMcg: 250, frequency: "1x daily", evidence: "preclinical" },
-  { name: "Survodutide", slug: "survodutide", categorySlug: "metabolic", typicalMcg: 600, frequency: "1x weekly", evidence: "clinical" },
   { name: "Tirzepatide", slug: "tirzepatide", categorySlug: "metabolic", typicalMcg: 2500, frequency: "1x weekly", evidence: "clinical" },
+  { name: "Cagrilintide", slug: "cagrilintide", categorySlug: "metabolic", typicalMcg: 300, frequency: "1x weekly", evidence: "clinical" },
+  { name: "Mazdutide", slug: "mazdutide", categorySlug: "metabolic", typicalMcg: 3000, frequency: "1x weekly", evidence: "clinical" },
+  { name: "Survodutide", slug: "survodutide", categorySlug: "metabolic", typicalMcg: 600, frequency: "1x weekly", evidence: "clinical" },
+  { name: "AOD-9604", slug: "aod-9604", categorySlug: "metabolic", typicalMcg: 300, frequency: "1x daily", evidence: "clinical" },
+  { name: "5-Amino-1MQ", slug: "5-amino-1mq", categorySlug: "metabolic", typicalMcg: 2500, frequency: "1x daily", evidence: "preclinical" },
+  { name: "Adipotide", slug: "adipotide", categorySlug: "metabolic", typicalMcg: 5000, frequency: "1x daily", evidence: "limited" },
+  { name: "SLU-PP-332", slug: "slu-pp-332", categorySlug: "metabolic", typicalMcg: 250, frequency: "1x daily", evidence: "preclinical" },
 
   // GH Secretagogue
   { name: "CJC-1295 (no DAC)", slug: "cjc-1295-no-dac", categorySlug: "gh-secretagogue", typicalMcg: 100, frequency: "2-3x daily", evidence: "preclinical" },
