@@ -19,11 +19,12 @@ interface VialIconProps {
   color?: string;
   size?: number;
   fillRatio?: number;
+  blank?: boolean;
 }
 
-export default function VialIcon({ categorySlug, color, size = 40, fillRatio = 0.65 }: VialIconProps) {
+export default function VialIcon({ categorySlug, color, size = 40, fillRatio = 0.65, blank = false }: VialIconProps) {
   const id = React.useId().replace(/:/g, "-");
-  const fill = color ?? (categorySlug ? CATEGORY_LIQUID[categorySlug] : undefined) ?? "#94a3b8";
+  const fill = blank ? "transparent" : (color ?? (categorySlug ? CATEGORY_LIQUID[categorySlug] : undefined) ?? "#94a3b8");
   const h = Math.round(size * 1.7);
   const liquidTopPct = 1 - fillRatio;
   const bodyH = 52;

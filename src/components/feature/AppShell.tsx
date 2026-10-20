@@ -19,32 +19,34 @@ export default function AppShell({ title, showBack, rightSlot, children, noPad }
         className="fixed inset-x-0 top-0 z-40 bg-white/90 backdrop-blur-xl border-b border-black/[0.06]"
         style={{ paddingTop: "env(safe-area-inset-top, 0px)" }}
       >
-        <div className="flex h-14 items-center px-4">
-          {/* Left: back or logo */}
-          {showBack ? (
-            <button
-              type="button"
-              onClick={() => navigate(-1)}
-              className="flex items-center gap-1 text-primary-600 active:opacity-60"
-            >
-              <i className="ri-arrow-left-s-line text-xl leading-none" />
-              <span className="text-sm font-medium">Back</span>
-            </button>
-          ) : (
-            <Link to="/" className="font-heading text-lg font-semibold tracking-tight text-foreground-950">
-              Vial<em className="text-primary-400 not-italic">Calc</em>
-            </Link>
-          )}
+        <div className="relative flex h-14 items-center px-4">
+          {/* Left: back button (only on inner pages) */}
+          <div className="w-16">
+            {showBack && (
+              <button
+                type="button"
+                onClick={() => navigate(-1)}
+                className="flex items-center gap-1 text-primary-600 active:opacity-60"
+              >
+                <i className="ri-arrow-left-s-line text-xl leading-none" />
+                <span className="text-sm font-medium">Back</span>
+              </button>
+            )}
+          </div>
 
-          {/* Centre title */}
-          {title && (
-            <p className="absolute left-1/2 -translate-x-1/2 font-heading text-[15px] font-semibold text-foreground-950">
-              {title}
-            </p>
-          )}
+          {/* Centre: logo on main tabs, page title on inner pages */}
+          <div className="flex flex-1 justify-center">
+            {showBack && title ? (
+              <p className="font-heading text-[15px] font-semibold text-foreground-950">{title}</p>
+            ) : (
+              <Link to="/" className="font-heading text-xl font-semibold tracking-tight text-foreground-950">
+                Vial<em className="text-primary-400 not-italic">Calc</em>
+              </Link>
+            )}
+          </div>
 
           {/* Right slot */}
-          <div className="ml-auto">{rightSlot}</div>
+          <div className="w-16 flex justify-end">{rightSlot}</div>
         </div>
       </header>
 

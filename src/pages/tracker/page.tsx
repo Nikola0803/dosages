@@ -70,7 +70,7 @@ function ProtocolDoseCard({ protocol: p, onRefresh }: { protocol: Protocol; onRe
   if (restDay) {
     return (
       <div className="flex items-center gap-3 rounded-2xl border border-background-100 bg-white px-4 py-3">
-        <VialIcon categorySlug={p.categorySlug} size={24} />
+        <VialIcon categorySlug={p.categorySlug} size={24} blank />
         <div className="flex-1 min-w-0">
           <p className="text-sm font-semibold text-foreground-900 truncate">{p.peptideName}</p>
           <p className="text-xs text-foreground-400">Rest day</p>
@@ -104,7 +104,7 @@ function ProtocolDoseCard({ protocol: p, onRefresh }: { protocol: Protocol; onRe
   return (
     <div className="rounded-2xl border border-background-100 bg-white overflow-hidden">
       <div className="flex items-center gap-3 px-4 pt-3 pb-2">
-        <VialIcon categorySlug={p.categorySlug} size={24} />
+        <VialIcon categorySlug={p.categorySlug} size={24} blank />
         <p className="flex-1 text-sm font-semibold text-foreground-900 truncate">{p.peptideName}</p>
         <p className="text-xs text-foreground-400">
           {slots.length === 1 ? "1 dose" : `${slots.length} doses`} today
@@ -286,7 +286,7 @@ function ActiveCard({
         <div className="relative flex-shrink-0">
           <ProgressRing pct={pct} />
           <div className="absolute inset-0 flex items-center justify-center">
-            <VialIcon categorySlug={p.categorySlug} size={32} />
+            <VialIcon categorySlug={p.categorySlug} size={32} blank />
           </div>
         </div>
         <div className="flex-1 min-w-0">
@@ -379,7 +379,7 @@ function ActiveCard({
 function PastCard({ p }: { p: Protocol }) {
   return (
     <div className="flex items-center gap-3 rounded-2xl border border-background-100 bg-white p-4">
-      <VialIcon categorySlug={p.categorySlug} size={30} />
+      <VialIcon categorySlug={p.categorySlug} size={30} blank />
       <div className="flex-1 min-w-0">
         <p className="text-sm font-semibold text-foreground-900 truncate">{p.peptideName}</p>
         <p className="text-xs text-foreground-400">
