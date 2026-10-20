@@ -4,6 +4,11 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Push page content above iOS Safari's home-indicator / bottom toolbar */
+body {
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
 :root {
   /* background — page canvas, light with a soft green-teal tint */
   --background-50: 0.991 0.004 155;
