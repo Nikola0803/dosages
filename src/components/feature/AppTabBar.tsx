@@ -4,15 +4,14 @@ import { getActiveProtocol, isExpiringSoon, getPendingReview } from "@/lib/proto
 import { isStandalone } from "@/lib/standalone";
 
 const TABS = [
-  { path: "/",        icon: "ri-home-5",       iconFill: "ri-home-5-fill",       label: "Home"       },
-  { path: "/start",   icon: "ri-calculator-2", iconFill: "ri-calculator-2-fill", label: "Calculator" },
-  { path: "/tracker", icon: "ri-flask-2",      iconFill: "ri-flask-2-fill",      label: "My Cycle"   },
-  { path: "/shop",    icon: "ri-store-2-line", iconFill: "ri-store-2-fill",      label: "Shop"       },
+  { path: "/",        icon: "ri-home-5-line",      iconFill: "ri-home-5-fill",       label: "Home"      },
+  { path: "/start",   icon: "ri-flask-line",        iconFill: "ri-flask-fill",        label: "Build"     },
+  { path: "/tracker", icon: "ri-calendar-check-line", iconFill: "ri-calendar-check-fill", label: "My Cycle" },
+  { path: "/shop",    icon: "ri-store-2-line",      iconFill: "ri-store-2-fill",      label: "Shop"      },
 ] as const;
 
 function useBadge() {
   const [badge, setBadge] = useState<"alert" | "review" | null>(null);
-
   useEffect(() => {
     function check() {
       const pending = getPendingReview();
@@ -25,7 +24,6 @@ function useBadge() {
     const id = setInterval(check, 60_000);
     return () => clearInterval(id);
   }, []);
-
   return badge;
 }
 
@@ -35,9 +33,7 @@ export default function AppTabBar() {
   const badge = useBadge();
   const [visible, setVisible] = useState(false);
 
-  useEffect(() => {
-    setVisible(isStandalone());
-  }, []);
+  useEffect(() => { setVisible(isStandalone()); }, []);
 
   if (!visible) return null;
   if (pathname === "/welcome") return null;
@@ -50,53 +46,51 @@ export default function AppTabBar() {
   return (
     <nav
       aria-label="App navigation"
-      className="fixed bottom-0 left-0 right-0 z-50 flex items-stretch border-t border-black/[0.08] bg-white/80 backdrop-blur-2xl dark:border-white/[0.08] dark:bg-foreground-950/85"
+      className="fixed bottom-0 left-0 right-0 z-50 border-t border-black/[0.07] bg-white/90 backdrop-blur-2xl dark:border-white/[0.07] dark:bg-foreground-950/90"
       style={{ paddingBottom: "env(safe-area-inset-bottom, 0px)" }}
     >
-      {TABS.map((tab) => {
-        const active = activeFor(tab.path);
-        const showBadge = tab.path === "/tracker" && badge !== null;
-        return (
-          <button
-            key={tab.path}
-            type="button"
-            onClick={() => navigate(tab.path)}
-            aria-current={active ? "page" : undefined}
-            className={`relative flex flex-1 flex-col items-center justify-center gap-[3px] py-2.5 transition-colors active:scale-95 ${
-              active ? "text-primary-600" : "text-foreground-400"
-            }`}
-          >
-            {/* Badge dot */}
-            {showBadge && (
-              <span
-                aria-label={badge === "review" ? "Review ready" : "Running low"}
-                className={`absolute right-[calc(50%-10px)] top-2 h-2 w-2 rounded-full ${
-                  badge === "review" ? "bg-primary-500" : "bg-accent-500"
-                }`}
-              />
-            )}
+      <div className="flex items-stretch">
+        {TABS.map((tab) => {
+          const active = activeFor(tab.path);
+          const showBadge = tab.path === "/tracker" && badge !== null;
 
-            {/* Icon */}
-            <span className="relative text-[22px] leading-none">
-              <i className={active ? tab.iconFill : tab.icon} />
-            </span>
-
-            {/* Label */}
-            <span
-              className={`text-[10px] font-medium leading-none tracking-tight ${
-                active ? "text-primary-600" : "text-foreground-400"
-              }`}
+          return (
+            <button
+              key={tab.path}
+              type="button"
+              onClick={() => navigate(tab.path)}
+              aria-current={active ? "page" : undefined}
+              className="relative flex flex-1 flex-col items-center justify-center gap-1 py-3 active:opacity-70"
             >
-              {tab.label}
-            </span>
+              {/* Badge dot */}
+              {showBadge && (
+                <span
+                  aria-label={badge === "review" ? "Review ready" : "Running low"}
+                  className={`absolute right-[calc(50%-12px)] top-2.5 h-2 w-2 rounded-full ring-2 ring-white ${
+                    badge === "review" ? "bg-primary-500" : "bg-accent-500"
+                  }`}
+                />
+              )}
 
-            {/* Active pip (iOS-style) */}
-            {active && (
-              <span className="absolute bottom-0 left-1/2 h-0.5 w-5 -translate-x-1/2 rounded-full bg-primary-500" />
-            )}
-          </button>
-        );
-      })}
+              {/* Icon with active pill background */}
+              <span className={`relative flex h-8 w-14 items-center justify-center rounded-2xl transition-all duration-200 ${
+                active ? "bg-primary-100" : ""
+              }`}>
+                <i className={`${active ? tab.iconFill : tab.icon} text-[22px] leading-none transition-colors duration-200 ${
+                  active ? "text-primary-600" : "text-foreground-400"
+                }`} />
+              </span>
+
+              {/* Label */}
+              <span className={`text-[11px] font-semibold leading-none tracking-tight transition-colors duration-200 ${
+                active ? "text-primary-600" : "text-foreground-400"
+              }`}>
+                {tab.label}
+              </span>
+            </button>
+          );
+        })}
+      </div>
     </nav>
   );
 }
