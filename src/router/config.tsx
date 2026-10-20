@@ -4,8 +4,13 @@ import Home from "../pages/home/page";
 import VprSpotlight from "../pages/vpr-spotlight/page";
 import StartPage from "../pages/start/page";
 import PeptidePage from "../pages/peptide/page";
+import WelcomePage from "../pages/welcome/page";
 
 const routes: RouteObject[] = [
+  {
+    path: "/welcome",
+    element: <WelcomePage />,
+  },
   {
     path: "/",
     element: <Home />,

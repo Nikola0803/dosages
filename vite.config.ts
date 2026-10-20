@@ -32,7 +32,7 @@ export default defineConfig({
         display: "standalone",
         orientation: "portrait",
         scope: "/",
-        start_url: "/start",
+        start_url: "/welcome",
         id: "/",
         icons: [
           { src: "/icons/icon-96.png",        sizes: "96x96",   type: "image/png" },
