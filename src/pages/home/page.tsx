@@ -68,7 +68,6 @@ export default function Home() {
         <PeptideIndex />
         <FaqSection />
         <GuidesSection />
-        <RecommendedSources />
       </main>
       <SiteFooter />
     </div>
