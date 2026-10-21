@@ -199,6 +199,7 @@ export default function ProtocolBuilder() {
       restPattern,
       restWeekdays: restPattern === "custom" ? restWeekdays : undefined,
     });
+    try { localStorage.removeItem("vc-peptide"); } catch { /* ignore */ }
     navigate("/tracker");
   }
 

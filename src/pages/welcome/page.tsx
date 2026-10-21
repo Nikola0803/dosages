@@ -291,7 +291,7 @@ function PrepScreen({
 }
 
 // ── Main ────────────────────────────────────────────────────────────────────
-const TOTAL_STEPS = 12;
+const TOTAL_STEPS = 13;
 
 export default function WelcomePage() {
   const navigate = useNavigate();
@@ -355,13 +355,21 @@ export default function WelcomePage() {
   const benefits        = goal ? (GOAL_BENEFITS[goal] ?? GENERIC_BENEFITS) : GENERIC_BENEFITS;
   const selectedPeptide = useMemo(() => peptides.find((p) => p.slug === peptideSlug), [peptideSlug]);
 
-  const isDark       = step === 0 || step === 8 || step === TOTAL_STEPS;
-  const progressFrac = step >= 1 && step <= 11 ? step / 11 : null;
+  const isDark       = step === 0 || step === 9 || step === TOTAL_STEPS;
+  const progressFrac = step >= 1 && step <= 12 ? step / 12 : null;
 
   function handleNext() {
     if (step < TOTAL_STEPS) setStep((s) => s + 1);
   }
   function handleBack() { if (step > 0)           setStep((s) => s - 1); }
+
+  function handleHaveItNow() {
+    try {
+      if (goal)        localStorage.setItem("vc-goal",    goal);
+      if (peptideSlug) localStorage.setItem("vc-peptide", peptideSlug);
+    } catch { /* ignore */ }
+    navigate("/start", { replace: true });
+  }
 
   async function handleNotif() {
     if (!("Notification" in window)) { setNotifState("unavailable"); return; }
@@ -712,8 +720,42 @@ export default function WelcomePage() {
           </div>
         )}
 
-        {/* ══════════ STEP 8 — Edu slide ══════════ */}
+        {/* ══════════ STEP 8 — Have it in hand? ══════════ */}
         {step === 8 && (
+          <div className="flex flex-1 flex-col">
+            <h1 className="font-heading text-4xl font-bold text-foreground-950">
+              Got {selectedPeptide?.name ?? "your peptide"} in hand?
+            </h1>
+            <p className="mt-2 text-base text-foreground-500">
+              We'll calculate your exact draw line and dose right now.
+            </p>
+            <button
+              type="button"
+              onClick={handleHaveItNow}
+              className="mt-8 flex w-full flex-col items-start gap-1.5 rounded-3xl border-2 border-primary-500 bg-primary-50 px-6 py-5 text-left shadow-md active:scale-[0.98]"
+            >
+              <span className="flex items-center gap-2">
+                <i className="ri-flask-fill text-xl text-primary-500" />
+                <span className="font-heading text-lg font-bold text-primary-900">Yes, I have it</span>
+              </span>
+              <span className="text-sm text-primary-700">Calculate my dose and draw line now →</span>
+            </button>
+            <button
+              type="button"
+              onClick={handleNext}
+              className="mt-3 flex w-full flex-col items-start gap-1.5 rounded-3xl border-2 border-background-200 bg-white px-6 py-5 text-left active:scale-[0.98]"
+            >
+              <span className="flex items-center gap-2">
+                <i className="ri-search-line text-xl text-foreground-400" />
+                <span className="font-heading text-lg font-bold text-foreground-800">Not yet — still researching</span>
+              </span>
+              <span className="text-sm text-foreground-500">Continue building my profile</span>
+            </button>
+          </div>
+        )}
+
+        {/* ══════════ STEP 9 — Edu slide ══════════ */}
+        {step === 9 && (
           <div className="flex flex-1 flex-col">
             <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-primary-500 mb-5">
               <i className={`${GOALS.find((g) => g.key === goal)?.icon ?? "ri-flask-line"} text-xl text-white`} />
@@ -743,8 +785,8 @@ export default function WelcomePage() {
           </div>
         )}
 
-        {/* ══════════ STEP 9 — Attribution ══════════ */}
-        {step === 9 && (
+        {/* ══════════ STEP 10 — Attribution ══════════ */}
+        {step === 10 && (
           <div className="flex flex-1 flex-col">
             <h1 className="font-heading text-4xl font-bold text-foreground-950">How did you find us?</h1>
             <p className="mt-2 text-base text-foreground-500">Helps us know where to share our work.</p>
@@ -776,8 +818,8 @@ export default function WelcomePage() {
           </div>
         )}
 
-        {/* ══════════ STEP 10 — Notifications ══════════ */}
-        {step === 10 && (
+        {/* ══════════ STEP 11 — Notifications ══════════ */}
+        {step === 11 && (
           <div className="flex flex-1 flex-col">
             <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-primary-100 mb-5">
               <i className="ri-notification-3-line text-xl text-primary-600" />
@@ -826,8 +868,8 @@ export default function WelcomePage() {
           </div>
         )}
 
-        {/* ══════════ STEP 11 — Email ══════════ */}
-        {step === 11 && (
+        {/* ══════════ STEP 12 — Email ══════════ */}
+        {step === 12 && (
           <div className="flex flex-1 flex-col">
             <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-accent-100 mb-5">
               <i className="ri-gift-2-line text-xl text-accent-700" />
@@ -881,8 +923,8 @@ export default function WelcomePage() {
             : "bg-gradient-to-t from-background-50 via-background-50/95 to-transparent"
         }`}>
 
-          {/* Step 10: notification-specific buttons */}
-          {step === 10 && (
+          {/* Step 11: notification-specific buttons */}
+          {step === 11 && (
             <>
               {notifState === "idle" ? (
                 <button
@@ -911,8 +953,8 @@ export default function WelcomePage() {
             </>
           )}
 
-          {/* Step 11: email-specific buttons */}
-          {step === 11 && emailState !== "success" && (
+          {/* Step 12: email-specific buttons */}
+          {step === 12 && emailState !== "success" && (
             <>
               <button
                 type="button"
@@ -933,7 +975,7 @@ export default function WelcomePage() {
           )}
 
           {/* All other middle steps */}
-          {step !== 10 && step !== 11 && (
+          {step !== 11 && step !== 12 && step !== 8 && (
             <button
               type="button"
               onClick={handleNext}
@@ -941,7 +983,7 @@ export default function WelcomePage() {
                 (step === 1 && !goal) ||
                 (step === 2 && !sex)  ||
                 (step === 6 && !activity) ||
-                (step === 9 && !source)
+                (step === 10 && !source)
               }
               className={`w-full rounded-full py-4 text-base font-bold shadow-lg transition-all active:scale-[0.98] disabled:opacity-40 ${
                 isDark ? "bg-white text-primary-950" : "bg-primary-500 text-white"

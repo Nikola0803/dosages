@@ -467,6 +467,17 @@ export default function TrackerPage() {
           />
         ))}
 
+        {/* New cycle button */}
+        {active.length > 0 && (
+          <button
+            type="button"
+            onClick={() => navigate("/start")}
+            className="flex w-full items-center justify-center gap-2 rounded-full border-2 border-dashed border-background-200 py-3.5 text-sm font-semibold text-foreground-500 active:bg-background-50 transition-colors"
+          >
+            <i className="ri-add-line text-base" /> New cycle
+          </button>
+        )}
+
         {/* Past cycles */}
         {past.length > 0 && (
           <div>
