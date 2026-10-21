@@ -7,7 +7,6 @@ import { faqs } from "@/mocks/faqs";
 import AgeGate from "@/components/feature/AgeGate";
 import SiteHeader from "@/components/feature/SiteHeader";
 import SiteFooter from "@/components/feature/SiteFooter";
-import VprBanner from "@/components/feature/VprBanner";
 import Hero from "@/pages/home/components/Hero";
 import BrowseByType from "@/pages/home/components/BrowseByType";
 import Methodology from "@/pages/home/components/Methodology";
@@ -65,7 +64,6 @@ export default function Home() {
       <SiteHeader />
       <main>
         <Hero />
-        <VprBanner />
         <BrowseByType />
         <Methodology />
         <PeptideIndex />

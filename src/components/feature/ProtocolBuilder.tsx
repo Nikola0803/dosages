@@ -78,10 +78,23 @@ function ContextStrip({ goalKey, compoundName }: { goalKey: string | null; compo
 export default function ProtocolBuilder() {
   const navigate = useNavigate();
 
-  const [step, setStep]               = useState<Step>("goal");
-  const [goalKey, setGoalKey]         = useState<string | null>(null);
+  // Seed from onboarding localStorage — skip steps already answered
+  const [step, setStep] = useState<Step>(() => {
+    try {
+      const g = localStorage.getItem("vc-goal");
+      const p = localStorage.getItem("vc-peptide");
+      if (g && p) return "vial";
+      if (g)      return "compound";
+    } catch { /* ignore */ }
+    return "goal";
+  });
+  const [goalKey, setGoalKey] = useState<string | null>(() => {
+    try { return localStorage.getItem("vc-goal"); } catch { return null; }
+  });
   const [query, setQuery]             = useState("");
-  const [peptideSlug, setPeptideSlug] = useState("");
+  const [peptideSlug, setPeptideSlug] = useState(() => {
+    try { return localStorage.getItem("vc-peptide") ?? ""; } catch { return ""; }
+  });
   const [vialMg, setVialMg]           = useState<number | null>(null);
   const [waterMl, setWaterMl]         = useState<number | null>(null);
   const [doseTimes, setDoseTimes]     = useState<string[]>(["08:00"]);
@@ -91,23 +104,36 @@ export default function ProtocolBuilder() {
   const stepIdx  = STEPS.indexOf(step);
   const progress = (stepIdx / (STEPS.length - 1)) * 100;
 
+  // Weight-based dose personalisation
+  const weightKg = useMemo(() => {
+    try { return Number(localStorage.getItem("vc-weight-kg")) || 0; } catch { return 0; }
+  }, []);
+
   const selected = useMemo(
     () => peptides.find((p) => p.slug === peptideSlug),
     [peptideSlug],
   );
-  const suggestedWater = selected && vialMg ? suggestWaterMl(vialMg, selected.typicalMcg) : 0;
+
+  // If user weight is known and peptide uses per-kg dosing, compute personalised dose
+  const personalisedMcg = weightKg && selected?.perKgMcg
+    ? Math.round(weightKg * selected.perKgMcg)
+    : null;
+  // Use personalised dose if available, else fall back to the peptide's typical dose
+  const effectiveMcg = personalisedMcg ?? selected?.typicalMcg ?? 0;
+
+  const suggestedWater = selected && vialMg ? suggestWaterMl(vialMg, effectiveMcg) : 0;
   const effectiveWater = waterMl ?? suggestedWater;
 
   const results = useMemo(() => {
     if (!selected || !vialMg || !effectiveWater) return null;
-    const dpv = dosesPerVial(vialMg, selected.typicalMcg);
-    const rawUnits = unitsForDose(vialMg, effectiveWater, selected.typicalMcg);
+    const dpv = dosesPerVial(vialMg, effectiveMcg);
+    const rawUnits = unitsForDose(vialMg, effectiveWater, effectiveMcg);
     return {
       doses: dpv,
       units: Math.round(rawUnits * 10) / 10,
-      mcg:   selected.typicalMcg,
+      mcg:   effectiveMcg,
     };
-  }, [selected, vialMg, effectiveWater]);
+  }, [selected, vialMg, effectiveWater, effectiveMcg]);
 
   // Compound list: filtered by goal first, then search query
   const filteredPeptides = useMemo(() => {
@@ -156,7 +182,7 @@ export default function ProtocolBuilder() {
     );
     const protocol = existing ?? createProtocol(
       selected.slug, selected.name, selected.categorySlug,
-      vialMg, selected.typicalMcg, results.doses,
+      vialMg, effectiveMcg, results.doses,
     );
     saveProtocol({
       ...protocol,
@@ -340,7 +366,7 @@ export default function ProtocolBuilder() {
           <div className="animate-fadeIn">
             <ContextStrip goalKey={goalKey} compoundName={selected.name} />
 
-            <div className="flex items-center gap-4 mb-6">
+            <div className="flex items-center gap-4 mb-4">
               <VialIcon
                 categorySlug={selected.categorySlug}
                 size={52}
@@ -352,6 +378,21 @@ export default function ProtocolBuilder() {
                 <p className="mt-0.5 text-sm text-foreground-500">What size is your vial?</p>
               </div>
             </div>
+
+            {/* Weight-personalised dose callout */}
+            {personalisedMcg ? (
+              <div className="mb-4 flex items-center gap-2.5 rounded-2xl bg-primary-50 border border-primary-100 px-4 py-3">
+                <i className="ri-user-heart-line text-lg text-primary-500 shrink-0" />
+                <div>
+                  <p className="text-xs font-semibold text-primary-700">
+                    Your dose — {weightKg} kg × {selected.perKgMcg} µg/kg
+                  </p>
+                  <p className="text-sm font-bold text-primary-900">
+                    {personalisedMcg >= 1000 ? `${(personalisedMcg / 1000).toFixed(1).replace(/\.0$/, "")} mg` : `${personalisedMcg} µg`} per dose
+                  </p>
+                </div>
+              </div>
+            ) : weightKg > 0 ? null : null}
 
             <p className="text-xs font-semibold uppercase tracking-wider text-foreground-400 mb-2">Common sizes</p>
             <div className="grid grid-cols-4 gap-2">

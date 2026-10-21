@@ -5,15 +5,17 @@ export type Peptide = {
   slug: string;
   categorySlug: string;
   typicalMcg: number;
+  /** µg per kg body weight — when set, the calculator personalises dose to user weight */
+  perKgMcg?: number;
   frequency: string;
   evidence: EvidenceTier;
 };
 
 export const peptides: Peptide[] = [
   // Tissue Repair & Recovery
-  { name: "BPC-157", slug: "bpc-157", categorySlug: "tissue-repair", typicalMcg: 250, frequency: "1-2x daily", evidence: "clinical" },
+  { name: "BPC-157", slug: "bpc-157", categorySlug: "tissue-repair", typicalMcg: 250, perKgMcg: 2.5, frequency: "1-2x daily", evidence: "clinical" },
   { name: "KPV", slug: "kpv", categorySlug: "tissue-repair", typicalMcg: 200, frequency: "1x daily", evidence: "preclinical" },
-  { name: "TB-500", slug: "tb-500", categorySlug: "tissue-repair", typicalMcg: 500, frequency: "1x daily", evidence: "preclinical" },
+  { name: "TB-500", slug: "tb-500", categorySlug: "tissue-repair", typicalMcg: 500, perKgMcg: 1, frequency: "1x daily", evidence: "preclinical" },
 
   // Metabolic / Incretin — ordered by popularity
   { name: "Retatrutide", slug: "retatrutide", categorySlug: "metabolic", typicalMcg: 1000, frequency: "1x weekly", evidence: "clinical" },
@@ -28,18 +30,18 @@ export const peptides: Peptide[] = [
   { name: "SLU-PP-332", slug: "slu-pp-332", categorySlug: "metabolic", typicalMcg: 250, frequency: "1x daily", evidence: "preclinical" },
 
   // GH Secretagogue
-  { name: "CJC-1295 (no DAC)", slug: "cjc-1295-no-dac", categorySlug: "gh-secretagogue", typicalMcg: 100, frequency: "2-3x daily", evidence: "preclinical" },
+  { name: "CJC-1295 (no DAC)", slug: "cjc-1295-no-dac", categorySlug: "gh-secretagogue", typicalMcg: 100, perKgMcg: 1, frequency: "2-3x daily", evidence: "preclinical" },
   { name: "CJC-1295 DAC", slug: "cjc-1295-dac", categorySlug: "gh-secretagogue", typicalMcg: 1000, frequency: "1x weekly", evidence: "preclinical" },
-  { name: "GHRP-2", slug: "ghrp-2", categorySlug: "gh-secretagogue", typicalMcg: 100, frequency: "2-3x daily", evidence: "preclinical" },
-  { name: "GHRP-6", slug: "ghrp-6", categorySlug: "gh-secretagogue", typicalMcg: 100, frequency: "2-3x daily", evidence: "preclinical" },
-  { name: "Hexarelin", slug: "hexarelin", categorySlug: "gh-secretagogue", typicalMcg: 100, frequency: "1x daily", evidence: "preclinical" },
-  { name: "Ipamorelin", slug: "ipamorelin", categorySlug: "gh-secretagogue", typicalMcg: 100, frequency: "2-3x daily", evidence: "preclinical" },
-  { name: "Sermorelin", slug: "sermorelin", categorySlug: "gh-secretagogue", typicalMcg: 100, frequency: "1x daily", evidence: "clinical" },
+  { name: "GHRP-2", slug: "ghrp-2", categorySlug: "gh-secretagogue", typicalMcg: 100, perKgMcg: 1, frequency: "2-3x daily", evidence: "preclinical" },
+  { name: "GHRP-6", slug: "ghrp-6", categorySlug: "gh-secretagogue", typicalMcg: 100, perKgMcg: 1, frequency: "2-3x daily", evidence: "preclinical" },
+  { name: "Hexarelin", slug: "hexarelin", categorySlug: "gh-secretagogue", typicalMcg: 100, perKgMcg: 1, frequency: "1x daily", evidence: "preclinical" },
+  { name: "Ipamorelin", slug: "ipamorelin", categorySlug: "gh-secretagogue", typicalMcg: 100, perKgMcg: 1, frequency: "2-3x daily", evidence: "preclinical" },
+  { name: "Sermorelin", slug: "sermorelin", categorySlug: "gh-secretagogue", typicalMcg: 100, perKgMcg: 0.5, frequency: "1x daily", evidence: "clinical" },
   { name: "Tesamorelin", slug: "tesamorelin", categorySlug: "gh-secretagogue", typicalMcg: 1000, frequency: "1x daily", evidence: "clinical" },
 
   // Growth Factor
-  { name: "IGF-1 DES", slug: "igf-1-des", categorySlug: "growth-factor", typicalMcg: 50, frequency: "1x daily", evidence: "limited" },
-  { name: "IGF-1 LR3", slug: "igf-1-lr3", categorySlug: "growth-factor", typicalMcg: 20, frequency: "1x daily", evidence: "limited" },
+  { name: "IGF-1 DES", slug: "igf-1-des", categorySlug: "growth-factor", typicalMcg: 50, perKgMcg: 1.5, frequency: "1x daily", evidence: "limited" },
+  { name: "IGF-1 LR3", slug: "igf-1-lr3", categorySlug: "growth-factor", typicalMcg: 20, perKgMcg: 1, frequency: "1x daily", evidence: "limited" },
   { name: "MGF", slug: "mgf", categorySlug: "growth-factor", typicalMcg: 200, frequency: "1x daily", evidence: "preclinical" },
   { name: "PEG-MGF", slug: "peg-mgf", categorySlug: "growth-factor", typicalMcg: 200, frequency: "2x weekly", evidence: "preclinical" },
 

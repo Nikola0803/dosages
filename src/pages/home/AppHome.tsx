@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import {
   getActiveProtocol, getProtocols, getDaysRemaining, getProgressPct,
   isExpiringSoon, getTodaysSlots, getTodaysLogForProtocol, isRestDay,
+  saveProtocol,
 } from "@/lib/protocol";
 import type { Protocol } from "@/lib/protocol";
 import AppShell from "@/components/feature/AppShell";
@@ -165,9 +166,43 @@ function TodayCard({ p }: { p: Protocol }) {
   );
 }
 
+// ── Supply calculation helpers ────────────────────────────────────────────
+
+function getVialDurationDays(p: Protocol): number {
+  const start = new Date(p.startedAt + "T00:00:00").getTime();
+  const end   = new Date(p.endsAt   + "T00:00:00").getTime();
+  return Math.max(1, Math.round((end - start) / 86_400_000));
+}
+
+function getTotalSupplyDays(p: Protocol, vialsOnHand: number): number {
+  const currentDaysLeft = getDaysRemaining(p);
+  const daysPerVial = getVialDurationDays(p);
+  // vialsOnHand includes the current one, so extras = vialsOnHand - 1
+  const extra = Math.max(0, (vialsOnHand || 1) - 1);
+  return currentDaysLeft + extra * daysPerVial;
+}
+
+function getReorderDate(p: Protocol, vialsOnHand: number): Date {
+  const totalDays = getTotalSupplyDays(p, vialsOnHand);
+  // suggest reorder 14 days before running out
+  const reorderIn = Math.max(0, totalDays - 14);
+  const d = new Date();
+  d.setDate(d.getDate() + reorderIn);
+  return d;
+}
+
+function formatReorderDate(d: Date): string {
+  const now = new Date();
+  const diffDays = Math.round((d.getTime() - now.getTime()) / 86_400_000);
+  if (diffDays <= 0) return "Order now";
+  if (diffDays === 1) return "Tomorrow";
+  if (diffDays < 7) return `In ${diffDays} days`;
+  return d.toLocaleDateString("en-US", { month: "short", day: "numeric" });
+}
+
 // ── Cycle progress card ───────────────────────────────────────────────────
 
-function CycleProgress({ p }: { p: Protocol }) {
+function CycleProgress({ p, onProtocolChange }: { p: Protocol; onProtocolChange: () => void }) {
   const navigate = useNavigate();
   const pct  = getProgressPct(p);
   const days = getDaysRemaining(p);
@@ -175,52 +210,108 @@ function CycleProgress({ p }: { p: Protocol }) {
   const r = 28;
   const circ = 2 * Math.PI * r;
 
-  const dosesLeft = Math.round((days / p.dosesPerVial) * p.dosesPerVial);
+  const vialsOnHand = p.vialsOnHand ?? 1;
+  const totalDays = getTotalSupplyDays(p, vialsOnHand);
+  const isRunningLow = totalDays <= 21;
+  const reorderDate = getReorderDate(p, vialsOnHand);
+  const dosesUsed = Math.round((pct / 100) * p.dosesPerVial);
+
+  function adjustVials(delta: number) {
+    const next = Math.max(1, vialsOnHand + delta);
+    saveProtocol({ ...p, vialsOnHand: next });
+    onProtocolChange();
+  }
 
   return (
-    <button
-      type="button"
-      onClick={() => navigate("/tracker")}
-      className={`w-full text-left rounded-3xl border-2 p-4 bg-white active:scale-[0.98] transition-transform ${
-        soon ? "border-accent-200" : "border-background-100"
+    <div
+      className={`w-full rounded-3xl border-2 p-4 bg-white ${
+        isRunningLow ? "border-accent-200" : "border-background-100"
       }`}
     >
-      <div className="flex items-center gap-4">
-        {/* Progress ring */}
-        <div className="relative flex-shrink-0">
-          <svg width="68" height="68" viewBox="0 0 68 68" className="-rotate-90">
-            <circle cx="34" cy="34" r={r} fill="none" strokeWidth="6" className="stroke-background-100" />
-            <circle
-              cx="34" cy="34" r={r} fill="none" strokeWidth="6" strokeLinecap="round"
-              strokeDasharray={circ}
-              strokeDashoffset={circ - (pct / 100) * circ}
-              className={soon ? "stroke-accent-500" : "stroke-primary-500"}
-            />
-          </svg>
-          <div className="absolute inset-0 flex items-center justify-center">
-            <span className={`text-sm font-bold ${soon ? "text-accent-600" : "text-primary-600"}`}>
-              {pct}%
-            </span>
+      <button
+        type="button"
+        onClick={() => navigate("/tracker")}
+        className="w-full text-left active:scale-[0.98] transition-transform"
+      >
+        <div className="flex items-center gap-4">
+          {/* Progress ring */}
+          <div className="relative flex-shrink-0">
+            <svg width="68" height="68" viewBox="0 0 68 68" className="-rotate-90">
+              <circle cx="34" cy="34" r={r} fill="none" strokeWidth="6" className="stroke-background-100" />
+              <circle
+                cx="34" cy="34" r={r} fill="none" strokeWidth="6" strokeLinecap="round"
+                strokeDasharray={circ}
+                strokeDashoffset={circ - (pct / 100) * circ}
+                className={soon ? "stroke-accent-500" : "stroke-primary-500"}
+              />
+            </svg>
+            <div className="absolute inset-0 flex items-center justify-center">
+              <span className={`text-sm font-bold ${soon ? "text-accent-600" : "text-primary-600"}`}>
+                {pct}%
+              </span>
+            </div>
+          </div>
+
+          <div className="flex-1">
+            <p className="text-[10px] font-bold uppercase tracking-wider text-foreground-400">Vial progress</p>
+            <p className={`mt-0.5 font-heading text-2xl font-bold ${soon ? "text-accent-700" : "text-foreground-950"}`}>
+              {days} <span className="text-base font-semibold text-foreground-500">days left</span>
+            </p>
+            <div className="mt-1 flex items-center gap-2 text-xs text-foreground-500">
+              <i className="ri-medicine-bottle-line text-sm text-primary-400" />
+              ~{Math.max(0, p.dosesPerVial - dosesUsed)} doses remaining
+            </div>
           </div>
         </div>
+      </button>
 
-        <div className="flex-1">
-          <p className="text-[10px] font-bold uppercase tracking-wider text-foreground-400">Vial progress</p>
-          <p className={`mt-0.5 font-heading text-2xl font-bold ${soon ? "text-accent-700" : "text-foreground-950"}`}>
-            {days} <span className="text-base font-semibold text-foreground-500">days left</span>
+      {/* Vials on hand counter */}
+      <div className="mt-4 flex items-center justify-between rounded-2xl bg-background-50 px-4 py-3">
+        <div>
+          <p className="text-[10px] font-bold uppercase tracking-wider text-foreground-400">Vials on hand</p>
+          <p className="mt-0.5 text-sm font-semibold text-foreground-900">
+            {totalDays} days total supply
           </p>
-          <div className="mt-1 flex items-center gap-2 text-xs text-foreground-500">
-            <i className="ri-medicine-bottle-line text-sm text-primary-400" />
-            ~{Math.max(0, p.dosesPerVial - Math.round(pct / 100 * p.dosesPerVial))} doses remaining
-          </div>
-          {soon && (
-            <p className="mt-1 text-xs font-semibold text-accent-600">
-              <i className="ri-error-warning-line" /> Running low — reorder soon
-            </p>
-          )}
+        </div>
+        <div className="flex items-center gap-3">
+          <button
+            type="button"
+            onClick={() => adjustVials(-1)}
+            disabled={vialsOnHand <= 1}
+            className="flex h-8 w-8 items-center justify-center rounded-full bg-background-100 text-lg font-semibold text-foreground-600 disabled:opacity-30 active:scale-[0.9] transition-transform"
+          >−</button>
+          <span className="w-5 text-center font-heading text-xl font-bold text-foreground-950">{vialsOnHand}</span>
+          <button
+            type="button"
+            onClick={() => adjustVials(1)}
+            className="flex h-8 w-8 items-center justify-center rounded-full bg-background-100 text-lg font-semibold text-foreground-600 active:scale-[0.9] transition-transform"
+          >+</button>
         </div>
       </div>
-    </button>
+
+      {/* Running low + reorder */}
+      {isRunningLow && (
+        <div className="mt-3 flex items-center justify-between rounded-2xl bg-accent-50 border border-accent-100 px-4 py-3">
+          <div>
+            <p className="text-xs font-bold text-accent-700">
+              <i className="ri-error-warning-line mr-1" />Running low — time to reorder
+            </p>
+            <p className="mt-0.5 text-[11px] text-accent-600">
+              Reorder by {formatReorderDate(reorderDate)} to avoid a gap
+            </p>
+          </div>
+          <a
+            href="https://www.evlvpeptides.com/shop"
+            target="_blank"
+            rel="noopener noreferrer"
+            onClick={(e) => e.stopPropagation()}
+            className="ml-3 flex-shrink-0 rounded-full bg-accent-500 px-3 py-1.5 text-[11px] font-bold text-white active:scale-[0.97]"
+          >
+            Shop →
+          </a>
+        </div>
+      )}
+    </div>
   );
 }
 
@@ -254,10 +345,12 @@ export default function AppHome() {
   const [active, setActive] = useState<Protocol | null>(null);
   const [totalProtocols, setTotalProtocols] = useState(0);
 
-  useEffect(() => {
+  function reload() {
     setActive(getActiveProtocol());
     setTotalProtocols(getProtocols().length);
-  }, []);
+  }
+
+  useEffect(() => { reload(); }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <AppShell>
@@ -274,8 +367,8 @@ export default function AppHome() {
           {/* Today's dose — the star of the screen */}
           <TodayCard p={active} />
 
-          {/* Cycle progress */}
-          <CycleProgress p={active} />
+          {/* Cycle progress + supply tracking */}
+          <CycleProgress p={active} onProtocolChange={reload} />
 
           {/* Quick stats row */}
           <div className="grid grid-cols-3 gap-2">

@@ -99,24 +99,7 @@ export default function Hero() {
               <StartHereWizard />
             </div>
 
-            <a
-              href="https://verifiedpeptidereviews.com"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center justify-between gap-4 rounded-xl border border-accent-400 bg-accent-500 px-5 py-4 transition-colors hover:bg-accent-600 hover:border-accent-500"
-            >
-              <span className="min-w-0">
-                <span className="block font-heading text-sm font-semibold text-accent-950">
-                  Verified Peptide Reviews
-                </span>
-                <span className="block text-xs text-accent-800">
-                  Vet a vendor before you order
-                </span>
-              </span>
-              <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-accent-200 text-accent-900 transition-all group-hover:translate-x-0.5">
-                <i className="ri-arrow-right-up-line text-lg"></i>
-              </span>
-            </a>
+
           </div>
 
         </div>

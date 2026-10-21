@@ -30,6 +30,8 @@ export interface Protocol {
   waterMl?: number;
   // cycle notes
   cycleNotes?: string;
+  // supply tracking
+  vialsOnHand?: number;   // total vials the user currently has (including the active one)
 }
 
 const STORAGE_KEY    = 'vc-protocols';

@@ -8,7 +8,6 @@ const navLinks = [
   { label: "FAQ", to: "/#faq" },
   { label: "Guides", to: "/#guides" },
   { label: "Sources", to: "/#sources" },
-  { label: "VPR Spotlight", to: "/vpr-spotlight" },
 ];
 
 export default function SiteHeader() {
