@@ -23,7 +23,6 @@ const columns = [
       { label: "Home", to: "/" },
       { label: "Methodology", to: "/#methodology" },
       { label: "Common Questions", to: "/#faq" },
-      { label: "Recommended Sources", to: "/#sources" },
     ],
   },
 ];
