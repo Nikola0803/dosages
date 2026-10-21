@@ -30,7 +30,7 @@ const GOAL_CATS: Record<string, string[]> = {
   immune:    ["immune", "endocrine"],
 };
 
-const VIAL_OPTIONS = [2, 5, 10, 20];
+const VIAL_OPTIONS = [5, 10, 15, 20, 30];
 
 /** Recommended cycle length (weeks) by peptide category */
 const CYCLE_WEEKS: Record<string, number> = {

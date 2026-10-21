@@ -5,12 +5,16 @@
 
 export const UNITS_PER_ML = 100;
 
-/** Recommended bacteriostatic water volume (mL) so a typical dose lands mid-barrel. */
+/** Recommended bacteriostatic water volume (mL) so a typical dose lands mid-barrel.
+ *  Targets ~12.5 units on a U-100 syringe, bounded so concentration never exceeds
+ *  10 mg/mL (practical max for subq injection) and never exceeds 10 mL total. */
 export function suggestWaterMl(vialMg: number, doseMcg: number): number {
   if (!vialMg || !doseMcg) return 0;
-  const raw = (125 * vialMg) / doseMcg;
-  const rounded = Math.round(raw * 2) / 2; // nearest 0.5 mL
-  return Math.min(10, Math.max(0.5, rounded));
+  const raw = (125 * vialMg) / doseMcg; // solve for 12.5 units
+  // Keep concentration ≤ 10 mg/mL — floor grows with vial size
+  const floorMl = Math.max(0.5, vialMg / 10); // e.g. 10 mg vial → min 1 mL
+  const bounded = Math.min(10, Math.max(floorMl, raw));
+  return Math.round(bounded * 2) / 2; // nearest 0.5 mL
 }
 
 /** Concentration in mcg per mL. */

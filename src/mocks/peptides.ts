@@ -25,7 +25,7 @@ export const peptides: Peptide[] = [
   { name: "Mazdutide", slug: "mazdutide", categorySlug: "metabolic", typicalMcg: 3000, frequency: "1x weekly", evidence: "clinical" },
   { name: "Survodutide", slug: "survodutide", categorySlug: "metabolic", typicalMcg: 600, frequency: "1x weekly", evidence: "clinical" },
   { name: "AOD-9604", slug: "aod-9604", categorySlug: "metabolic", typicalMcg: 300, frequency: "1x daily", evidence: "clinical" },
-  { name: "5-Amino-1MQ", slug: "5-amino-1mq", categorySlug: "metabolic", typicalMcg: 2500, frequency: "1x daily", evidence: "preclinical" },
+  { name: "5-Amino-1MQ", slug: "5-amino-1mq", categorySlug: "metabolic", typicalMcg: 5000, frequency: "1x daily", evidence: "preclinical" },
   { name: "Adipotide", slug: "adipotide", categorySlug: "metabolic", typicalMcg: 5000, frequency: "1x daily", evidence: "limited" },
   { name: "SLU-PP-332", slug: "slu-pp-332", categorySlug: "metabolic", typicalMcg: 250, frequency: "1x daily", evidence: "preclinical" },
 
