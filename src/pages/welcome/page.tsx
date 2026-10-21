@@ -217,43 +217,75 @@ function PrepScreen({
 }: {
   goal: string | null; peptide?: string; onFinish: () => void;
 }) {
+  const [phase, setPhase] = useState(0);
   const goalMeta = GOALS.find(g => g.key === goal);
+  const weightKg = (() => { try { return Number(localStorage.getItem("vc-weight-kg")) || null; } catch { return null; } })();
+
+  useEffect(() => {
+    const t1 = setTimeout(() => setPhase(1), 350);
+    const t2 = setTimeout(() => setPhase(2), 850);
+    const t3 = setTimeout(() => setPhase(3), 1350);
+    const t4 = setTimeout(() => setPhase(4), 1850);
+    return () => { clearTimeout(t1); clearTimeout(t2); clearTimeout(t3); clearTimeout(t4); };
+  }, []);
+
+  const rows = [
+    goalMeta && { icon: goalMeta.icon, label: "Your goal", value: goalMeta.label },
+    peptide  && { icon: "ri-flask-line", label: "Your compound", value: peptide },
+    weightKg && { icon: "ri-user-heart-line", label: "Dose calibration", value: `Based on ${weightKg} kg body weight` },
+  ].filter(Boolean) as { icon: string; label: string; value: string }[];
 
   return (
-    <div className="flex flex-1 flex-col items-center justify-center px-6 text-center">
-      {/* Check badge */}
-      <div className="flex h-24 w-24 items-center justify-center rounded-full bg-white shadow-xl shadow-primary-900/30">
-        <i className="ri-check-line text-5xl text-primary-500" />
+    <div className="flex flex-1 flex-col px-4 pt-8 pb-6">
+      {/* Icon + heading */}
+      <div className="flex flex-col items-center text-center mb-8">
+        <div className={`flex h-20 w-20 items-center justify-center rounded-full transition-all duration-700 ${
+          phase >= 4 ? "bg-white shadow-2xl shadow-primary-900/40 scale-110" : "bg-white/10"
+        }`}>
+          <i className={`text-4xl transition-all duration-500 ${
+            phase >= 4 ? "ri-check-line text-primary-500" : "ri-loader-4-line text-white animate-spin"
+          }`} />
+        </div>
+        <h1 className="mt-5 font-heading text-3xl font-bold text-white">
+          {phase >= 4 ? "You're all set!" : "Compiling your profile…"}
+        </h1>
+        <p className="mt-2 text-sm text-white/50">
+          {phase >= 4 ? "Your personalised protocol is ready to build." : "Calibrating dosage ranges…"}
+        </p>
       </div>
 
-      <h1 className="mt-8 font-heading text-4xl font-bold text-white">You're all set!</h1>
-      <p className="mt-3 text-base text-white/60">Your personalised profile is ready.</p>
+      {/* Sequential data cards */}
+      <div className="space-y-3">
+        {rows.map((row, i) => (
+          phase > i && (
+            <div
+              key={row.label}
+              className="flex items-center gap-3.5 rounded-2xl bg-white/8 px-4 py-4 animate-fadeUp"
+              style={{ border: "1px solid rgba(255,255,255,0.08)" }}
+            >
+              <span className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-xl bg-primary-500">
+                <i className={`${row.icon} text-white text-lg`} />
+              </span>
+              <div className="flex-1 min-w-0">
+                <p className="text-[10px] font-bold uppercase tracking-wider text-white/40">{row.label}</p>
+                <p className="mt-0.5 text-sm font-bold text-white truncate">{row.value}</p>
+              </div>
+              <i className="ri-check-line flex-shrink-0 text-primary-400 text-lg" />
+            </div>
+          )
+        ))}
+      </div>
 
-      {/* Goal + compound summary pills */}
-      {(goalMeta || peptide) && (
-        <div className="mt-8 flex flex-wrap justify-center gap-2">
-          {goalMeta && (
-            <span className="flex items-center gap-1.5 rounded-full bg-white/10 px-4 py-2 text-sm font-semibold text-white">
-              <i className={`${goalMeta.icon} text-primary-300`} />
-              {goalMeta.label}
-            </span>
-          )}
-          {peptide && (
-            <span className="flex items-center gap-1.5 rounded-full bg-white/10 px-4 py-2 text-sm font-semibold text-white">
-              <i className="ri-flask-line text-primary-300" />
-              {peptide}
-            </span>
-          )}
-        </div>
-      )}
-
-      <button
-        type="button"
-        onClick={onFinish}
-        className="mt-auto w-full rounded-full bg-white py-4 text-base font-bold text-primary-950 shadow-lg active:scale-[0.98] transition-transform"
-      >
-        Open VialCalc →
-      </button>
+      {/* CTA — appears last */}
+      <div className={`mt-auto transition-all duration-500 ${phase >= 4 ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4 pointer-events-none"}`}>
+        <button
+          type="button"
+          onClick={onFinish}
+          className="mt-8 w-full rounded-full bg-white py-4 text-base font-bold text-primary-950 shadow-lg active:scale-[0.98] transition-transform"
+        >
+          Build my protocol →
+        </button>
+      </div>
     </div>
   );
 }
@@ -379,8 +411,8 @@ export default function WelcomePage() {
       localStorage.setItem("vc-weight-kg", String(weightKgStore));
       localStorage.setItem("vc-height-cm", String(heightCmStore));
     } catch { /* ignore */ }
-    // Go to app home — in PWA/standalone mode this renders AppHome
-    navigate("/", { replace: true });
+    // Send to builder — pre-filled with goal + peptide from onboarding, opens at vial step
+    navigate("/start", { replace: true });
   }
 
   const heightDrumValues = isMetric ? HEIGHT_CM : HEIGHT_IN;
@@ -543,30 +575,39 @@ export default function WelcomePage() {
         {step === 4 && (
           <div className="flex flex-1 flex-col">
             <h1 className="font-heading text-3xl font-bold text-foreground-950">What's your weight?</h1>
-            <div className="mt-8 text-center">
-              <p className="font-heading text-[80px] font-bold text-foreground-950 leading-none tabular-nums">{weightRaw}</p>
-              <p className="mt-2 text-xs font-bold uppercase tracking-widest text-foreground-400">
-                {isMetric ? "kg" : "lbs"}
-              </p>
-            </div>
             <UnitToggle isMetric={isMetric} onToggle={toggleUnit} />
-            <div className="mt-10 flex items-center justify-center gap-10">
+            {/* Type-in input — big and tappable */}
+            <div className="mt-6 flex items-end justify-center gap-3">
+              <input
+                type="number"
+                inputMode="decimal"
+                min={isMetric ? 30 : 66}
+                max={isMetric ? 300 : 660}
+                value={weightRaw}
+                onChange={(e) => {
+                  const v = Math.round(Number(e.target.value));
+                  if (!isNaN(v) && v > 0) setWeightRaw(v);
+                }}
+                className="w-40 border-b-2 border-primary-300 bg-transparent pb-1 text-center font-heading text-[72px] font-bold text-foreground-950 leading-none tabular-nums focus:border-primary-500 focus:outline-none"
+              />
+              <span className="mb-3 text-xl font-bold uppercase tracking-widest text-foreground-400">
+                {isMetric ? "kg" : "lbs"}
+              </span>
+            </div>
+            {/* Fine-tune buttons */}
+            <div className="mt-8 flex items-center justify-center gap-6">
               <button
                 type="button"
-                onClick={() => setWeightRaw((w) => Math.max(isMetric ? 40 : 88, w - 1))}
-                className="flex h-16 w-16 items-center justify-center rounded-full bg-background-100 text-4xl font-light text-foreground-700 transition-transform active:scale-[0.93]"
-              >
-                −
-              </button>
+                onClick={() => setWeightRaw((w) => Math.max(isMetric ? 30 : 66, w - 1))}
+                className="flex h-12 w-12 items-center justify-center rounded-full bg-background-100 text-2xl font-light text-foreground-700 transition-transform active:scale-[0.93]"
+              >−</button>
+              <span className="text-xs text-foreground-400">Fine-tune</span>
               <button
                 type="button"
                 onClick={() => setWeightRaw((w) => Math.min(isMetric ? 300 : 660, w + 1))}
-                className="flex h-16 w-16 items-center justify-center rounded-full bg-background-100 text-4xl font-light text-foreground-700 transition-transform active:scale-[0.93]"
-              >
-                +
-              </button>
+                className="flex h-12 w-12 items-center justify-center rounded-full bg-background-100 text-2xl font-light text-foreground-700 transition-transform active:scale-[0.93]"
+              >+</button>
             </div>
-            <p className="mt-4 text-center text-xs text-foreground-400">Tap to adjust in 1 {isMetric ? "kg" : "lb"} steps</p>
           </div>
         )}
 

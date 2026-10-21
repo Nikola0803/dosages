@@ -9,6 +9,26 @@ import type { Protocol } from "@/lib/protocol";
 import AppShell from "@/components/feature/AppShell";
 import VialIcon from "@/components/feature/VialIcon";
 import { suggestWaterMl, unitsForDose, formatDose } from "@/utils/dosage";
+import { peptides } from "@/mocks/peptides";
+
+const GOAL_CATS: Record<string, string[]> = {
+  fat:       ["metabolic"],
+  muscle:    ["gh-secretagogue", "growth-factor"],
+  recovery:  ["tissue-repair"],
+  longevity: ["longevity", "mitochondrial"],
+  cognitive: ["cognitive"],
+  immune:    ["immune", "endocrine"],
+};
+
+const GOAL_LABELS: Record<string, string> = {
+  fat: "Lose Fat", muscle: "Build Muscle", recovery: "Recovery",
+  longevity: "Longevity", cognitive: "Cognitive", immune: "Immune",
+};
+
+const GOAL_ICONS: Record<string, string> = {
+  fat: "ri-fire-line", muscle: "ri-boxing-line", recovery: "ri-heart-pulse-line",
+  longevity: "ri-hourglass-line", cognitive: "ri-brain-line", immune: "ri-shield-cross-line",
+};
 
 // ── Helpers ───────────────────────────────────────────────────────────────
 
@@ -319,22 +339,68 @@ function CycleProgress({ p, onProtocolChange }: { p: Protocol; onProtocolChange:
 
 function EmptyHome() {
   const navigate = useNavigate();
+  const goalKey = (() => { try { return localStorage.getItem("vc-goal"); } catch { return null; } })();
+  const peptideSlug = (() => { try { return localStorage.getItem("vc-peptide"); } catch { return null; } })();
+
+  const suggested = goalKey
+    ? peptides.filter(p => GOAL_CATS[goalKey]?.includes(p.categorySlug)).slice(0, 3)
+    : [];
+
   return (
-    <div className="flex flex-col items-center pt-8 pb-6">
-      <div className="flex h-20 w-20 items-center justify-center rounded-3xl bg-primary-50">
-        <i className="ri-flask-line text-4xl text-primary-400" />
+    <div className="flex flex-col pb-6 space-y-4">
+      {/* Hero CTA card */}
+      <div className="rounded-3xl bg-primary-500 p-5">
+        {goalKey && (
+          <div className="mb-2 flex items-center gap-1.5">
+            <i className={`${GOAL_ICONS[goalKey] ?? "ri-flask-line"} text-white/70 text-sm`} />
+            <span className="text-xs font-semibold text-white/70 uppercase tracking-wider">
+              {GOAL_LABELS[goalKey] ?? goalKey} protocol
+            </span>
+          </div>
+        )}
+        <h2 className="font-heading text-2xl font-bold text-white leading-tight">
+          {peptideSlug ? "One step left —" : "Build your"}<br />
+          {peptideSlug ? "enter your vial size" : "first protocol"}
+        </h2>
+        <p className="mt-1.5 text-sm text-white/75">
+          {peptideSlug
+            ? "We'll calculate your exact draw line and track your cycle."
+            : "Tell us your vial size and we'll calculate your exact draw line."}
+        </p>
+        <button
+          type="button"
+          onClick={() => navigate("/start")}
+          className="mt-4 rounded-full bg-white px-6 py-3 text-sm font-bold text-primary-700 active:scale-[0.98] transition-transform shadow-sm"
+        >
+          {peptideSlug ? "Complete setup →" : "Build a protocol →"}
+        </button>
       </div>
-      <h2 className="mt-4 font-heading text-xl font-bold text-foreground-950">No active protocol</h2>
-      <p className="mt-1.5 text-center text-sm text-foreground-500 max-w-[220px]">
-        Build your first protocol to see your dose and progress here.
-      </p>
-      <button
-        type="button"
-        onClick={() => navigate("/start")}
-        className="mt-5 rounded-full bg-primary-500 px-8 py-3.5 text-base font-bold text-white active:scale-[0.98] shadow-sm"
-      >
-        Build a protocol →
-      </button>
+
+      {/* Suggested compounds */}
+      {suggested.length > 0 && (
+        <div>
+          <p className="mb-2 text-xs font-bold uppercase tracking-wider text-foreground-400">
+            Compounds for your goal
+          </p>
+          <div className="space-y-2">
+            {suggested.map((p) => (
+              <button
+                key={p.slug}
+                type="button"
+                onClick={() => navigate("/start")}
+                className="flex w-full items-center gap-3 rounded-2xl border border-background-100 bg-white px-4 py-3 text-left active:scale-[0.98] transition-transform shadow-sm"
+              >
+                <VialIcon categorySlug={p.categorySlug} size={38} label={p.name} />
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm font-bold text-foreground-950">{p.name}</p>
+                  <p className="text-xs text-foreground-500">{p.frequency} · {p.typicalMcg >= 1000 ? `${p.typicalMcg / 1000}mg` : `${p.typicalMcg}mcg`}</p>
+                </div>
+                <i className="ri-arrow-right-s-line flex-shrink-0 text-foreground-300 text-lg" />
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   );
 }
