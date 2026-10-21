@@ -77,7 +77,7 @@ export function createProtocol(
   startDate?: string,
 ): Protocol {
   const startedAt = startDate ?? today();
-  const endsAt    = addDays(startedAt, dosesPerVial);
+  const endsAt    = addDays(startedAt, Math.max(1, dosesPerVial));
 
   return {
     id: crypto.randomUUID(),

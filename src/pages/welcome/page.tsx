@@ -217,67 +217,142 @@ function PrepScreen({
 }: {
   goal: string | null; peptide?: string; onFinish: () => void;
 }) {
-  const [phase, setPhase] = useState(0);
   const goalMeta = GOALS.find(g => g.key === goal);
+
+  // Read all profile data from localStorage
   const weightKg = (() => { try { return Number(localStorage.getItem("vc-weight-kg")) || null; } catch { return null; } })();
+  const heightCm = (() => { try { return Number(localStorage.getItem("vc-height-cm")) || null; } catch { return null; } })();
+  const age      = (() => { try { return Number(localStorage.getItem("vc-age")) || null; } catch { return null; } })();
+  const sex      = (() => { try { return localStorage.getItem("vc-sex"); } catch { return null; } })();
+  const activity = (() => { try { return localStorage.getItem("vc-activity"); } catch { return null; } })();
+
+  // Compute BMI
+  const bmi = (weightKg && heightCm) ? weightKg / Math.pow(heightCm / 100, 2) : null;
+  const bmiCategory = !bmi ? "" : bmi < 18.5 ? "Underweight" : bmi < 25 ? "Normal range" : bmi < 30 ? "Overweight" : "Obese";
+
+  // Compute TDEE via Harris-Benedict
+  const bmr = (weightKg && heightCm && age)
+    ? (sex === "female"
+        ? 447.593 + 9.247 * weightKg + 3.098 * heightCm - 4.330 * age
+        : 88.362  + 13.397 * weightKg + 4.799 * heightCm - 5.677 * age)
+    : null;
+  const actMult: Record<string, number> = {
+    sedentary: 1.2, light: 1.375, moderate: 1.55, "very-active": 1.725, elite: 1.9,
+  };
+  const tdee = bmr ? Math.round(bmr * (actMult[activity ?? ""] ?? 1.375)) : null;
+
+  // Peptide dose from peptides data
+  const peptideData = peptides.find(p => p.name === peptide);
+  const startDose = peptideData
+    ? (weightKg && peptideData.perKgMcg ? Math.round(weightKg * peptideData.perKgMcg) : peptideData.typicalMcg)
+    : null;
+
+  type CalcRow = { computing: string; icon: string; label: string; value: string };
+  const rows: CalcRow[] = [
+    ...(weightKg || heightCm ? [{
+      computing: "Reading body measurements…",
+      icon: "ri-user-heart-line",
+      label: "Body stats",
+      value: [weightKg && `${weightKg} kg`, heightCm && `${heightCm} cm`].filter(Boolean).join(" · "),
+    }] : []),
+    ...(bmi ? [{
+      computing: "Calculating BMI…",
+      icon: "ri-scales-3-line",
+      label: "BMI",
+      value: `${bmi.toFixed(1)} — ${bmiCategory}`,
+    }] : []),
+    ...(tdee ? [{
+      computing: "Estimating daily energy expenditure…",
+      icon: "ri-fire-line",
+      label: "Maintenance TDEE",
+      value: `~${tdee.toLocaleString()} kcal / day`,
+    }] : []),
+    ...(goalMeta ? [{
+      computing: "Mapping to your goal…",
+      icon: goalMeta.icon,
+      label: "Your goal",
+      value: goalMeta.label,
+    }] : []),
+    ...(peptide && startDose && peptideData ? [{
+      computing: `Calibrating ${peptide} protocol…`,
+      icon: "ri-flask-fill",
+      label: "Starting dose",
+      value: `${startDose.toLocaleString()} mcg · ${peptideData.frequency}`,
+    }] : []),
+  ];
+
+  // Row animation: "hidden" → "calculating" → "done"
+  type RowState = "hidden" | "calculating" | "done";
+  const [rowStates, setRowStates] = useState<RowState[]>(() => rows.map(() => "hidden"));
+  const [finished, setFinished] = useState(false);
 
   useEffect(() => {
-    const t1 = setTimeout(() => setPhase(1), 350);
-    const t2 = setTimeout(() => setPhase(2), 850);
-    const t3 = setTimeout(() => setPhase(3), 1350);
-    const t4 = setTimeout(() => setPhase(4), 1850);
-    return () => { clearTimeout(t1); clearTimeout(t2); clearTimeout(t3); clearTimeout(t4); };
+    const INTERVAL = 900;
+    const CALC_DUR = 700;
+    const timers: ReturnType<typeof setTimeout>[] = [];
+    rows.forEach((_, i) => {
+      timers.push(setTimeout(() => setRowStates(s => s.map((st, j) => j === i ? "calculating" : st)), 300 + i * INTERVAL));
+      timers.push(setTimeout(() => setRowStates(s => s.map((st, j) => j === i ? "done" : st)), 300 + i * INTERVAL + CALC_DUR));
+    });
+    timers.push(setTimeout(() => setFinished(true), 300 + rows.length * INTERVAL + CALC_DUR + 500));
+    return () => timers.forEach(clearTimeout);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
-  const rows = [
-    goalMeta && { icon: goalMeta.icon, label: "Your goal", value: goalMeta.label },
-    peptide  && { icon: "ri-flask-line", label: "Your compound", value: peptide },
-    weightKg && { icon: "ri-user-heart-line", label: "Dose calibration", value: `Based on ${weightKg} kg body weight` },
-  ].filter(Boolean) as { icon: string; label: string; value: string }[];
 
   return (
     <div className="flex flex-1 flex-col px-4 pt-8 pb-6">
       {/* Icon + heading */}
       <div className="flex flex-col items-center text-center mb-8">
         <div className={`flex h-20 w-20 items-center justify-center rounded-full transition-all duration-700 ${
-          phase >= 4 ? "bg-white shadow-2xl shadow-primary-900/40 scale-110" : "bg-white/10"
+          finished ? "bg-white shadow-2xl shadow-primary-900/40 scale-110" : "bg-white/10"
         }`}>
           <i className={`text-4xl transition-all duration-500 ${
-            phase >= 4 ? "ri-check-line text-primary-500" : "ri-loader-4-line text-white animate-spin"
+            finished ? "ri-check-line text-primary-500" : "ri-loader-4-line text-white animate-spin"
           }`} />
         </div>
         <h1 className="mt-5 font-heading text-3xl font-bold text-white">
-          {phase >= 4 ? "You're all set!" : "Compiling your profile…"}
+          {finished ? "You're all set!" : "Building your profile…"}
         </h1>
         <p className="mt-2 text-sm text-white/50">
-          {phase >= 4 ? "Your personalised protocol is ready to build." : "Calibrating dosage ranges…"}
+          {finished ? "Your personalised protocol is ready to build." : "Crunching the numbers…"}
         </p>
       </div>
 
-      {/* Sequential data cards */}
+      {/* Calculation rows */}
       <div className="space-y-3">
-        {rows.map((row, i) => (
-          phase > i && (
+        {rows.map((row, i) => {
+          const state = rowStates[i];
+          if (state === "hidden") return null;
+          const isCalc = state === "calculating";
+          return (
             <div
               key={row.label}
               className="flex items-center gap-3.5 rounded-2xl bg-white/8 px-4 py-4 animate-fadeUp"
               style={{ border: "1px solid rgba(255,255,255,0.08)" }}
             >
-              <span className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-xl bg-primary-500">
-                <i className={`${row.icon} text-white text-lg`} />
+              <span className={`flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-xl transition-colors duration-300 ${
+                isCalc ? "bg-white/15" : "bg-primary-500"
+              }`}>
+                <i className={`text-lg transition-all duration-300 ${
+                  isCalc ? "ri-loader-4-line text-white/60 animate-spin" : `${row.icon} text-white`
+                }`} />
               </span>
               <div className="flex-1 min-w-0">
                 <p className="text-[10px] font-bold uppercase tracking-wider text-white/40">{row.label}</p>
-                <p className="mt-0.5 text-sm font-bold text-white truncate">{row.value}</p>
+                {isCalc ? (
+                  <p className="mt-0.5 text-sm text-white/40 italic">{row.computing}</p>
+                ) : (
+                  <p className="mt-0.5 text-sm font-bold text-white truncate animate-fadeUp">{row.value}</p>
+                )}
               </div>
-              <i className="ri-check-line flex-shrink-0 text-primary-400 text-lg" />
+              {!isCalc && <i className="ri-check-line flex-shrink-0 text-primary-400 text-lg" />}
             </div>
-          )
-        ))}
+          );
+        })}
       </div>
 
-      {/* CTA — appears last */}
-      <div className={`mt-auto transition-all duration-500 ${phase >= 4 ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4 pointer-events-none"}`}>
+      {/* CTA — appears after all rows resolve */}
+      <div className={`mt-auto transition-all duration-500 ${finished ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4 pointer-events-none"}`}>
         <button
           type="button"
           onClick={onFinish}

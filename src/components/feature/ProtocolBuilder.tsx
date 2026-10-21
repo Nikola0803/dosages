@@ -32,6 +32,31 @@ const GOAL_CATS: Record<string, string[]> = {
 
 const VIAL_OPTIONS = [2, 5, 10, 20];
 
+/** Recommended cycle length (weeks) by peptide category */
+const CYCLE_WEEKS: Record<string, number> = {
+  metabolic:         12,
+  "gh-secretagogue": 16,
+  "growth-factor":   8,
+  "tissue-repair":   8,
+  longevity:         12,
+  cognitive:         8,
+  immune:            4,
+  mitochondrial:     8,
+  endocrine:         8,
+};
+
+function parseDosesPerWeek(frequency: string): number {
+  const f = frequency.toLowerCase();
+  if (f.includes("2-3x")) return 17;
+  if (f.includes("1-2x daily")) return 10;
+  if (f.includes("2x daily")) return 14;
+  if (f.includes("1x daily")) return 7;
+  if (f.includes("3x weekly")) return 3;
+  if (f.includes("2x weekly")) return 2;
+  if (f.includes("1x weekly")) return 1;
+  return 7;
+}
+
 const REST_OPTIONS = [
   { key: "daily",   label: "Every day",       sub: "No rest days"            },
   { key: "eod",     label: "Every other day", sub: "Alternate days on / off" },
@@ -404,22 +429,55 @@ export default function ProtocolBuilder() {
             ) : weightKg > 0 ? null : null}
 
             <p className="text-xs font-semibold uppercase tracking-wider text-foreground-400 mb-2">Common sizes</p>
-            <div className="grid grid-cols-4 gap-2">
-              {VIAL_OPTIONS.map((mg) => (
-                <button
-                  key={mg}
-                  type="button"
-                  onClick={() => setVialMg(mg)}
-                  className={`rounded-2xl border-2 py-3.5 text-sm font-bold transition-all active:scale-[0.97] ${
-                    vialMg === mg
-                      ? "border-primary-500 bg-primary-50 text-primary-700"
-                      : "border-background-100 bg-white text-foreground-900"
-                  }`}
-                >
-                  {mg}mg
-                </button>
-              ))}
+            <div className="grid grid-cols-2 gap-2.5">
+              {VIAL_OPTIONS.map((mg) => {
+                const dpv   = dosesPerVial(mg, effectiveMcg);
+                const small = dpv === 0;
+                const sel   = vialMg === mg;
+                const dpw   = selected ? parseDosesPerWeek(selected.frequency) : 7;
+                const wks   = dpv > 0 ? dpv / dpw : 0;
+                const supplyLabel = wks >= 1
+                  ? `~${wks < 1.5 ? "1" : wks < 2.5 ? "2" : wks < 4 ? Math.round(wks) : Math.round(wks)} wk supply`
+                  : `${dpv} dose${dpv !== 1 ? "s" : ""}`;
+                return (
+                  <button
+                    key={mg}
+                    type="button"
+                    onClick={() => !small && setVialMg(mg)}
+                    disabled={small}
+                    className={`flex flex-col gap-0.5 rounded-2xl border-2 p-4 text-left transition-all active:scale-[0.97] ${
+                      small
+                        ? "border-background-50 bg-background-50 opacity-50 cursor-not-allowed"
+                        : sel
+                        ? "border-primary-500 bg-primary-50"
+                        : "border-background-100 bg-white"
+                    }`}
+                  >
+                    <span className={`text-lg font-bold ${sel ? "text-primary-700" : small ? "text-foreground-300" : "text-foreground-900"}`}>
+                      {mg} mg
+                    </span>
+                    {small ? (
+                      <span className="text-[11px] text-foreground-300">Too small</span>
+                    ) : (
+                      <>
+                        <span className={`text-[11px] font-semibold ${sel ? "text-primary-600" : "text-foreground-400"}`}>
+                          {dpv} dose{dpv !== 1 ? "s" : ""}
+                        </span>
+                        <span className={`text-[11px] ${sel ? "text-primary-500" : "text-foreground-300"}`}>
+                          {supplyLabel}
+                        </span>
+                      </>
+                    )}
+                  </button>
+                );
+              })}
             </div>
+
+            {vialMg !== null && dosesPerVial(vialMg, effectiveMcg) === 0 && (
+              <p className="mt-2 text-xs text-red-500 font-medium">
+                One dose of {effectiveMcg >= 1000 ? `${(effectiveMcg/1000).toFixed(1).replace(/\.0$/,"")}mg` : `${effectiveMcg}mcg`} needs a larger vial — pick a bigger size or enter a custom value above.
+              </p>
+            )}
 
             <p className="mt-4 text-xs font-semibold uppercase tracking-wider text-foreground-400 mb-2">Custom</p>
             <div className="flex items-center gap-3">
@@ -440,7 +498,7 @@ export default function ProtocolBuilder() {
             <button
               type="button"
               onClick={() => { if (!waterMl && selected && vialMg) setWaterMl(suggestedWater); goNext(); }}
-              disabled={!vialMg}
+              disabled={!vialMg || (!!vialMg && dosesPerVial(vialMg, effectiveMcg) === 0)}
               className="mt-6 w-full rounded-full bg-primary-500 py-4 text-base font-bold text-white shadow-sm active:scale-[0.98] disabled:bg-background-200 disabled:text-foreground-400"
             >
               Continue →
@@ -570,6 +628,15 @@ export default function ProtocolBuilder() {
             <p className="mt-1 text-sm text-foreground-500">
               Set your dose times and rest days.
             </p>
+
+            {selected && (
+              <div className="mt-3 flex items-center gap-2 rounded-xl bg-primary-50 border border-primary-100 px-3 py-2.5">
+                <i className="ri-information-line text-primary-500 shrink-0" />
+                <p className="text-xs text-primary-700">
+                  <strong>{selected.name}</strong> is typically taken <strong>{selected.frequency}</strong>
+                </p>
+              </div>
+            )}
 
             {/* Dose times */}
             <div className="mt-5">
@@ -708,6 +775,42 @@ export default function ProtocolBuilder() {
                 </div>
               </div>
             </div>
+
+            {/* Vials needed for a standard cycle */}
+            {(() => {
+              const recWeeks = CYCLE_WEEKS[selected.categorySlug] ?? 12;
+              const dpw      = parseDosesPerWeek(selected.frequency);
+              const totalDoses = recWeeks * dpw;
+              const vialsNeeded = Math.ceil(totalDoses / Math.max(1, results.doses));
+              return (
+                <div className="mt-3 rounded-2xl bg-background-50 border border-background-100 px-4 py-3.5">
+                  <p className="text-[11px] font-bold uppercase tracking-wider text-foreground-400">
+                    Typical {recWeeks}-week cycle
+                  </p>
+                  <div className="mt-2 flex items-center justify-between">
+                    <div>
+                      <p className="text-xl font-bold text-foreground-950">
+                        {vialsNeeded} vial{vialsNeeded !== 1 ? "s" : ""} needed
+                      </p>
+                      <p className="text-xs text-foreground-500 mt-0.5">
+                        {totalDoses} doses total · {results.doses} doses/vial
+                      </p>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => navigate("/shop")}
+                      className="flex items-center gap-1.5 rounded-full bg-accent-500 px-3.5 py-2 text-xs font-bold text-white active:scale-[0.97]"
+                    >
+                      <i className="ri-price-tag-3-line" />
+                      30% off
+                    </button>
+                  </div>
+                  <p className="mt-2 text-[11px] text-foreground-400">
+                    App members get 30% off all vials in our shop.
+                  </p>
+                </div>
+              );
+            })()}
 
             {/* Draw line callout */}
             <div className="mt-3 rounded-2xl bg-primary-50 px-4 py-3.5">
