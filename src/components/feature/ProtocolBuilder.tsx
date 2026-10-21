@@ -45,6 +45,55 @@ const CYCLE_WEEKS: Record<string, number> = {
   endocrine:         8,
 };
 
+/** Companion peptides to upsell on the review step, keyed by current compound's categorySlug */
+const STACK_COMBOS: Record<string, Array<{ slug: string; reason: string }>> = {
+  metabolic: [
+    { slug: "bpc-157",          reason: "Protects gut lining from GLP-1 GI side effects" },
+    { slug: "5-amino-1mq",      reason: "Boosts mitochondrial fat oxidation between doses" },
+    { slug: "mots-c",           reason: "Amplifies metabolic rate and insulin sensitivity" },
+  ],
+  "gh-secretagogue": [
+    { slug: "igf-1-lr3",        reason: "Extends the anabolic window after each GH pulse" },
+    { slug: "tb-500",           reason: "Accelerates tissue repair and recovery" },
+    { slug: "bpc-157",          reason: "Synergistic healing + gut and tendon support" },
+  ],
+  "growth-factor": [
+    { slug: "ipamorelin",       reason: "Drives clean GH pulses to feed IGF signalling" },
+    { slug: "tb-500",           reason: "Amplifies systemic tissue repair and remodelling" },
+    { slug: "bpc-157",          reason: "Protects gut integrity and accelerates healing" },
+  ],
+  "tissue-repair": [
+    { slug: "ipamorelin",       reason: "Clean GH secretion supports deeper tissue healing" },
+    { slug: "igf-1-lr3",        reason: "Downstream growth factor sustains repair signalling" },
+    { slug: "thymosin-alpha-1", reason: "Modulates immune response for faster recovery" },
+  ],
+  longevity: [
+    { slug: "epitalon",         reason: "Extends telomere length and circadian regulation" },
+    { slug: "bpc-157",          reason: "Systemic cytoprotection and organ integrity" },
+    { slug: "mots-c",           reason: "Mitochondrial rescue and metabolic resilience" },
+  ],
+  cognitive: [
+    { slug: "bpc-157",          reason: "Neuroprotective and gut-brain axis support" },
+    { slug: "epitalon",         reason: "Restores circadian rhythm and sleep quality" },
+    { slug: "dsip",             reason: "Deep sleep peptide for overnight consolidation" },
+  ],
+  immune: [
+    { slug: "bpc-157",          reason: "Anti-inflammatory and gut-immunity support" },
+    { slug: "thymosin-alpha-1", reason: "Broad immune modulation and T-cell activation" },
+    { slug: "ll-37",            reason: "Antimicrobial and innate immune defence" },
+  ],
+  mitochondrial: [
+    { slug: "bpc-157",          reason: "Cytoprotection alongside mitochondrial renewal" },
+    { slug: "ipamorelin",       reason: "GH pulses support mitochondrial biogenesis" },
+    { slug: "mots-c",           reason: "Stacks directly with NAD+ for energy output" },
+  ],
+  endocrine: [
+    { slug: "bpc-157",          reason: "Gut and hormonal-axis protection" },
+    { slug: "ipamorelin",       reason: "Clean GH support for endocrine optimisation" },
+    { slug: "thymosin-alpha-1", reason: "Immune balance pairs with endocrine function" },
+  ],
+};
+
 function parseDosesPerWeek(frequency: string): number {
   const f = frequency.toLowerCase();
   if (f.includes("2-3x")) return 17;
@@ -808,6 +857,61 @@ export default function ProtocolBuilder() {
                   <p className="mt-2 text-[11px] text-foreground-400">
                     App members get 30% off all vials in our shop.
                   </p>
+                </div>
+              );
+            })()}
+
+            {/* Best stacked with */}
+            {(() => {
+              const rawCombos = STACK_COMBOS[selected.categorySlug] ?? [];
+              const activeSlugs = new Set([selected.slug, ...otherActives.map(p => p.peptideSlug)]);
+              const combos = rawCombos
+                .filter(c => !activeSlugs.has(c.slug))
+                .slice(0, 2)
+                .map(c => ({ ...c, peptide: peptides.find(p => p.slug === c.slug) }))
+                .filter((c): c is { slug: string; reason: string; peptide: NonNullable<typeof c["peptide"]> } => c.peptide !== undefined);
+
+              if (combos.length === 0) return null;
+
+              return (
+                <div className="mt-3 rounded-2xl border border-background-100 bg-white px-4 py-4">
+                  <div className="mb-3 flex items-center gap-2">
+                    <span className="flex h-5 w-5 items-center justify-center rounded-full bg-accent-500">
+                      <i className="ri-add-line text-[10px] text-white" />
+                    </span>
+                    <p className="text-[11px] font-bold uppercase tracking-wider text-foreground-400">
+                      Best stacked with {selected.name}
+                    </p>
+                  </div>
+                  <div className="space-y-3">
+                    {combos.map(({ slug, reason, peptide }) => (
+                      <div key={slug} className="flex items-center gap-3">
+                        <VialIcon categorySlug={peptide.categorySlug} size={36} />
+                        <div className="min-w-0 flex-1">
+                          <p className="text-sm font-bold text-foreground-900">{peptide.name}</p>
+                          <p className="text-[11px] leading-relaxed text-foreground-500">{reason}</p>
+                        </div>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            try { localStorage.setItem("vc-peptide", slug); } catch { /* ignore */ }
+                            navigate("/start");
+                          }}
+                          className="flex-shrink-0 rounded-full border border-background-200 bg-background-50 px-3 py-1.5 text-[11px] font-semibold text-foreground-700 active:scale-[0.97]"
+                        >
+                          Build →
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => navigate("/shop")}
+                    className="mt-4 flex w-full items-center justify-center gap-2 rounded-full bg-accent-500 py-3 text-sm font-bold text-white active:scale-[0.97]"
+                  >
+                    <i className="ri-shopping-bag-line" />
+                    Buy the stack — 30% off
+                  </button>
                 </div>
               );
             })()}
