@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import {
-  getActiveProtocol, getProtocols, getDaysRemaining, getProgressPct,
+  getProtocols, getDaysRemaining, getProgressPct,
   isExpiringSoon, getTodaysSlots, getTodaysLogForProtocol, isRestDay,
   saveProtocol,
 } from "@/lib/protocol";
@@ -178,6 +178,65 @@ function formatReorderDate(d: Date): string {
   return d.toLocaleDateString("en-US", { month: "short", day: "numeric" });
 }
 
+// ── Cycle notes ──────────────────────────────────────────────────────────
+
+function CycleNotes({ p, onSave }: { p: Protocol; onSave: () => void }) {
+  const [open, setOpen] = useState(false);
+  const [text, setText] = useState(p.cycleNotes ?? "");
+
+  function save() {
+    saveProtocol({ ...p, cycleNotes: text.trim() || undefined });
+    onSave();
+    setOpen(false);
+  }
+
+  return (
+    <div className="mt-3">
+      <button
+        type="button"
+        onClick={() => setOpen((v) => !v)}
+        className="flex w-full items-center justify-between text-left px-1 py-1"
+      >
+        <span className="flex items-center gap-1.5 text-xs font-semibold text-foreground-500">
+          <i className="ri-sticky-note-line text-sm text-foreground-400" />
+          {p.cycleNotes ? "Cycle notes" : "Add notes"}
+        </span>
+        <i className={`ri-arrow-${open ? "up" : "down"}-s-line text-foreground-300 text-sm`} />
+      </button>
+      {!open && p.cycleNotes && (
+        <p className="mt-0.5 pl-1 text-xs text-foreground-500 leading-relaxed line-clamp-2">{p.cycleNotes}</p>
+      )}
+      {open && (
+        <div className="mt-2">
+          <textarea
+            value={text}
+            onChange={(e) => setText(e.target.value)}
+            placeholder="Side effects, observations, how you feel…"
+            rows={3}
+            className="w-full rounded-2xl border border-background-200 bg-background-50 px-4 py-3 text-sm text-foreground-800 placeholder:text-foreground-300 focus:border-primary-400 focus:outline-none resize-none"
+          />
+          <div className="mt-2 flex gap-2">
+            <button
+              type="button"
+              onClick={save}
+              className="flex-1 rounded-full bg-primary-500 py-2 text-xs font-bold text-white active:scale-[0.97]"
+            >
+              Save
+            </button>
+            <button
+              type="button"
+              onClick={() => { setText(p.cycleNotes ?? ""); setOpen(false); }}
+              className="flex-1 rounded-full border border-background-200 py-2 text-xs font-semibold text-foreground-500 active:scale-[0.97]"
+            >
+              Cancel
+            </button>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
 // ── Cycle progress card ───────────────────────────────────────────────────
 
 function CycleProgress({ p, onProtocolChange }: { p: Protocol; onProtocolChange: () => void }) {
@@ -242,6 +301,9 @@ function CycleProgress({ p, onProtocolChange }: { p: Protocol; onProtocolChange:
           </div>
         </div>
       </button>
+
+      {/* Cycle notes */}
+      <CycleNotes p={p} onSave={onProtocolChange} />
 
       {/* Vials on hand counter */}
       <div className="mt-4 flex items-center justify-between rounded-2xl bg-background-50 px-4 py-3">
@@ -366,12 +428,11 @@ function EmptyHome() {
 // ── Main ──────────────────────────────────────────────────────────────────
 
 export default function AppHome() {
-  const [active, setActive] = useState<Protocol | null>(null);
-  const [totalProtocols, setTotalProtocols] = useState(0);
+  const navigate = useNavigate();
+  const [actives, setActives] = useState<Protocol[]>([]);
 
   function reload() {
-    setActive(getActiveProtocol());
-    setTotalProtocols(getProtocols().length);
+    setActives(getProtocols().filter((p) => p.status === "active"));
   }
 
   useEffect(() => { reload(); }, []); // eslint-disable-line react-hooks/exhaustive-deps
@@ -386,20 +447,21 @@ export default function AppHome() {
         </h1>
       </div>
 
-      {active ? (
-        <div className="space-y-3">
-          {/* Today's dose — the star of the screen */}
-          <TodayCard p={active} />
-
-          {/* Cycle progress + supply tracking */}
-          <CycleProgress p={active} onProtocolChange={reload} />
+      {actives.length > 0 ? (
+        <div className="space-y-3 pb-4">
+          {actives.map((p) => (
+            <div key={p.id} className="space-y-2">
+              <TodayCard p={p} />
+              <CycleProgress p={p} onProtocolChange={reload} />
+            </div>
+          ))}
 
           {/* Quick stats row */}
           <div className="grid grid-cols-3 gap-2">
             {[
-              { label: "Vial size",  value: `${active.vialMg}mg`,        icon: "ri-medicine-bottle-line" },
-              { label: "Per dose",   value: formatDose(active.doseMcg),   icon: "ri-syringe-line"         },
-              { label: "Protocols",  value: String(totalProtocols),       icon: "ri-list-check-2"         },
+              { label: "Active",    value: String(actives.length),             icon: "ri-list-check-2"         },
+              { label: "Per dose",  value: formatDose(actives[0].doseMcg),     icon: "ri-syringe-line"         },
+              { label: "Vial size", value: `${actives[0].vialMg}mg`,           icon: "ri-medicine-bottle-line" },
             ].map((s) => (
               <div key={s.label} className="rounded-2xl bg-white border border-background-100 px-3 py-3 text-center">
                 <i className={`${s.icon} text-lg text-primary-400`} />
@@ -409,6 +471,14 @@ export default function AppHome() {
             ))}
           </div>
 
+          {/* Add to stack */}
+          <button
+            type="button"
+            onClick={() => navigate("/start")}
+            className="flex w-full items-center justify-center gap-2 rounded-full border-2 border-dashed border-background-200 py-3.5 text-sm font-semibold text-foreground-500 active:bg-background-50 transition-colors"
+          >
+            <i className="ri-add-line text-base" /> Add compound to stack
+          </button>
         </div>
       ) : (
         <EmptyHome />

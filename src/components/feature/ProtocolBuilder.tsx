@@ -178,6 +178,11 @@ export default function ProtocolBuilder() {
     );
   }
 
+  const otherActives = useMemo(
+    () => getProtocols().filter((p) => p.status === "active" && p.peptideSlug !== peptideSlug),
+    [peptideSlug],
+  );
+
   function handleStart() {
     if (!selected || !vialMg || !results) return;
     const existing = getProtocols().find(
@@ -728,12 +733,25 @@ export default function ProtocolBuilder() {
               )}
             </div>
 
+            {otherActives.length > 0 && (
+              <div className="mt-4 flex items-center gap-2 rounded-2xl bg-background-50 px-4 py-3 text-xs text-foreground-500">
+                <i className="ri-stack-line text-sm text-primary-400" />
+                <span>
+                  Adds to your stack —{" "}
+                  <strong className="text-foreground-900">
+                    {otherActives.map((p) => p.peptideName).join(", ")}
+                  </strong>{" "}
+                  {otherActives.length === 1 ? "is" : "are"} already active
+                </span>
+              </div>
+            )}
+
             <button
               type="button"
               onClick={handleStart}
-              className="mt-5 w-full rounded-full bg-primary-500 py-4 text-base font-bold text-white shadow-sm active:scale-[0.98]"
+              className="mt-4 w-full rounded-full bg-primary-500 py-4 text-base font-bold text-white shadow-sm active:scale-[0.98]"
             >
-              Start Protocol
+              {otherActives.length > 0 ? `Add to stack (${otherActives.length + 1} active)` : "Start Protocol"}
             </button>
             <button
               type="button"

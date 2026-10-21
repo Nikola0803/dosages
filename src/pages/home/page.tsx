@@ -13,7 +13,6 @@ import Methodology from "@/pages/home/components/Methodology";
 import PeptideIndex from "@/pages/home/components/PeptideIndex";
 import FaqSection from "@/pages/home/components/FaqSection";
 import GuidesSection from "@/pages/home/components/GuidesSection";
-import RecommendedSources from "@/pages/home/components/RecommendedSources";
 import AppHome from "@/pages/home/AppHome";
 import { isStandalone } from "@/lib/standalone";
 
