@@ -9,6 +9,8 @@ export type Peptide = {
   perKgMcg?: number;
   frequency: string;
   evidence: EvidenceTier;
+  /** Common vial sizes (mg) for this compound — overrides the generic picker */
+  vialSizesMg?: number[];
 };
 
 export const peptides: Peptide[] = [
@@ -25,7 +27,7 @@ export const peptides: Peptide[] = [
   { name: "Mazdutide", slug: "mazdutide", categorySlug: "metabolic", typicalMcg: 3000, frequency: "1x weekly", evidence: "clinical" },
   { name: "Survodutide", slug: "survodutide", categorySlug: "metabolic", typicalMcg: 600, frequency: "1x weekly", evidence: "clinical" },
   { name: "AOD-9604", slug: "aod-9604", categorySlug: "metabolic", typicalMcg: 300, frequency: "1x daily", evidence: "clinical" },
-  { name: "5-Amino-1MQ", slug: "5-amino-1mq", categorySlug: "metabolic", typicalMcg: 5000, frequency: "1x daily", evidence: "preclinical" },
+  { name: "5-Amino-1MQ", slug: "5-amino-1mq", categorySlug: "metabolic", typicalMcg: 5000, frequency: "1x daily", evidence: "preclinical", vialSizesMg: [10, 20, 50] },
   { name: "Adipotide", slug: "adipotide", categorySlug: "metabolic", typicalMcg: 5000, frequency: "1x daily", evidence: "limited" },
   { name: "SLU-PP-332", slug: "slu-pp-332", categorySlug: "metabolic", typicalMcg: 250, frequency: "1x daily", evidence: "preclinical" },
 
@@ -40,16 +42,16 @@ export const peptides: Peptide[] = [
   { name: "Tesamorelin", slug: "tesamorelin", categorySlug: "gh-secretagogue", typicalMcg: 2000, frequency: "1x daily", evidence: "clinical" },
 
   // Growth Factor
-  { name: "IGF-1 DES", slug: "igf-1-des", categorySlug: "growth-factor", typicalMcg: 100, perKgMcg: 1.5, frequency: "1x daily", evidence: "limited" },
-  { name: "IGF-1 LR3", slug: "igf-1-lr3", categorySlug: "growth-factor", typicalMcg: 40, perKgMcg: 1, frequency: "1x daily", evidence: "limited" },
+  { name: "IGF-1 DES", slug: "igf-1-des", categorySlug: "growth-factor", typicalMcg: 100, perKgMcg: 1.5, frequency: "1x daily", evidence: "limited", vialSizesMg: [1, 2, 5] },
+  { name: "IGF-1 LR3", slug: "igf-1-lr3", categorySlug: "growth-factor", typicalMcg: 40, perKgMcg: 1, frequency: "1x daily", evidence: "limited", vialSizesMg: [1, 2, 5] },
   { name: "MGF", slug: "mgf", categorySlug: "growth-factor", typicalMcg: 300, frequency: "1x daily", evidence: "preclinical" },
-  { name: "PEG-MGF", slug: "peg-mgf", categorySlug: "growth-factor", typicalMcg: 300, frequency: "2x weekly", evidence: "preclinical" },
+  { name: "PEG-MGF", slug: "peg-mgf", categorySlug: "growth-factor", typicalMcg: 300, frequency: "2x weekly", evidence: "preclinical", vialSizesMg: [2, 5, 10] },
 
   // Longevity & Bioregulator
   { name: "Cartalax", slug: "cartalax", categorySlug: "longevity", typicalMcg: 5000, frequency: "1x daily", evidence: "limited" },
   { name: "Chonluten", slug: "chonluten", categorySlug: "longevity", typicalMcg: 5000, frequency: "1x daily", evidence: "limited" },
   { name: "Cortagen", slug: "cortagen", categorySlug: "longevity", typicalMcg: 5000, frequency: "1x daily", evidence: "limited" },
-  { name: "Epitalon", slug: "epitalon", categorySlug: "longevity", typicalMcg: 5000, frequency: "1x daily", evidence: "clinical" },
+  { name: "Epitalon", slug: "epitalon", categorySlug: "longevity", typicalMcg: 5000, frequency: "1x daily", evidence: "clinical", vialSizesMg: [10, 20, 50] },
   { name: "FOXO4-DRI", slug: "foxo4-dri", categorySlug: "longevity", typicalMcg: 250, frequency: "1x daily", evidence: "preclinical" },
   { name: "Livagen", slug: "livagen", categorySlug: "longevity", typicalMcg: 5000, frequency: "1x daily", evidence: "limited" },
   { name: "Ovagen", slug: "ovagen", categorySlug: "longevity", typicalMcg: 5000, frequency: "1x daily", evidence: "limited" },
@@ -60,10 +62,10 @@ export const peptides: Peptide[] = [
   { name: "Vilon", slug: "vilon", categorySlug: "longevity", typicalMcg: 5000, frequency: "1x daily", evidence: "limited" },
 
   // Mitochondrial
-  { name: "Glutathione", slug: "glutathione", categorySlug: "mitochondrial", typicalMcg: 50000, frequency: "2x weekly", evidence: "clinical" },
+  { name: "Glutathione", slug: "glutathione", categorySlug: "mitochondrial", typicalMcg: 50000, frequency: "2x weekly", evidence: "clinical", vialSizesMg: [200, 500, 1000] },
   { name: "Humanin", slug: "humanin", categorySlug: "mitochondrial", typicalMcg: 500, frequency: "1x daily", evidence: "preclinical" },
-  { name: "MOTS-c", slug: "mots-c", categorySlug: "mitochondrial", typicalMcg: 5000, frequency: "1x weekly", evidence: "preclinical" },
-  { name: "NAD+", slug: "nad-plus", categorySlug: "mitochondrial", typicalMcg: 50000, frequency: "1x daily", evidence: "preclinical" },
+  { name: "MOTS-c", slug: "mots-c", categorySlug: "mitochondrial", typicalMcg: 5000, frequency: "1x weekly", evidence: "preclinical", vialSizesMg: [10, 20, 40] },
+  { name: "NAD+", slug: "nad-plus", categorySlug: "mitochondrial", typicalMcg: 50000, frequency: "1x daily", evidence: "preclinical", vialSizesMg: [200, 500, 1000] },
   { name: "SS-31", slug: "ss-31", categorySlug: "mitochondrial", typicalMcg: 1000, frequency: "5x weekly", evidence: "clinical" },
 
   // Cognitive & Neuro
@@ -81,14 +83,14 @@ export const peptides: Peptide[] = [
   { name: "VIP", slug: "vip", categorySlug: "immune", typicalMcg: 100, frequency: "5x weekly", evidence: "preclinical" },
 
   // Cosmetic & Dermal
-  { name: "AHK-Cu", slug: "ahk-cu", categorySlug: "cosmetic", typicalMcg: 2000, frequency: "1x daily", evidence: "limited" },
-  { name: "GHK-Cu", slug: "ghk-cu", categorySlug: "cosmetic", typicalMcg: 2000, frequency: "1x daily", evidence: "preclinical" },
+  { name: "AHK-Cu", slug: "ahk-cu", categorySlug: "cosmetic", typicalMcg: 2000, frequency: "1x daily", evidence: "limited", vialSizesMg: [50, 100, 200] },
+  { name: "GHK-Cu", slug: "ghk-cu", categorySlug: "cosmetic", typicalMcg: 2000, frequency: "1x daily", evidence: "preclinical", vialSizesMg: [20, 50, 100] },
   { name: "Melanotan II", slug: "melanotan-ii", categorySlug: "cosmetic", typicalMcg: 500, frequency: "1x daily", evidence: "clinical" },
   { name: "Melanotan-1", slug: "melanotan-1", categorySlug: "cosmetic", typicalMcg: 500, frequency: "1x daily", evidence: "clinical" },
   { name: "SNAP-8", slug: "snap-8", categorySlug: "cosmetic", typicalMcg: 2000, frequency: "2x daily", evidence: "limited" },
 
   // Endocrine & Sexual Health
-  { name: "Gonadorelin", slug: "gonadorelin", categorySlug: "endocrine", typicalMcg: 200, frequency: "2x weekly", evidence: "clinical" },
+  { name: "Gonadorelin", slug: "gonadorelin", categorySlug: "endocrine", typicalMcg: 200, frequency: "2x weekly", evidence: "clinical", vialSizesMg: [2, 5, 10] },
   { name: "Kisspeptin-10", slug: "kisspeptin-10", categorySlug: "endocrine", typicalMcg: 100, frequency: "1x daily", evidence: "clinical" },
   { name: "Oxytocin", slug: "oxytocin", categorySlug: "endocrine", typicalMcg: 100, frequency: "1x daily", evidence: "limited" },
   { name: "PT-141", slug: "pt-141", categorySlug: "endocrine", typicalMcg: 1750, frequency: "1x daily", evidence: "clinical" },

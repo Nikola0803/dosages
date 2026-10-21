@@ -479,7 +479,7 @@ export default function ProtocolBuilder() {
 
             <p className="text-xs font-semibold uppercase tracking-wider text-foreground-400 mb-2">Common sizes</p>
             <div className="grid grid-cols-2 gap-2.5">
-              {VIAL_OPTIONS.map((mg) => {
+              {(selected.vialSizesMg ?? VIAL_OPTIONS).map((mg) => {
                 const dpv   = dosesPerVial(mg, effectiveMcg);
                 const small = dpv === 0;
                 const sel   = vialMg === mg;
@@ -534,7 +534,7 @@ export default function ProtocolBuilder() {
                 type="number"
                 inputMode="decimal"
                 min={0.5}
-                max={50}
+                max={1000}
                 step={0.5}
                 value={vialMg ?? ""}
                 onChange={(e) => setVialMg(e.target.value ? Number(e.target.value) : null)}
