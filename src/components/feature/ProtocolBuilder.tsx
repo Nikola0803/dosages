@@ -2,6 +2,7 @@ import { useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { peptides } from "@/mocks/peptides";
 import VialIcon, { CATEGORY_CAP } from "@/components/feature/VialIcon";
+import SyringeGauge from "@/components/feature/SyringeGauge";
 import {
   dosesPerVial,
   suggestWaterMl,
@@ -100,6 +101,8 @@ export default function ProtocolBuilder() {
   const [doseTimes, setDoseTimes]     = useState<string[]>(["08:00"]);
   const [restPattern, setRestPattern] = useState<Protocol["restPattern"]>("daily");
   const [restWeekdays, setRestWeekdays] = useState<number[]>([]);
+  const [showSyringe, setShowSyringe] = useState(false);
+  const [showReconTips, setShowReconTips] = useState(false);
 
   const stepIdx  = STEPS.indexOf(step);
   const progress = (stepIdx / (STEPS.length - 1)) * 100;
@@ -478,14 +481,66 @@ export default function ProtocolBuilder() {
             </div>
 
             {effectiveWater > 0 && results && (
-              <div className="mt-4 flex items-center gap-3 rounded-2xl bg-background-50 px-4 py-3 text-sm">
-                <i className="ri-syringe-line text-xl text-primary-500" />
-                <span className="text-foreground-600">
-                  Draw <strong className="text-foreground-950">{results.units} units</strong> ·{" "}
-                  <strong className="text-foreground-950">{results.doses} doses</strong> per vial
-                </span>
+              <div className="mt-4 rounded-2xl bg-primary-50 px-4 py-3">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-3 text-sm">
+                    <i className="ri-syringe-line text-xl text-primary-500" />
+                    <span className="text-foreground-600">
+                      Draw <strong className="text-foreground-950">{results.units} units</strong> ·{" "}
+                      <strong className="text-foreground-950">{results.doses} doses</strong> per vial
+                    </span>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => setShowSyringe(v => !v)}
+                    className="text-[11px] font-semibold text-primary-600 active:opacity-60"
+                  >
+                    {showSyringe ? "Hide" : "Show syringe"}
+                  </button>
+                </div>
+                {showSyringe && (
+                  <div className="mt-3">
+                    <SyringeGauge units={results.units} />
+                  </div>
+                )}
               </div>
             )}
+
+            {/* Reconstitution guide */}
+            <div className="mt-4 rounded-2xl border border-background-100 bg-white overflow-hidden">
+              <button
+                type="button"
+                onClick={() => setShowReconTips(v => !v)}
+                className="flex w-full items-center justify-between px-4 py-3.5 text-left active:bg-background-50"
+              >
+                <div className="flex items-center gap-2.5">
+                  <i className="ri-flask-line text-base text-primary-500" />
+                  <span className="text-sm font-semibold text-foreground-900">How to reconstitute</span>
+                </div>
+                <i className={`ri-arrow-${showReconTips ? "up" : "down"}-s-line text-foreground-400`} />
+              </button>
+              {showReconTips && (
+                <div className="border-t border-background-100 px-4 pb-4 pt-3 space-y-3">
+                  {[
+                    { icon: "ri-spray-line",        title: "Swab first", body: "Wipe both vial caps with 70% isopropyl alcohol. Let dry 30 seconds before inserting the needle." },
+                    { icon: "ri-arrow-down-line",   title: "Aim at the wall", body: "Insert the needle at an angle and direct the stream down the inside glass wall — never squirt directly onto the powder cake." },
+                    { icon: "ri-speed-mini-line",   title: "Push slowly", body: "Depress the plunger gently and steadily. Fast injection creates turbulence that degrades the peptide." },
+                    { icon: "ri-forbid-line",       title: "No shaking or swirling", body: "Shaking creates foam and breaks fragile peptide bonds. Never vortex or agitate the vial." },
+                    { icon: "ri-hand-line",         title: "Gentle rolling only", body: "Roll the vial slowly between your palms until the solution is clear. Allow 30–60 seconds." },
+                    { icon: "ri-search-eye-line",   title: "Inspect before use", body: "The solution should be clear and colourless (a slight tint is normal for some peptides). Discard if cloudy or particles are visible." },
+                    { icon: "ri-temp-cold-line",    title: "Refrigerate & use within 30 days", body: "Store at 2–8 °C, away from light. Reconstituted peptides degrade faster than lyophilised powder — use within 28–30 days." },
+                  ].map(({ icon, title, body }) => (
+                    <div key={title} className="flex gap-3">
+                      <i className={`${icon} mt-0.5 flex-shrink-0 text-base text-primary-400`} />
+                      <div>
+                        <p className="text-xs font-bold text-foreground-900">{title}</p>
+                        <p className="text-xs text-foreground-500 leading-relaxed">{body}</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
 
             <button
               type="button"
@@ -649,14 +704,28 @@ export default function ProtocolBuilder() {
             </div>
 
             {/* Draw line callout */}
-            <div className="mt-3 flex items-center gap-4 rounded-2xl bg-primary-50 px-4 py-3.5">
-              <i className="ri-syringe-line text-2xl text-primary-500" />
-              <div>
-                <p className="text-[11px] font-semibold uppercase tracking-wider text-primary-600">Draw line</p>
-                <p className="text-2xl font-bold text-primary-900">
-                  {results.units} <span className="text-sm font-semibold text-primary-700">units on U-100 syringe</span>
-                </p>
+            <div className="mt-3 rounded-2xl bg-primary-50 px-4 py-3.5">
+              <div className="flex items-center gap-4">
+                <i className="ri-syringe-line text-2xl text-primary-500" />
+                <div className="flex-1 min-w-0">
+                  <p className="text-[11px] font-semibold uppercase tracking-wider text-primary-600">Draw line</p>
+                  <p className="text-2xl font-bold text-primary-900">
+                    {results.units} <span className="text-sm font-semibold text-primary-700">units on U-100 syringe</span>
+                  </p>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setShowSyringe(v => !v)}
+                  className="flex-shrink-0 rounded-full border border-primary-200 bg-white px-3 py-1.5 text-[11px] font-semibold text-primary-600 active:bg-primary-100"
+                >
+                  {showSyringe ? "Hide" : "Visualise"}
+                </button>
               </div>
+              {showSyringe && (
+                <div className="mt-3 pb-1">
+                  <SyringeGauge units={results.units} />
+                </div>
+              )}
             </div>
 
             <button
