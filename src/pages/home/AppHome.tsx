@@ -8,6 +8,7 @@ import {
 import type { Protocol } from "@/lib/protocol";
 import AppShell from "@/components/feature/AppShell";
 import VialIcon from "@/components/feature/VialIcon";
+import SyringeGauge from "@/components/feature/SyringeGauge";
 import { suggestWaterMl, unitsForDose, formatDose } from "@/utils/dosage";
 import { peptides } from "@/mocks/peptides";
 
@@ -52,49 +53,6 @@ function todayStr() {
   return new Date().toISOString().split("T")[0];
 }
 
-// ── Syringe draw visualisation ────────────────────────────────────────────
-
-function SyringeViz({ units }: { units: number }) {
-  const clamped = Math.min(100, Math.max(0, units));
-  const pct = clamped / 100;
-
-  return (
-    <div className="mt-3">
-      {/* Barrel */}
-      <div className="relative h-7 rounded-full bg-background-100 overflow-hidden border border-background-200">
-        {/* Fill */}
-        <div
-          className="absolute inset-y-0 left-0 rounded-full bg-primary-400 transition-all duration-500"
-          style={{ width: `${pct * 100}%` }}
-        />
-        {/* Tick marks at 10, 20, 30 ... 90 */}
-        {[10, 20, 30, 40, 50, 60, 70, 80, 90].map((t) => (
-          <div
-            key={t}
-            className="absolute top-1 bottom-1 w-px bg-white/60"
-            style={{ left: `${t}%` }}
-          />
-        ))}
-        {/* Draw line marker */}
-        <div
-          className="absolute top-0 bottom-0 w-0.5 bg-primary-700 transition-all duration-500"
-          style={{ left: `${pct * 100}%` }}
-        />
-      </div>
-
-      {/* Scale labels */}
-      <div className="mt-0.5 flex justify-between px-0.5">
-        {[0, 20, 40, 60, 80, 100].map((t) => (
-          <span key={t} className="text-[9px] text-foreground-400">{t}</span>
-        ))}
-      </div>
-
-      <p className="mt-1 text-center text-[10px] font-semibold uppercase tracking-wider text-foreground-400">
-        U-100 insulin syringe
-      </p>
-    </div>
-  );
-}
 
 // ── Today's dose card ─────────────────────────────────────────────────────
 
@@ -140,7 +98,7 @@ function TodayCard({ p }: { p: Protocol }) {
           <p className="font-heading text-4xl font-bold text-primary-900 leading-none mt-0.5">
             {units} <span className="text-lg font-semibold text-primary-600">units</span>
           </p>
-          <SyringeViz units={units} />
+          <SyringeGauge units={units} />
         </div>
       )}
 

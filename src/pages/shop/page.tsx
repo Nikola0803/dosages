@@ -55,17 +55,18 @@ function ProductCard({ p }: { p: ShopProduct }) {
               rel="noopener noreferrer"
               className="flex-1 rounded-full bg-primary-500 py-2 text-center text-xs font-semibold text-white active:scale-[0.97]"
             >
-              Buy now
+              Order Now
             </a>
             {p.coas.length > 0 && (
               <a
                 href={p.coas[0].url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center justify-center rounded-full border border-background-200 px-2.5 py-2 text-xs font-semibold text-foreground-600 active:scale-[0.97]"
+                className="flex items-center gap-1 rounded-full border border-background-200 px-2.5 py-2 text-xs font-semibold text-foreground-600 active:scale-[0.97]"
                 title="Certificate of Analysis"
               >
                 <i className="ri-file-text-line text-sm" />
+                <span>View COA</span>
               </a>
             )}
           </div>
