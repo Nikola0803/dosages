@@ -21,7 +21,7 @@ export default function VprSpotlight() {
 
   useEffect(() => {
     const previous = document.title;
-    document.title = "Vetting a Supplier on Verified Peptide Reviews | VialCalc";
+    document.title = "Vetting a Supplier on Verified Peptide Reviews | PeptideRatio";
     return () => {
       document.title = previous;
     };

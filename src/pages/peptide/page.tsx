@@ -44,8 +44,8 @@ export default function PeptidePage() {
   const category = peptideCategories.find(c => c.slug === peptide?.categorySlug);
 
   const pageTitle = peptide
-    ? `${peptide.name} Dosing Reference — Reconstitution Guide | VialCalc`
-    : "Peptide | VialCalc";
+    ? `${peptide.name} Dosing Reference — Reconstitution Guide | PeptideRatio`
+    : "Peptide | PeptideRatio";
   const pageDesc = peptide
     ? (detail?.tagline ?? `Dose range, reconstitution guide and syringe draw line for ${peptide?.name}. Free calculator.`)
     : "";
@@ -53,14 +53,14 @@ export default function PeptidePage() {
   usePageMeta({
     title: pageTitle,
     description: pageDesc,
-    canonical: `https://peptidedosingcalculator.co/peptide/${slug}`,
+    canonical: `https://peptideratio.com/peptide/${slug}`,
   });
 
   const peptideSchema = useMemo(() => (!peptide ? {} : {
     "@context": "https://schema.org",
     "@type": "MedicalWebPage",
     name: pageTitle,
-    url: `https://peptidedosingcalculator.co/peptide/${slug}`,
+    url: `https://peptideratio.com/peptide/${slug}`,
     description: pageDesc,
     about: {
       "@type": "Drug",
@@ -71,9 +71,9 @@ export default function PeptidePage() {
     breadcrumb: {
       "@type": "BreadcrumbList",
       itemListElement: [
-        { "@type": "ListItem", position: 1, name: "Home",                    item: "https://peptidedosingcalculator.co" },
-        { "@type": "ListItem", position: 2, name: category?.name ?? "Peptides", item: "https://peptidedosingcalculator.co/#peptides" },
-        { "@type": "ListItem", position: 3, name: peptide.name,               item: `https://peptidedosingcalculator.co/peptide/${slug}` },
+        { "@type": "ListItem", position: 1, name: "Home",                    item: "https://peptideratio.com" },
+        { "@type": "ListItem", position: 2, name: category?.name ?? "Peptides", item: "https://peptideratio.com/#peptides" },
+        { "@type": "ListItem", position: 3, name: peptide.name,               item: `https://peptideratio.com/peptide/${slug}` },
       ],
     },
   // eslint-disable-next-line react-hooks/exhaustive-deps

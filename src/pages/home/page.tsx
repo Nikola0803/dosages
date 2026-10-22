@@ -16,23 +16,23 @@ import GuidesSection from "@/pages/home/components/GuidesSection";
 import AppHome from "@/pages/home/AppHome";
 import { isStandalone } from "@/lib/standalone";
 
-const SITE = "https://peptidedosingcalculator.co";
+const SITE = "https://peptideratio.com";
 
 export default function Home() {
   useReveal();
   useHashScroll();
 
   usePageMeta({
-    title: "Peptide Dosing Calculator — Reconstitution & Draw-Line Guide | VialCalc",
+    title: "Peptide Dosing & Reconstitution Calculator — BPC-157, Semaglutide, TB-500 & 69 More | PeptideRatio",
     description:
-      "Work out exactly what to draw. 72 peptides with researched dose ranges, reconstitution maths and the studies behind every number. Free, no sign-up.",
+      "Calculate peptide reconstitution: bacteriostatic water volumes, U-100 syringe draw units & doses for BPC-157, Semaglutide, Tirzepatide, TB-500 & 69 more. Free.",
     canonical: `${SITE}/`,
   });
 
   const websiteSchema = useMemo(() => ({
     "@context": "https://schema.org",
     "@type": "WebSite",
-    name: "VialCalc",
+    name: "PeptideRatio",
     url: SITE,
     description: "Peptide dosing calculator and reconstitution guide for research use. 72 compounds with sourced dose ranges.",
     potentialAction: {

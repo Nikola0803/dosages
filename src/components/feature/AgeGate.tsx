@@ -40,7 +40,7 @@ export default function AgeGate() {
           Research Use Only. Confirm to Continue
         </h2>
         <p className="mt-4 text-sm leading-relaxed text-foreground-700">
-          VialCalc publishes reference material for laboratory and educational use.
+          PeptideRatio publishes reference material for laboratory and educational use.
           Nothing here is medical advice, a prescription, or a recommendation for human
           administration.
         </p>

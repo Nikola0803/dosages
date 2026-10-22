@@ -61,7 +61,7 @@ export default async function handler(
       await webpush.sendNotification(
         { endpoint: sub.endpoint, keys: { p256dh: sub.p256dh, auth: sub.auth } },
         JSON.stringify({
-          title: "VialCalc — Reorder reminder",
+          title: "PeptideRatio — Reorder reminder",
           body: `Your ${p.peptide_name} cycle is almost done. Time to check your next vial!`,
           tag: `renew-${p.id}`,
           url: "/tracker",

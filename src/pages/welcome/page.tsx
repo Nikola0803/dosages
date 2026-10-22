@@ -536,7 +536,7 @@ export default function WelcomePage() {
             <div className="mb-6 flex h-20 w-20 items-center justify-center rounded-2xl bg-primary-500 shadow-lg shadow-primary-900/50">
               <span className="font-heading text-2xl font-bold text-white">VC</span>
             </div>
-            <h1 className="font-heading text-5xl font-bold text-white">VialCalc</h1>
+            <h1 className="font-heading text-5xl font-bold text-white">PeptideRatio</h1>
             <p className="mt-3 text-lg text-white/65">Your peptide protocol companion.</p>
             <div className="mt-5 flex items-center gap-1.5 text-sm text-white/40">
               <span>⭐⭐⭐⭐⭐</span>
@@ -907,7 +907,7 @@ export default function WelcomePage() {
                   <span className="text-xs font-bold text-white">VC</span>
                 </div>
                 <div>
-                  <p className="text-xs font-semibold text-foreground-950">VialCalc</p>
+                  <p className="text-xs font-semibold text-foreground-950">PeptideRatio</p>
                   <p className="text-[10px] text-foreground-400">now</p>
                 </div>
               </div>

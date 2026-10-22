@@ -76,7 +76,7 @@ export default function InstallPrompt() {
   return (
     <div
       role="banner"
-      aria-label="Install VialCalc"
+      aria-label="Install PeptideRatio"
       className="fixed bottom-0 left-0 right-0 z-50 p-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] sm:bottom-4 sm:left-auto sm:right-4 sm:max-w-sm sm:pb-3"
     >
       <div className="flex items-center gap-3 rounded-2xl border border-primary-700 bg-primary-950 px-4 py-3.5 shadow-2xl backdrop-blur-md">
@@ -93,7 +93,7 @@ export default function InstallPrompt() {
             </p>
           ) : (
             <p className="mt-0.5 text-xs text-primary-300">
-              Open VialCalc instantly. No app store needed.
+              Open PeptideRatio instantly. No app store needed.
             </p>
           )}
         </div>

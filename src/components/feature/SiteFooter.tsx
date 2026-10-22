@@ -85,7 +85,7 @@ export default function SiteFooter() {
         </div>
 
         <div className="mt-8 flex flex-col gap-2 border-t border-primary-800 pt-6 text-xs text-primary-300 sm:flex-row sm:items-center sm:justify-between">
-          <span>© {year} VialCalc · peptidedosingcalculator.co</span>
+          <span>© {year} PeptideRatio · peptideratio.com</span>
           <span>Dose ranges compiled from peer-reviewed and preclinical literature</span>
         </div>
       </div>

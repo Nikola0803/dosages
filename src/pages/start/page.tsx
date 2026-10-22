@@ -9,7 +9,7 @@ import { usePageMeta } from "@/hooks/usePageMeta";
 import { useJsonLd } from "@/hooks/useJsonLd";
 import { isStandalone } from "@/lib/standalone";
 
-const SITE = "https://peptidedosingcalculator.co";
+const SITE = "https://peptideratio.com";
 
 const howToSchema = {
   "@context": "https://schema.org",
@@ -35,7 +35,7 @@ export default function StartPage() {
   useReveal();
 
   usePageMeta({
-    title: "Peptide Reconstitution Calculator — Step-by-Step Wizard | VialCalc",
+    title: "Peptide Reconstitution Calculator — Step-by-Step Wizard | PeptideRatio",
     description:
       "Three questions. We calculate the exact water volume and syringe draw line for any peptide vial. Free, instant, no sign-up required.",
     canonical: `${SITE}/start`,
