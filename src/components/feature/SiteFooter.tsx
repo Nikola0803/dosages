@@ -37,7 +37,7 @@ export default function SiteFooter() {
         <div className="grid grid-cols-1 gap-10 sm:grid-cols-2 lg:grid-cols-4">
           <div>
             <div className="font-heading text-xl font-semibold text-background-50">
-              Vial<span className="text-primary-400">Calc</span>
+              Peptide<span className="text-primary-400">Ratio</span>
             </div>
             <p className="mt-4 max-w-xs text-sm leading-relaxed text-primary-200">
               A reference library for peptide reconstitution maths and dose ranges taken from
