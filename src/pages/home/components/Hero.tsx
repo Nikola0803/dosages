@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import { totalPeptides } from "@/mocks/peptides";
 import { peptideCategories } from "@/mocks/categories";
 import StartHereWizard from "@/pages/home/components/StartHereWizard";
@@ -61,12 +62,12 @@ export default function Hero() {
             </p>
 
             <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-              <a
-                href="/start"
+              <Link
+                to="/start"
                 className="btn-glow whitespace-nowrap rounded-lg bg-primary-500 px-6 py-3.5 text-center text-sm font-semibold text-white transition-all duration-200 hover:bg-primary-400"
               >
                 Start Here. Walk Me Through It →
-              </a>
+              </Link>
               <a
                 href="#peptides"
                 className="whitespace-nowrap rounded-lg border border-white/25 bg-white/8 px-6 py-3.5 text-center text-sm font-semibold text-white transition-colors hover:bg-white/15 hover:border-white/40"
