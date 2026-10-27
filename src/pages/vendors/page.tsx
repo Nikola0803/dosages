@@ -9,10 +9,14 @@ import SiteFooter from "@/components/feature/SiteFooter";
 import { vendors, BADGE_META, type Vendor } from "@/mocks/vendors";
 
 const SITE = "https://peptideratio.com";
-const VPR = "https://www.verifiedpeptidereviews.com";
 
 const EVLV_UTM =
   "https://evlvpeptides.com?utm_source=peptideratio&utm_medium=referral&utm_campaign=vendors-page&utm_content=featured";
+
+const WARRIOR_UTM =
+  "https://warriordistributions.com?utm_source=peptideratio&utm_medium=referral&utm_campaign=vendors-page&utm_content=featured-warrior";
+
+const APPLY_EMAIL = "partnerships@peptideratio.com";
 
 function ScoreDot({ score }: { score: number }) {
   const color =
@@ -20,9 +24,7 @@ function ScoreDot({ score }: { score: number }) {
     score >= 4.8 ? "bg-primary-400" :
     score >= 4.7 ? "bg-primary-300" :
     "bg-primary-200";
-  return (
-    <span className={`inline-block h-2 w-2 rounded-full ${color}`} />
-  );
+  return <span className={`inline-block h-2 w-2 rounded-full ${color}`} />;
 }
 
 function BadgePill({ badge }: { badge: keyof typeof BADGE_META }) {
@@ -51,6 +53,12 @@ function VendorRow({ v, rank }: { v: Vendor; rank: number }) {
         <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
           <span className="font-heading text-sm font-semibold text-foreground-950">{v.name}</span>
           <span className="text-[11px] text-foreground-400">{v.country}</span>
+          {(v.featured || v.sponsored) && (
+            <span className="inline-flex items-center gap-1 rounded-full bg-accent-100 px-2 py-0.5 text-[10px] font-semibold text-accent-700">
+              <span className="h-1 w-1 rounded-full bg-accent-500" />
+              Partner
+            </span>
+          )}
         </div>
         <div className="mt-1.5 flex flex-wrap gap-1">
           {v.badges.map((b) => (
@@ -68,7 +76,7 @@ function VendorRow({ v, rank }: { v: Vendor; rank: number }) {
 
       {/* CTA */}
       <a
-        href={v.storeUrl}
+        href={v.featured ? EVLV_UTM : v.sponsored ? WARRIOR_UTM : v.storeUrl}
         target="_blank"
         rel="noopener"
         className="shrink-0 rounded-md bg-primary-500 px-4 py-2 text-xs font-semibold text-white transition-colors hover:bg-primary-600"
@@ -83,12 +91,12 @@ export default function VendorsPage() {
   useReveal();
 
   const featured = vendors.find((v) => v.featured)!;
-  const others = vendors.filter((v) => !v.featured);
+  const warrior  = vendors.find((v) => v.sponsored)!;
 
   usePageMeta({
-    title: "Verified Peptide Vendors — EVLV & VPR-Rated Directory | PeptideRatio",
+    title: "Verified Peptide Vendors — EVLV, Warrior & More | PeptideRatio",
     description:
-      "Curated directory of independently verified peptide vendors. EVLV Peptides featured. Scores, COA status and review counts sourced from Verified Peptide Reviews.",
+      "Curated directory of independently verified peptide vendors. EVLV and Warrior Distributions featured. Scores and COA status from Verified Peptide Reviews.",
     canonical: `${SITE}/vendors`,
   });
 
@@ -98,7 +106,7 @@ export default function VendorsPage() {
       "@type": "ItemList",
       name: "Verified Peptide Vendors",
       description:
-        "Curated directory of independently verified research peptide vendors, sourced from Verified Peptide Reviews.",
+        "Curated directory of independently verified research peptide vendors.",
       url: `${SITE}/vendors`,
       numberOfItems: vendors.length,
       itemListElement: vendors.map((v, i) => ({
@@ -151,11 +159,8 @@ export default function VendorsPage() {
               Peptide Vendors<br className="hidden md:block" /> We Recommend
             </h1>
             <p className="mt-4 max-w-xl text-base leading-relaxed text-foreground-500 md:text-lg">
-              Every listing is independently audited by{" "}
-              <a href={VPR} target="_blank" rel="noopener" className="text-primary-700 underline-offset-2 hover:underline">
-                Verified Peptide Reviews
-              </a>
-              . Scores and COA status sourced directly from VPR.
+              Every listing is independently audited by Verified Peptide Reviews.
+              Scores and COA status sourced directly from VPR.
             </p>
           </div>
         </section>
@@ -163,8 +168,12 @@ export default function VendorsPage() {
         {/* Featured: EVLV */}
         <section className="border-b border-background-200 px-4 py-10 md:px-8 md:py-14">
           <div className="mx-auto max-w-[1440px]">
+            <p className="mb-4 font-label text-[10px] uppercase tracking-widest text-foreground-400">
+              Featured Partners
+            </p>
+
+            {/* EVLV — primary */}
             <div className="reveal overflow-hidden rounded-2xl bg-foreground-950 shadow-2xl">
-              {/* Sponsor label */}
               <div className="flex items-center justify-between border-b border-foreground-800 px-6 py-3">
                 <span className="flex items-center gap-2 font-label text-[10px] uppercase tracking-wider text-foreground-400">
                   <span className="h-1.5 w-1.5 rounded-full bg-accent-400" />
@@ -174,26 +183,21 @@ export default function VendorsPage() {
               </div>
 
               <div className="grid gap-0 lg:grid-cols-2">
-                {/* Left: info */}
                 <div className="flex flex-col justify-center p-8 md:p-10">
-                  <div className="flex items-start gap-4">
-                    <div>
-                      <div className="flex items-center gap-3">
-                        <h2 className="font-heading text-2xl font-semibold text-background-50 md:text-3xl">
-                          {featured.name}
-                        </h2>
-                        <div className="flex items-center gap-1.5 rounded-full border border-accent-500/40 bg-accent-500/10 px-2.5 py-1">
-                          <i className="ri-star-fill text-xs text-accent-400" />
-                          <span className="font-heading text-sm font-semibold text-accent-300">
-                            {featured.score.toFixed(1)}
-                          </span>
-                        </div>
-                      </div>
-                      <p className="mt-1 text-sm text-foreground-500">
-                        {featured.reviews.toLocaleString()} verified reviews · {featured.country}
-                      </p>
+                  <div className="flex items-center gap-3">
+                    <h2 className="font-heading text-2xl font-semibold text-background-50 md:text-3xl">
+                      {featured.name}
+                    </h2>
+                    <div className="flex items-center gap-1.5 rounded-full border border-accent-500/40 bg-accent-500/10 px-2.5 py-1">
+                      <i className="ri-star-fill text-xs text-accent-400" />
+                      <span className="font-heading text-sm font-semibold text-accent-300">
+                        {featured.score.toFixed(1)}
+                      </span>
                     </div>
                   </div>
+                  <p className="mt-1 text-sm text-foreground-500">
+                    {featured.reviews.toLocaleString()} verified reviews · {featured.country}
+                  </p>
 
                   <p className="mt-5 text-sm leading-relaxed text-foreground-300 md:text-base">
                     {featured.tagline}
@@ -211,7 +215,7 @@ export default function VendorsPage() {
                     ))}
                   </div>
 
-                  <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+                  <div className="mt-8">
                     <a
                       href={EVLV_UTM}
                       target="_blank"
@@ -223,29 +227,12 @@ export default function VendorsPage() {
                   </div>
                 </div>
 
-                {/* Right: feature points */}
                 <div className="flex flex-col justify-center gap-3 border-t border-foreground-800 p-8 lg:border-l lg:border-t-0 md:p-10">
                   {[
-                    {
-                      icon: "ri-test-tube-line",
-                      title: "Lot-level HPLC + mass-spec",
-                      body: "Every batch independently tested for identity and purity before it ships.",
-                    },
-                    {
-                      icon: "ri-qr-code-line",
-                      title: "QR-verified COAs",
-                      body: "Scan the QR on your vial to open the actual lab certificate — not a vendor-hosted PDF.",
-                    },
-                    {
-                      icon: "ri-shield-check-line",
-                      title: "99%+ purity standard",
-                      body: "Lots that don't pass spectrometry at intake don't ship. No exceptions.",
-                    },
-                    {
-                      icon: "ri-truck-line",
-                      title: "Next-day domestic",
-                      body: "Orders placed before cutoff leave same day from a US fulfillment centre.",
-                    },
+                    { icon: "ri-test-tube-line",   title: "Lot-level HPLC + mass-spec",  body: "Every batch independently tested for identity and purity before it ships." },
+                    { icon: "ri-qr-code-line",     title: "QR-verified COAs",            body: "Scan the QR on your vial to open the actual lab certificate — not a vendor-hosted PDF." },
+                    { icon: "ri-shield-check-line",title: "99%+ purity standard",        body: "Lots that don't pass spectrometry at intake don't ship. No exceptions." },
+                    { icon: "ri-truck-line",        title: "Next-day domestic",           body: "Orders placed before cutoff leave same day from a US fulfillment centre." },
                   ].map((pt) => (
                     <div key={pt.title} className="flex gap-3">
                       <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-foreground-800 text-primary-400">
@@ -260,19 +247,55 @@ export default function VendorsPage() {
                 </div>
               </div>
             </div>
+
+            {/* Warrior — secondary sponsor */}
+            <div className="reveal mt-4 overflow-hidden rounded-xl border border-background-200 bg-background-50">
+              <div className="flex items-center justify-between border-b border-background-100 px-5 py-2.5">
+                <span className="flex items-center gap-2 font-label text-[10px] uppercase tracking-wider text-foreground-400">
+                  <span className="h-1.5 w-1.5 rounded-full bg-accent-400" />
+                  Featured Partner · Sponsored
+                </span>
+              </div>
+              <div className="flex flex-col gap-4 p-5 sm:flex-row sm:items-center sm:justify-between">
+                <div className="flex-1">
+                  <div className="flex flex-wrap items-center gap-3">
+                    <h2 className="font-heading text-lg font-semibold text-foreground-950">{warrior.name}</h2>
+                    <div className="flex items-center gap-1.5 rounded-full border border-primary-200 bg-primary-50 px-2 py-0.5">
+                      <i className="ri-star-fill text-[10px] text-primary-500" />
+                      <span className="font-heading text-xs font-semibold text-primary-700">{warrior.score.toFixed(1)}</span>
+                    </div>
+                    <span className="text-xs text-foreground-400">{warrior.reviews} reviews · {warrior.country}</span>
+                  </div>
+                  <p className="mt-2 text-sm text-foreground-600">{warrior.tagline}</p>
+                  <div className="mt-3 flex flex-wrap gap-1.5">
+                    {warrior.badges.map((b) => (
+                      <BadgePill key={b} badge={b} />
+                    ))}
+                  </div>
+                </div>
+                <a
+                  href={WARRIOR_UTM}
+                  target="_blank"
+                  rel="noopener"
+                  className="shrink-0 inline-flex items-center gap-2 rounded-xl bg-primary-500 px-6 py-3 text-sm font-semibold text-white transition-colors hover:bg-primary-600"
+                >
+                  Shop Warrior <i className="ri-arrow-right-up-line" />
+                </a>
+              </div>
+            </div>
           </div>
         </section>
 
-        {/* Other vendors — ranked list */}
+        {/* Full ranked list — all vendors */}
         <section className="border-b border-background-200 px-4 py-10 md:px-8 md:py-14">
           <div className="mx-auto max-w-[1440px]">
             <div className="reveal mb-6 flex items-end justify-between">
               <div>
                 <h2 className="font-heading text-xl font-semibold text-foreground-950 md:text-2xl">
-                  Other verified vendors
+                  All verified vendors
                 </h2>
                 <p className="mt-1 text-sm text-foreground-500">
-                  All VPR-rated 4.6 or above with active COA documentation.
+                  Ranked by VPR score · {vendors.length} vendors listed
                 </p>
               </div>
               <div className="hidden items-center gap-6 text-[11px] font-medium uppercase tracking-wide text-foreground-400 sm:flex">
@@ -282,32 +305,31 @@ export default function VendorsPage() {
             </div>
 
             <div className="reveal overflow-hidden rounded-xl border border-background-200 bg-background-50">
-              {others.map((v, i) => (
+              {vendors.map((v, i) => (
                 <VendorRow key={v.slug} v={v} rank={i + 1} />
               ))}
             </div>
           </div>
         </section>
 
-        {/* Full directory CTA */}
+        {/* Apply to list */}
         <section className="border-b border-background-200 bg-background-100 px-4 py-12 md:px-8 md:py-16">
           <div className="mx-auto max-w-[1440px]">
             <div className="reveal flex flex-col items-start gap-6 md:flex-row md:items-center md:justify-between">
               <div className="max-w-lg">
                 <h2 className="font-heading text-xl font-semibold text-foreground-950 md:text-2xl">
-                  229 more vendors in the full VPR directory
+                  Want to be listed?
                 </h2>
                 <p className="mt-2 text-sm leading-relaxed text-foreground-500">
-                  Filter by trust score, COA transparency, geography and compound availability.
+                  We list vendors with active independent COA documentation and a verified track record.
+                  Reach out with your VPR profile and we'll review your listing.
                 </p>
               </div>
               <a
-                href={`${VPR}/vendors`}
-                target="_blank"
-                rel="noopener"
-                className="inline-flex shrink-0 items-center gap-2 rounded-xl bg-foreground-950 px-6 py-3 text-sm font-semibold text-background-50 transition-colors hover:bg-foreground-800"
+                href={`mailto:${APPLY_EMAIL}?subject=Vendor%20listing%20application`}
+                className="inline-flex shrink-0 items-center gap-2 rounded-xl border border-background-300 bg-background-50 px-6 py-3 text-sm font-semibold text-foreground-800 transition-colors hover:border-primary-300 hover:bg-primary-50 hover:text-primary-800"
               >
-                Open VPR Directory <i className="ri-arrow-right-up-line" />
+                <i className="ri-mail-line" /> Apply to be listed
               </a>
             </div>
           </div>
@@ -317,9 +339,9 @@ export default function VendorsPage() {
         <section className="px-4 py-8 md:px-8">
           <div className="mx-auto max-w-[1440px]">
             <p className="text-xs leading-relaxed text-foreground-400">
-              <strong className="text-foreground-600">Disclosure.</strong> EVLV Peptides is a paid sponsor of PeptideRatio.
-              Sponsored placement is labelled accordingly. Vendor scores and COA statuses are sourced from Verified Peptide Reviews and are editorially independent.
-              PeptideRatio earns no commission on purchases through non-EVLV links.
+              <strong className="text-foreground-600">Disclosure.</strong> EVLV Peptides and Warrior Distributions are paid sponsors of PeptideRatio.
+              Sponsored placements are labelled accordingly. Vendor scores and COA statuses are sourced from Verified Peptide Reviews and are editorially independent.
+              PeptideRatio earns no commission on purchases through non-sponsored links.
             </p>
           </div>
         </section>

@@ -10,7 +10,8 @@ export type Vendor = {
   storeUrl: string;
   vprUrl: string;
   featured?: true;
-  /** Short tagline shown on the featured card only */
+  sponsored?: true;
+  /** Short tagline shown on the featured/sponsored card only */
   tagline?: string;
 };
 
@@ -117,6 +118,8 @@ export const vendors: Vendor[] = [
     badges: ["coa-live", "third-party"],
     storeUrl: "https://warriordistributions.com",
     vprUrl: "https://www.verifiedpeptidereviews.com/vendors/warrior-distributions",
+    sponsored: true,
+    tagline: "Wide compound catalogue with third-party COAs on every product. US-based, fast domestic shipping.",
   },
   {
     slug: "pure-peptides",
