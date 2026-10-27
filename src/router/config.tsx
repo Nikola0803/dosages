@@ -7,6 +7,8 @@ import PeptidePage from "../pages/peptide/page";
 import WelcomePage from "../pages/welcome/page";
 import TrackerPage from "../pages/tracker/page";
 import ShopPage from "../pages/shop/page";
+import ReconstitutionGuide from "../pages/guides/reconstitution/page";
+import ConcentrationChart from "../pages/reference/concentration-chart/page";
 
 const routes: RouteObject[] = [
   {
@@ -36,6 +38,14 @@ const routes: RouteObject[] = [
   {
     path: "/vpr-spotlight",
     element: <VprSpotlight />,
+  },
+  {
+    path: "/guides/reconstitution",
+    element: <ReconstitutionGuide />,
+  },
+  {
+    path: "/reference/concentration-chart",
+    element: <ConcentrationChart />,
   },
   {
     path: "*",

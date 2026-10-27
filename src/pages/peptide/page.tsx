@@ -12,6 +12,7 @@ import AgeGate from "@/components/feature/AgeGate";
 import SyringeGauge from "@/components/feature/SyringeGauge";
 import VialIcon from "@/components/feature/VialIcon";
 import { useReveal } from "@/hooks/useReveal";
+import EvlvCta from "@/components/feature/EvlvCta";
 
 function fmt(v: number) {
   if (v >= 1000) return `${(v / 1000).toFixed(v % 1000 === 0 ? 0 : 1)} mg`;
@@ -315,6 +316,7 @@ export default function PeptidePage() {
         </div>
       )}
 
+      <EvlvCta peptideSlug={slug} />
       <SiteFooter />
     </div>
   );

@@ -2,6 +2,7 @@ export type Guide = {
   slug: string;
   title: string;
   summary: string;
+  to: string;
 };
 
 export const guides: Guide[] = [
@@ -10,18 +11,21 @@ export const guides: Guide[] = [
     title: "Mixing a vial, step by step",
     summary:
       "Which water to reach for, why you angle the needle at the glass instead of the powder, and how to work out the concentration you just made.",
+    to: "/guides/reconstitution",
   },
   {
     slug: "g-syringe",
-    title: "Reading the numbers off a syringe",
+    title: "Concentration & syringe draw chart",
     summary:
-      "What a \"unit\" really measures, how U-100 syringes differ in size, and the mg / mcg / IU confusion that trips up almost everyone at least once.",
+      "Every common vial size × water volume combination in one table: mcg/mL concentration and the exact U-100 unit line to draw to for any dose.",
+    to: "/reference/concentration-chart",
   },
   {
     slug: "g-storage",
     title: "Keeping a vial good",
     summary:
       "How long a vial lasts before and after mixing, the temperature it needs to sit at, and the handful of habits that quietly ruin one.",
+    to: "/guides/reconstitution#step-8",
   },
 ];
 

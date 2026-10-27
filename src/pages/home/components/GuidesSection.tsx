@@ -1,4 +1,5 @@
-﻿import { guides } from "@/mocks/guides";
+﻿import { Link } from "react-router-dom";
+import { guides } from "@/mocks/guides";
 
 export default function GuidesSection() {
   return (
@@ -28,12 +29,12 @@ export default function GuidesSection() {
               <p className="mt-2 flex-1 text-sm leading-relaxed text-foreground-600">
                 {guide.summary}
               </p>
-              <a
-                href="#start"
+              <Link
+                to={guide.to}
                 className="mt-5 inline-flex items-center gap-1 text-sm font-semibold text-primary-700 transition-colors hover:text-primary-800"
               >
                 Read <i className="ri-arrow-right-line"></i>
-              </a>
+              </Link>
             </div>
           ))}
         </div>
