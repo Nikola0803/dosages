@@ -1,5 +1,5 @@
 import { useMemo, useState, useEffect } from "react";
-import { useSearchParams } from "react-router-dom";
+import { useSearchParams, useLocation } from "react-router-dom";
 import { peptides } from "@/mocks/peptides";
 import { peptideCategories } from "@/mocks/categories";
 import SyringeGauge from "@/components/feature/SyringeGauge";
@@ -65,6 +65,7 @@ const INPUT_CLASS = "w-full rounded-md border border-background-300 bg-backgroun
 
 export default function StartHereWizard() {
   const [searchParams] = useSearchParams();
+  const location = useLocation();
   const [step, setStep]               = useState<number>(1);
   const [catSlug, setCatSlug]         = useState<string | null>(null);
   const [goal, setGoal]               = useState<string | null>(null);
@@ -74,14 +75,17 @@ export default function StartHereWizard() {
   const [vialMg, setVialMg]           = useState<number>(() => Number(searchParams.get("vial") ?? 0));
   const [waterMl, setWaterMl]         = useState<number | null>(null);
   const [tracked, setTracked]         = useState(false);
+  const [copied, setCopied]           = useState(false);
 
   useEffect(() => {
-    const slug = searchParams.get("peptide");
-    const vial = Number(searchParams.get("vial") ?? 0);
+    const slug  = searchParams.get("peptide");
+    const vial  = Number(searchParams.get("vial")  ?? 0);
+    const water = Number(searchParams.get("water") ?? 0);
     if (slug) {
       setPeptideSlug(slug);
-      if (vial) { setVialMg(vial); setStep(3); }
-      else { setStep(2); }
+      if (vial && water) { setVialMg(vial); setWaterMl(water); setStep(4); }
+      else if (vial)     { setVialMg(vial); setStep(3); }
+      else               { setStep(2); }
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -89,6 +93,20 @@ export default function StartHereWizard() {
   const selected       = useMemo(() => peptides.find((p) => p.slug === peptideSlug), [peptideSlug]);
   const suggestedWater = selected && vialMg ? suggestWaterMl(vialMg, selected.typicalMcg) : 0;
   const effectiveWater = waterMl ?? suggestedWater;
+
+  const shareUrl = useMemo(() => {
+    if (!peptideSlug || !vialMg || !effectiveWater) return null;
+    const base = `${window.location.origin}${location.pathname}`;
+    return `${base}?peptide=${peptideSlug}&vial=${vialMg}&water=${effectiveWater}`;
+  }, [peptideSlug, vialMg, effectiveWater, location.pathname]);
+
+  const handleCopyLink = () => {
+    if (!shareUrl) return;
+    navigator.clipboard.writeText(shareUrl).then(() => {
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2500);
+    });
+  };
 
   const goalCatSlugs = goal ? GOAL_CATEGORIES[goal] : null;
   const topPicks     = goal ? (GOAL_TOP_PICKS[goal] ?? []) : [];
@@ -585,15 +603,28 @@ export default function StartHereWizard() {
               )}
             </div>
 
-            <div className="mt-3 flex items-center justify-between">
+            <div className="mt-3 flex items-center justify-between gap-2">
               <button type="button" onClick={() => setStep(3)} className={BACK_BTN}>← Back</button>
-              <button
-                type="button"
-                onClick={reset}
-                className="whitespace-nowrap rounded-md bg-secondary-500 px-4 py-2 text-sm font-semibold text-background-50 transition-colors hover:bg-secondary-600"
-              >
-                Start over
-              </button>
+              <div className="flex items-center gap-2">
+                {shareUrl && (
+                  <button
+                    type="button"
+                    onClick={handleCopyLink}
+                    title="Copy a shareable link to this result"
+                    className="flex items-center gap-1.5 whitespace-nowrap rounded-md border border-background-300 px-3.5 py-2 text-sm font-medium text-foreground-700 transition-colors hover:bg-background-100"
+                  >
+                    <i className={copied ? "ri-check-line text-primary-600" : "ri-link-m"} />
+                    {copied ? "Copied!" : "Share"}
+                  </button>
+                )}
+                <button
+                  type="button"
+                  onClick={reset}
+                  className="whitespace-nowrap rounded-md bg-secondary-500 px-4 py-2 text-sm font-semibold text-background-50 transition-colors hover:bg-secondary-600"
+                >
+                  Start over
+                </button>
+              </div>
             </div>
           </div>
         )}
