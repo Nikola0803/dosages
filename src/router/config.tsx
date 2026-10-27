@@ -9,6 +9,7 @@ import TrackerPage from "../pages/tracker/page";
 import ShopPage from "../pages/shop/page";
 import ReconstitutionGuide from "../pages/guides/reconstitution/page";
 import ConcentrationChart from "../pages/reference/concentration-chart/page";
+import VendorsPage from "../pages/vendors/page";
 
 const routes: RouteObject[] = [
   {
@@ -46,6 +47,10 @@ const routes: RouteObject[] = [
   {
     path: "/reference/concentration-chart",
     element: <ConcentrationChart />,
+  },
+  {
+    path: "/vendors",
+    element: <VendorsPage />,
   },
   {
     path: "*",

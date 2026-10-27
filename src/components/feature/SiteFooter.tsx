@@ -21,7 +21,7 @@ const columns = [
     heading: "Site",
     links: [
       { label: "Home", to: "/" },
-      { label: "Methodology", to: "/#methodology" },
+      { label: "Vendors", to: "/vendors" },
       { label: "Common Questions", to: "/#faq" },
     ],
   },

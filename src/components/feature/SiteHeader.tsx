@@ -4,10 +4,9 @@ import { Link, useLocation } from "react-router-dom";
 const navLinks = [
   { label: "Browse by Type", to: "/#browse" },
   { label: "All Peptides", to: "/#peptides" },
-  { label: "Methodology", to: "/#methodology" },
-  { label: "FAQ", to: "/#faq" },
+  { label: "Vendors", to: "/vendors" },
   { label: "Guides", to: "/#guides" },
-  { label: "Sources", to: "/#sources" },
+  { label: "FAQ", to: "/#faq" },
 ];
 
 export default function SiteHeader() {
@@ -64,7 +63,7 @@ export default function SiteHeader() {
             transparent ? "text-background-50" : "text-foreground-950"
           }`}
         >
-          Vial<em className="text-primary-400 not-italic">Calc</em>
+          Peptide<em className="text-primary-400 not-italic">Ratio</em>
         </Link>
 
         <nav className="hidden items-center gap-6 lg:flex">
