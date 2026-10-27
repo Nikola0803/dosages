@@ -279,7 +279,6 @@ export default function PeptidePage() {
             </div>
           </section>
         )}
-      </main>
 
       {/* ── Syringe expand modal ── */}
       {expanded && (
@@ -316,7 +315,9 @@ export default function PeptidePage() {
         </div>
       )}
 
-      <EvlvCta peptideSlug={slug} />
+        <EvlvCta peptideSlug={slug} />
+      </main>
+
       <SiteFooter />
     </div>
   );
