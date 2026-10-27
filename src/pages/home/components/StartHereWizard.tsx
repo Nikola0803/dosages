@@ -15,6 +15,12 @@ import {
 import { createProtocol, saveProtocol, getProtocols } from "@/lib/protocol";
 
 const VIAL_CHIPS = [2, 5, 10, 20];
+
+const POPULAR_SLUGS = [
+  "bpc-157", "semaglutide", "tb-500", "ipamorelin",
+  "tirzepatide", "semax", "cjc-1295-no-dac", "thymosin-alpha-1",
+  "epitalon", "selank", "kpv", "aod-9604",
+];
 const STEP_LABELS = ["Compound", "Vial", "Water", "Result"];
 
 const GOALS = [
@@ -76,6 +82,7 @@ export default function StartHereWizard() {
   const [waterMl, setWaterMl]         = useState<number | null>(null);
   const [tracked, setTracked]         = useState(false);
   const [copied, setCopied]           = useState(false);
+  const [showAll, setShowAll]         = useState(false);
 
   useEffect(() => {
     const slug  = searchParams.get("peptide");
@@ -111,15 +118,18 @@ export default function StartHereWizard() {
   const goalCatSlugs = goal ? GOAL_CATEGORIES[goal] : null;
   const topPicks     = goal ? (GOAL_TOP_PICKS[goal] ?? []) : [];
 
+  const isFiltered = !!(catSlug || goal || query || decideForMe);
+
   const filteredPeptides = useMemo(() => {
     if (decideForMe && topPicks.length) return peptides.filter((p) => topPicks.includes(p.slug));
+    if (!isFiltered && !showAll) return peptides.filter((p) => POPULAR_SLUGS.includes(p.slug));
     let list = peptides;
     if (catSlug) list = list.filter((p) => p.categorySlug === catSlug);
     else if (goalCatSlugs) list = list.filter((p) => goalCatSlugs.includes(p.categorySlug));
     if (query) list = list.filter((p) => p.name.toLowerCase().includes(query.toLowerCase()));
     return list;
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [catSlug, goalCatSlugs, query, decideForMe]);
+  }, [catSlug, goalCatSlugs, query, decideForMe, showAll]);
 
   const goToWater = () => {
     if (!selected || !vialMg) return;
@@ -152,6 +162,7 @@ export default function StartHereWizard() {
     setVialMg(0);
     setWaterMl(null);
     setTracked(false);
+    setShowAll(false);
   };
 
   const handleTrack = () => {
@@ -321,6 +332,11 @@ export default function StartHereWizard() {
 
             {/* Vial grid */}
             <div className="mt-3 max-h-56 overflow-y-auto">
+              {!isFiltered && !showAll && (
+                <p className="mb-2 font-label text-[10px] uppercase tracking-widest text-foreground-400">
+                  Popular
+                </p>
+              )}
               {filteredPeptides.length > 0 ? (
                 <div className="grid grid-cols-3 gap-2 pr-0.5">
                   {filteredPeptides.map((p) => (
@@ -358,28 +374,15 @@ export default function StartHereWizard() {
               )}
             </div>
 
-            {/* Fallback to dropdown for "no goal + no query" (shows all 72) */}
-            {!catSlug && !goal && !query && !decideForMe && filteredPeptides.length > 12 && (
-              <details className="mt-3">
-                <summary className="cursor-pointer text-xs font-medium text-primary-600 hover:text-primary-700">
-                  Prefer a dropdown list? ↓
-                </summary>
-                <select
-                  value={peptideSlug}
-                  onChange={(e) => setPeptideSlug(e.target.value)}
-                  aria-label="Choose a peptide"
-                  className={`mt-2 cursor-pointer ${INPUT_CLASS}`}
-                >
-                  <option value="">Choose your peptide</option>
-                  {peptideCategories.map((cat) => (
-                    <optgroup key={cat.slug} label={cat.name}>
-                      {peptides.filter((p) => p.categorySlug === cat.slug).map((p) => (
-                        <option key={p.slug} value={p.slug}>{p.name}</option>
-                      ))}
-                    </optgroup>
-                  ))}
-                </select>
-              </details>
+            {/* Show all / collapse toggle */}
+            {!isFiltered && !decideForMe && (
+              <button
+                type="button"
+                onClick={() => setShowAll((v) => !v)}
+                className="mt-2 text-xs font-medium text-primary-600 hover:text-primary-700"
+              >
+                {showAll ? "← Show popular only" : `Show all ${peptides.length} peptides ↓`}
+              </button>
             )}
 
             <div className="mt-4 flex items-center justify-end">
